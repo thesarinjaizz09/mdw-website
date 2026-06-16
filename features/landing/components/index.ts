@@ -1,0 +1,9 @@
+export { default as Navbar } from "./navbar";
+export { default as Footer } from "./footer";
+export { default as HeroSection } from "./sections/hero";
+export { default as ServicesSection } from "./sections/services";
+export { default as TrustBarSection } from "./sections/trustBar";
+export { default as WhyChooseSection } from "./sections/whyChoose";
+export { default as HowItWorksSection } from "./sections/howItWorks";
+export { default as NewsletterSection } from "./sections/newsLetter";
+export { default as WellnessBannerSection } from "./sections/wellnessBanner";
