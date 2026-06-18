@@ -17,13 +17,15 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html
-      lang="en"
-      suppressHydrationWarning
-      className={cn("antialiased", fontMono.variable, "font-sans", ibmPlexSans.variable)}
-    >
-      <body>
-        <ThemeProvider>{children}</ThemeProvider>
+      <html
+        lang="en"
+        suppressHydrationWarning
+        className={cn("antialiased h-full", fontMono.variable, "font-sans", ibmPlexSans.variable, "bg-background text-foreground")}
+      >
+        <body className="min-h-screen flex flex-col">
+        <div className="flex-1 flex flex-col">
+          <ThemeProvider>{children}</ThemeProvider>
+        </div>
       </body>
     </html>
   )

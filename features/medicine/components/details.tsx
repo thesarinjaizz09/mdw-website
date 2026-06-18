@@ -25,10 +25,10 @@ export default function MedicineDetailPage({ medicine = MEDICINES[4] }: ProductD
   const thumbColors = ["blue", "green", "orange", "purple"] as const;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="bg-gray-50 flex-1 flex flex-col min-h-screen">
       <MDWHeader cartCount={2} />
 
-      <main className="max-w-7xl mx-auto px-4 py-6 max-h-screen">
+      <main className="flex-1 max-w-7xl mx-auto px-4 py-6">
         {/* Breadcrumb */}
         <nav className="flex items-center gap-1.5 text-xs text-gray-500 mb-6">
           {["Home", "Medicines", "Pain Relief", medicine.name].map((crumb, i, arr) => (
@@ -68,9 +68,8 @@ export default function MedicineDetailPage({ medicine = MEDICINES[4] }: ProductD
                       <button
                         key={i}
                         onClick={() => setSelectedImage(i)}
-                        className={`w-12 h-12 rounded-lg border-2 overflow-hidden transition-all ${
-                          selectedImage === i ? "border-green-500" : "border-gray-200"
-                        }`}
+                        className={`w-12 h-12 rounded-lg border-2 overflow-hidden transition-all ${selectedImage === i ? "border-green-500" : "border-gray-200"
+                          }`}
                       >
                         <MedicineImagePlaceholder name={medicine.name} className="w-full h-full" color={color} />
                       </button>
@@ -136,11 +135,10 @@ export default function MedicineDetailPage({ medicine = MEDICINES[4] }: ProductD
                   <button
                     key={tab}
                     onClick={() => setActiveTab(tab)}
-                    className={`px-5 py-3 text-sm font-medium transition-colors border-b-2 ${
-                      activeTab === tab
+                    className={`px-5 py-3 text-sm font-medium transition-colors border-b-2 ${activeTab === tab
                         ? "text-green-700 border-green-600"
                         : "text-gray-500 border-transparent hover:text-gray-700"
-                    }`}
+                      }`}
                   >
                     {tab}
                   </button>

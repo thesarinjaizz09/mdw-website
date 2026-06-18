@@ -2,6 +2,8 @@ import MedicinesDetailsPage from "@/features/medicine/components/details"
 
 export default function Page() {
   return (
-    <MedicinesDetailsPage />
+    <div className="flex-1">
+      <MedicinesDetailsPage />
+    </div>
   )
 }

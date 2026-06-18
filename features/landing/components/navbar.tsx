@@ -5,7 +5,7 @@ import { Search, User, ShoppingCart, Menu, X, Plus } from "lucide-react";
 
 const navLinks = [
   { label: "Home", href: "#", active: true },
-  { label: "Medicines", href: "#" },
+  { label: "Medicines", href: "/medicine" },
   { label: "Wellness", href: "#" },
   { label: "Paws Nest", href: "#" },
   { label: "Lab Tests", href: "#" },

@@ -4,6 +4,7 @@ import { ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { InStockBadge, MedicineImagePlaceholder, PriceDisplay } from "@/components/shared";
 import type { Medicine } from "@/types";
+import { useRouter } from "next/navigation";
 
 const CARD_COLORS = ["blue", "green", "orange", "purple", "teal"] as const;
 
@@ -16,6 +17,9 @@ interface MedicineCardProps {
 
 export function MedicineCard({ medicine, index = 0, onAddToCart, variant = "default" }: MedicineCardProps) {
   const color = CARD_COLORS[index % CARD_COLORS.length];
+  const router = useRouter();
+
+  const handleNavigation = () => router.push(`/medicine/${medicine.id}`);
 
   if (variant === "compact") {
     return (
@@ -28,7 +32,7 @@ export function MedicineCard({ medicine, index = 0, onAddToCart, variant = "defa
   }
 
   return (
-    <div className="bg-white rounded-xl border border-gray-100 p-3.5 hover:shadow-md hover:border-green-100 transition-all group flex flex-col">
+    <div className="bg-white rounded-xl border border-gray-100 p-3.5 hover:shadow-md hover:border-green-100 transition-all group flex flex-col" onClick={handleNavigation}>
       {/* Image area */}
       <div className="relative mb-3">
         <MedicineImagePlaceholder name={medicine.name} className="w-full h-28" color={color} />
