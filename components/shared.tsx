@@ -1,10 +1,20 @@
 "use client";
 
-import { MapPin, ShoppingCart, User, Search, Phone, ChevronDown } from "lucide-react";
+import { MapPin, ShoppingCart, User, Search, Phone, ChevronDown, LocateFixed } from "lucide-react";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+
+import { useAddress } from "@/hooks/use-address";
+import { useState } from "react";
+import { useMedicineSearchStore } from "@/stores/use-medicine-search";
+import { useMedicineSearch } from "@/hooks/use-medicine-search";
 
 // ─── MDW Logo ────────────────────────────────────────────────────────────────
 export function MDWLogo({ size = "md" }: { size?: "sm" | "md" | "lg" }) {
@@ -96,34 +106,16 @@ export function MDWHeader({ cartCount = 2 }: { cartCount?: number }) {
   return (
     <header className="bg-white border-b border-gray-100 sticky top-0 z-50 shadow-sm">
       {/* Top bar */}
-      <div className="max-w-7xl mx-auto px-4 h-14 flex items-center gap-4">
+      <div className="max-w-7xl mx-auto px-4 h-16 flex items-center gap-5">
         <MDWLogo />
 
-        {/* Location */}
-        <button className="flex items-center gap-1 text-sm text-gray-600 hover:text-green-700 transition-colors min-w-0">
-          <MapPin className="w-3.5 h-3.5 text-green-600 flex-shrink-0" />
-          <div className="text-left min-w-0">
-            <div className="text-[9px] text-gray-400 leading-none">Deliver to</div>
-            <div className="flex items-center gap-0.5 font-medium text-gray-800 text-xs whitespace-nowrap">
-              New Town, Kolkata <ChevronDown className="w-3 h-3" />
-            </div>
-          </div>
-        </button>
-
-        {/* Search */}
-        <div className="flex-1 relative max-w-xl">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-          <input
-            placeholder="Search medicine e.g. Telma 40, Ecosprin..."
-            className="w-full h-9 pl-9 pr-4 text-sm border border-gray-200 rounded-full bg-gray-50 focus:outline-none focus:ring-2 focus:ring-green-300 focus:border-green-400 focus:bg-white transition-all"
-          />
-        </div>
+        <AddressSelector />
 
         {/* Right actions */}
         <div className="flex items-center gap-4 ml-auto flex-shrink-0">
           <button className="flex flex-col items-center gap-0.5 text-gray-600 hover:text-green-700 transition-colors">
             <User className="w-5 h-5" />
-            <span className="text-[10px]">My Orders</span>
+            {/* <span className="text-[10px]">My Orders</span> */}
           </button>
           <button className="flex flex-col items-center gap-0.5 text-gray-600 hover:text-green-700 transition-colors relative">
             <ShoppingCart className="w-5 h-5" />
@@ -132,37 +124,10 @@ export function MDWHeader({ cartCount = 2 }: { cartCount?: number }) {
                 {cartCount}
               </span>
             )}
-            <span className="text-[10px]">Cart</span>
+            {/* <span className="text-[10px]">Cart</span> */}
           </button>
         </div>
       </div>
-
-      {/* Nav bar */}
-      <nav className="border-t border-gray-100">
-        <div className="max-w-7xl mx-auto px-4 flex items-center gap-6 h-10 text-sm">
-          {["Home", "Medicines", "Wellness Services", "Lab Tests", "Paws Nest (Pet Care)", "Offers", "Contact Us"].map(
-            (item) => (
-              <Link
-                key={item}
-                href="#"
-                className={`whitespace-nowrap transition-colors ${
-                  item === "Medicines"
-                    ? "text-green-700 font-semibold border-b-2 border-green-600 pb-1"
-                    : "text-gray-600 hover:text-green-700"
-                }`}
-              >
-                {item}
-              </Link>
-            )
-          )}
-          <div className="ml-auto">
-            <Button size="sm" className="bg-green-600 hover:bg-green-700 text-white rounded-full text-xs h-8 gap-1.5">
-              <Phone className="w-3.5 h-3.5" />
-              +91 98745 67890
-            </Button>
-          </div>
-        </div>
-      </nav>
     </header>
   );
 }
@@ -186,6 +151,146 @@ export function MDWFooterBar() {
           </div>
         ))}
       </div>
+    </div>
+  );
+}
+
+export function AddressSelector() {
+  const [open, setOpen] = useState(false);
+
+  const {
+    selectedAddress,
+    loadingLocation,
+    addresses,
+    saveAddress,
+    fetchCurrentLocation,
+  } = useAddress();
+
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <button className="flex items-center gap-1 text-sm text-gray-600 hover:text-green-700">
+          <MapPin className="w-4 h-4 text-green-600" />
+
+          <div className="text-left">
+            <div className="text-[11px] text-gray-400">
+              Deliver to
+            </div>
+
+            <div className="flex items-center gap-1 font-medium text-gray-800 text-[12px]">
+              {selectedAddress?.line1 ? `${selectedAddress?.line1.substring(0, 30)}...` :
+                "Detecting location..."}
+
+              <ChevronDown className="w-3 h-3" />
+            </div>
+          </div>
+        </button>
+      </PopoverTrigger>
+
+      <PopoverContent
+        sideOffset={24}
+        align="start"
+        className="w-60 p-0 bg-white text-black border border-gray-100 shadow-sm rounded-md overflow-hidden gap-0"
+      >
+        <div className="px-3 py-3 border-b border-gray-200">
+          <h3 className="font-semibold text-black text-xs">
+            Delivery Address
+          </h3>
+        </div>
+
+        <div className="border-t">
+          {addresses.map((address) => (
+            <button
+              key={address.id}
+              onClick={() => {
+                saveAddress(address)
+                setOpen(false)
+              }}
+              className="w-full text-left p-3 hover:bg-gray-50"
+            >
+              <div className="font-medium text-xs">
+                {address.label}
+              </div>
+
+              <div className="text-[10px] text-gray-500">
+                {address.line1}
+              </div>
+            </button>
+          ))}
+        </div>
+
+        <div className="p-2">
+          <button
+            onClick={() => {
+              fetchCurrentLocation()
+              setOpen(false)
+            }}
+            disabled={loadingLocation}
+            className="w-full flex items-center gap-2 rounded-md p-2 hover:bg-gray-50 border border-gray-100 text-sm"
+          >
+            <LocateFixed className="size-4 text-green-600" />
+
+            <span className="text-[12px]">
+              {loadingLocation
+                ? "Fetching location..."
+                : "Use Current Location"}
+            </span>
+          </button>
+        </div>
+      </PopoverContent>
+    </Popover>
+  );
+}
+
+export function MedicineSearchInput() {
+  const { query, setQuery } =
+    useMedicineSearchStore();
+
+  const { results, loading } =
+    useMedicineSearch();
+
+  return (
+    <div className="relative">
+      <div className="flex items-center border rounded-md overflow-hidden border border-gray-200">
+        <input
+          value={query}
+          onChange={(e) =>
+            setQuery(e.target.value)
+          }
+          placeholder="Search medicines..."
+          className="flex-1 py-3 px-3 outline-none text-black text-xs"
+        />
+
+        <button className="bg-green-600 text-white p-3">
+          <Search size={18} />
+        </button>
+      </div>
+
+      {(results.length > 0 ||
+        loading) && (
+          <div className="absolute left-0 right-0 top-full mt-2 bg-white border rounded-lg shadow-lg z-50 text-black border-gray-100 ">
+            {loading && (
+              <div className="p-4">
+                Searching...
+              </div>
+            )}
+
+            {results.map((product) => (
+              <button
+                key={product.productId}
+                className="w-full text-left p-3 hover:bg-gray-50 border-b"
+              >
+                <div className="font-medium text-xs">
+                  {product.name}
+                </div>
+
+                <div className="text-[10px] text-gray-500">
+                  {product.saltName}
+                </div>
+              </button>
+            ))}
+          </div>
+        )}
     </div>
   );
 }

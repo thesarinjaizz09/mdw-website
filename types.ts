@@ -124,3 +124,17 @@ export const ADDRESSES: Address[] = [
     pincode: "700156",
   },
 ];
+
+// types/product.ts
+
+export interface SearchProduct {
+  _id: string;
+  productId: string;
+  name: string;
+  saltName: string;
+  manufacturerName?: string;
+  totalQuantity: number;
+  category: string;
+  dosageType: string;
+  unitAmount?: string;
+}
