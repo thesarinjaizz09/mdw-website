@@ -12,6 +12,9 @@ export interface Medicine {
   reviews?: number;
   orders?: string;
   highlights?: string[];
+  batches?: any[];
+  _id?: string;
+  totalQuantity?: number;
 }
 
 export interface CartItem {
@@ -29,6 +32,81 @@ export interface Address {
 }
 
 export const MEDICINES: Medicine[] = [
+  {
+    id: "telma-40",
+    name: "Telma 40 Tablet",
+    subtitle: "Telmisartan 40 mg",
+    quantity: "10 Tablets",
+    price: 170,
+    mrp: 186,
+    discount: 9,
+    inStock: true,
+    image: "/medicines/telma40.png",
+    rating: 4.7,
+    reviews: 8920,
+    orders: "1.8K+",
+    highlights: ["Controls high blood pressure", "Protects kidney function", "Once daily dosage"],
+  },
+  {
+    id: "ecosprin-75",
+    name: "Ecosprin 75 Tablet",
+    subtitle: "Aspirin 75 mg",
+    quantity: "15 Tablets",
+    price: 60,
+    mrp: 65,
+    discount: 8,
+    inStock: true,
+    image: "/medicines/ecosprin75.png",
+    rating: 4.6,
+    reviews: 6340,
+    orders: "2.1K+",
+    highlights: ["Prevents blood clots", "Heart protective", "Trusted by cardiologists"],
+  },
+  {
+    id: "thyronorm-50",
+    name: "Thyronorm 50 Tablet",
+    subtitle: "Levothyroxine 50 mcg",
+    quantity: "10 Tablets",
+    price: 32,
+    mrp: 35,
+    discount: 9,
+    inStock: true,
+    image: "/medicines/thyronorm50.png",
+    rating: 4.8,
+    reviews: 5120,
+    orders: "1.5K+",
+    highlights: ["Thyroid hormone replacement", "Once daily dose", "Consistent potency"],
+  },
+  {
+    id: "liv52-ds",
+    name: "Liv.52 DS Syrup",
+    subtitle: "Liver Care",
+    quantity: "200 ml",
+    price: 145,
+    mrp: 160,
+    discount: 9,
+    inStock: true,
+    image: "/medicines/liv52ds.png",
+    rating: 4.5,
+    reviews: 9870,
+    orders: "3.2K+",
+    highlights: ["Protects liver cells", "Improves appetite", "Natural ingredients"],
+  },
+  {
+    id: "crocin-650",
+    name: "Crocin 650 Tablet",
+    subtitle: "Paracetamol 650 mg",
+    quantity: "15 Tablets",
+    price: 25,
+    mrp: 28,
+    discount: 11,
+    inStock: true,
+    image: "/medicines/crocin650.png",
+    rating: 4.8,
+    reviews: 12345,
+    orders: "2.5K+",
+    highlights: ["Relieves headache, body pain & fever", "Gentle on stomach", "Trusted by millions of families"],
+  },
   {
     id: "telma-40",
     name: "Telma 40 Tablet",

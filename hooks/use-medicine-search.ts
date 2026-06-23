@@ -37,8 +37,7 @@ export function useMedicineSearch() {
                 setLoading(true);
 
                 const response =
-                    await axios.get(
-                        `${process.env.NEXT_PUBLIC_API_URL}/product/search`,
+                    await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/product/search`,
                         {
                             params: {
                                 q: debouncedQuery,

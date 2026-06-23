@@ -14,23 +14,32 @@ import {
   CheckCircle,
   Bell,
   PackageCheck,
+  Popcorn,
+  HeartPulse,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { MDWHeader, MDWFooterBar, MedicineImagePlaceholder, MedicineSearchInput } from "@/components/shared";
 import { MedicineCard } from "../components/card";
 import { MEDICINES } from "@/types";
-import Image from "next/image";
-import { FaWhatsapp } from "react-icons/fa";
+import { FaPills } from "react-icons/fa";
+import { TbReplace } from "react-icons/tb";
+import { GiStomach, GiMedicines, GiLiver, GiLoveInjection, GiFrontTeeth, GiLungs } from "react-icons/gi";
+import { PiNuclearPlantFill } from "react-icons/pi";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 const CATEGORIES = [
-  { icon: "💉", label: "Diabetes\nCare", color: "bg-blue-50" },
-  { icon: "❤️", label: "Blood Pressure\nCare", color: "bg-red-50" },
-  { icon: "🫀", label: "Heart\nCare", color: "bg-pink-50" },
-  { icon: "🦴", label: "Bone & Joint\nCare", color: "bg-purple-50" },
-  { icon: "🧠", label: "Neurology\nCare", color: "bg-indigo-50" },
-  { icon: "👶", label: "Baby\nCare", color: "bg-yellow-50" },
-  { icon: "🧴", label: "Personal\nCare", color: "bg-teal-50" },
-  { icon: "🐾", label: "Pet\nMedicines", color: "bg-green-50" },
+  { icon: <Popcorn className="w-5 h-5" />, label: "Diabetes Care", color: "bg-blue-50" },
+  { icon: <HeartPulse className="w-5 h-5" />, label: "Cardiac Care", color: "bg-red-50" },
+  { icon: <GiStomach className="w-5 h-5" />, label: "Stomach Care", color: "bg-pink-50" },
+  { icon: <GiMedicines className="w-5 h-5" />, label: "Pain Relief", color: "bg-purple-50" },
+  { icon: <GiLiver className="w-5 h-5" />, label: "Liver Care", color: "bg-indigo-50" },
+  { icon: <FaPills className="w-5 h-5" />, label: "Drugs", color: "bg-yellow-50" },
+  { icon: <PiNuclearPlantFill className="w-5 h-5" />, label: "Nutraceuticals", color: "bg-teal-50" },
+  { icon: <TbReplace className="w-5 h-5" />, label: "Substitute", color: "bg-green-50" },
+  { icon: <GiLoveInjection className="w-5 h-5" />, label: "Injections", color: "bg-green-50" },
+  { icon: <GiFrontTeeth className="w-5 h-5" />, label: "Oral Care", color: "bg-green-50" },
+  { icon: <GiLungs className="w-5 h-5" />, label: "Respiratory Care", color: "bg-green-50" },
 ];
 
 const WHY_CHOOSE = [
@@ -42,6 +51,20 @@ const WHY_CHOOSE = [
 ];
 
 export default function MedicinesPage() {
+  const [featuredProducts, setFeaturedProducts] = useState(MEDICINES);
+
+  useEffect(() => {
+    async function fetchProducts() {
+      const response =
+        await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/product/featured-medicines`);
+
+      setFeaturedProducts(response.data.data);
+    }
+
+    fetchProducts();
+  }, [])
+
+
   return (
     <div className="min-h-screen bg-gray-50">
       <MDWHeader cartCount={0} />
@@ -95,13 +118,13 @@ export default function MedicinesPage() {
               View All Categories <ChevronRight className="w-4 h-4" />
             </button>
           </div>
-          <div className="grid grid-cols-4 sm:grid-cols-8 gap-3">
+          <div className="grid grid-cols-4 sm:grid-cols-6 gap-3">
             {CATEGORIES.map((cat) => (
               <button
                 key={cat.label}
-                className={`${cat.color} rounded-xl p-3 flex flex-col items-center gap-2 hover:shadow-sm hover:scale-105 transition-all`}
+                className={`${cat.color} rounded-lg p-3 flex flex-row items-center justify-start gap-3 hover:shadow-sm hover:scale-105 transition-all text-black border hover:border-gray-100 border-gray-200`}
               >
-                <span className="text-2xl">{cat.icon}</span>
+                {cat.icon}
                 <span className="text-xs text-gray-700 font-medium text-center leading-tight whitespace-pre-line">
                   {cat.label}
                 </span>
@@ -152,8 +175,8 @@ export default function MedicinesPage() {
             </button>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
-            {MEDICINES.map((med, i) => (
-              <MedicineCard key={med.id} medicine={med} index={i} />
+            {featuredProducts.map((med, i) => (
+              <MedicineCard key={i} medicine={med} index={i} />
             ))}
           </div>
         </section>
