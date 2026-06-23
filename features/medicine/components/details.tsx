@@ -207,7 +207,7 @@ export default function MedicineDetailPage({ medicine = MEDICINES[4], slug }: Pr
 
                   {/* Price */}
                   <div className="space-y-0.5">
-                    <PriceDisplay price={price} mrp={mrp} discount={discount} size="lg" />
+                    <PriceDisplay price={mrp} mrp={mrp} discount={discount} size="lg" />
                     <p className="text-[10px] text-gray-400">Inclusive of all taxes</p>
                   </div>
 

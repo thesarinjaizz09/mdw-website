@@ -27,6 +27,7 @@ import { GiStomach, GiMedicines, GiLiver, GiLoveInjection, GiFrontTeeth, GiLungs
 import { PiNuclearPlantFill } from "react-icons/pi";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { HowItWorksSection } from "@/features/landing/components";
 
 const CATEGORIES = [
   { icon: <Popcorn className="w-5 h-5" />, label: "Diabetes Care", color: "bg-blue-50" },
@@ -98,9 +99,9 @@ export default function MedicinesPage() {
 
       <main className="max-w-7xl mx-auto px-4 py-6 space-y-8">
         {/* Hero Banner */}
-        <section className="relative rounded-2xl bg-gradient-to-r from-green-50 via-emerald-50 to-teal-50s min-h-[220px] flex items-center justify-between">
+        <section className="relative rounded-2xl bg-gradient-to-r from-green-50 via-emerald-50 to-teal-50s min-h-[220px] flex flex-col items-start justify-center py-5 px-4">
           {/* Content */}
-          <div className="relative z-10 p-8 md:p-10 max-w-xl">
+          <div className="relative z-10 py-7 px-2 max-w-xl">
             <h1 className="text-4xl font-bold text-gray-900 mb-2">
               Medicines
             </h1>
@@ -116,26 +117,29 @@ export default function MedicinesPage() {
               Trusted Care
             </p>
           </div>
-
-          <div className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm w-xl">
-            <h2 className="font-bold text-gray-900 text-base mb-0.5">Search Medicine</h2>
-            <p className="text-xs text-gray-500 mb-3">Find your medicines quickly</p>
-            <div className="relative z-50">
-              <MedicineSearchInput />
-            </div>
-            <div className="flex items-center gap-2 mt-2.5 flex-wrap">
-              <span className="text-xs text-gray-500">Popular Searches:</span>
-              {["Telma 40", "Ecosprin 75", "Thyronorm 50", "Crocin 650"].map((s) => (
-                <button
-                  key={s}
-                  className="text-xs text-gray-700 bg-gray-100 hover:bg-green-100 hover:text-green-700 px-2 py-0.5 rounded-full transition-colors"
-                >
-                  {s}
-                </button>
-              ))}
+          <div className="grid grid-cols-2 gap-2">
+            <HowItWorksSection theme={1} />
+            <div className="bg-white rounded-md border border-gray-100 p-5 shadow-sm">
+              <h2 className="font-bold text-gray-900 text-base mb-0.5">Search Medicine</h2>
+              <p className="text-xs text-gray-500 mb-3">Find your medicines quickly</p>
+              <div className="relative">
+                <MedicineSearchInput />
+              </div>
+              <div className="flex items-center gap-2 mt-2.5 flex-wrap">
+                <span className="text-xs text-gray-500">Popular Searches:</span>
+                {["Telma 40", "Ecosprin 75", "Thyronorm 50", "Crocin 650"].map((s) => (
+                  <button
+                    key={s}
+                    className="text-xs text-gray-700 bg-gray-100 hover:bg-green-100 hover:text-green-700 px-2 py-0.5 rounded-full transition-colors"
+                  >
+                    {s}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         </section>
+
 
         {/* Health Categories */}
         <section className="z-1">
@@ -267,7 +271,7 @@ export default function MedicinesPage() {
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-xl font-bold text-gray-900 ml-2">{group.category}</h2>
                 <button className="text-sm text-green-600 hover:text-green-700 font-medium flex items-center gap-0.5">
-                  View All Medicines <ChevronRight className="w-4 h-4" />
+                  View All <ChevronRight className="w-4 h-4" />
                 </button>
               </div>
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">

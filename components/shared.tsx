@@ -93,8 +93,8 @@ export function PriceDisplay({
   return (
     <div className="flex items-center gap-2 flex-wrap">
       <span className={`text-gray-900 ${s.price}`}>₹{price.toFixed(2)}</span>
-      <span className={`text-gray-400 line-through ${s.mrp}`}>₹{mrp.toFixed(2)}</span>
-      <span className={`bg-green-100 text-green-700 font-semibold rounded ${s.badge}`}>{discount}% OFF</span>
+      {/* <span className={`text-gray-400 line-through ${s.mrp}`}>₹{mrp.toFixed(2)}</span> */}
+      {/* <span className={`bg-green-100 text-green-700 font-semibold rounded ${s.badge}`}>{discount}% OFF</span> */}
     </div>
   );
 }
@@ -134,16 +134,14 @@ export function MDWHeader({ cartCount = 2 }: { cartCount?: number }) {
 export function MDWFooterBar() {
   const items = [
     { icon: "🛡️", label: "Drug License Approved" },
-    { icon: "📋", label: "GST Registered" },
     { icon: "🔒", label: "Secure Payments" },
-    { icon: "↩️", label: "Easy Returns" },
     { icon: "🔐", label: "100% Privacy" },
   ];
   return (
-    <div className="bg-gray-900 text-gray-300 py-3">
-      <div className="max-w-7xl mx-auto px-4 flex items-center justify-center gap-8 flex-wrap">
+    <div className="flex items-center justify-center bg-gray-900 text-gray-300 py-3 h-12">
+      <div className="flex items-center justify-center gap-8 flex-wrap">
         {items.map((item) => (
-          <div key={item.label} className="flex items-center gap-1.5 text-xs">
+          <div key={item.label} className="flex items-center gap-1.5 text-sm">
             <span>{item.icon}</span>
             <span>{item.label}</span>
           </div>
@@ -267,7 +265,7 @@ export function MedicineSearchInput() {
 
       {(results.length > 0 ||
         loading) && (
-          <div className="absolute left-0 right-0 top-full mt-2 bg-white border rounded-lg shadow-lg z-50 text-black border-gray-100 ">
+          <div className="absolute left-0 right-0 top-full mt-2 bg-white border rounded-lg shadow-lg z-2 text-black border-gray-100 ">
             {loading && (
               <div className="p-4">
                 Searching...
