@@ -1,40 +1,149 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Star, ShoppingCart, Zap, ChevronRight, Shield, CheckCircle, Truck, MapPin, Minus, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { MDWHeader, MDWFooterBar, MedicineImagePlaceholder, PriceDisplay, InStockBadge } from "@/components/shared";
 import type { Medicine } from "@/types";
 import { MEDICINES } from "@/types";
+import { useRouter } from "next/navigation";
+import { Spinner } from "@/components/ui/spinner";
 
 const TABS = ["Description", "How to Use", "Side Effects", "FAQs"];
 
-const DESCRIPTION = `Crocin 650 Tablet is a pain reliever and fever reducer. It is used to relieve conditions like headache, muscle pain, joint pain, back pain, toothache, sore throat, and fever.`;
+/* ---------------------------------- */
+/* Types matching the actual API response */
+/* ---------------------------------- */
+
+interface ProductCreatedBy {
+  name: string;
+  role: string;
+  email: string;
+}
+
+interface ProductBatch {
+  _id: string;
+  createdBy: ProductCreatedBy;
+  batchNumber: string;
+  quantity: number;
+  ptr: number;
+  taxRate: string;
+  amount: number;
+  mrp: number;
+  unitAmount: string;
+  unit: string;
+  expireAt: string;
+  marginPercent: number;
+  discount: number;
+  billNumber: string;
+  distributorName: string;
+  manufacturer?: string;
+  free?: number;
+}
+
+interface ProductData {
+  _id: string;
+  createdBy: ProductCreatedBy;
+  productId: string;
+  unitAmountNumber: number[];
+  unitAmount: string;
+  name: string;
+  description: string;
+  productImage: string[];
+  status: string;
+  category: string;
+  dosageType: string;
+  hsnCode: string;
+  saltName: string;
+  location: string;
+  batches: ProductBatch[];
+  totalQuantity: number;
+  billNumber: string;
+  is_prescription_required: boolean;
+  createdAt: string;
+  updatedAt: string;
+  manufacturerName: string;
+}
+
+interface ProductApiResponse {
+  success: number;
+  message: string;
+  data: ProductData;
+}
 
 interface ProductDetailPageProps {
   medicine?: Medicine;
+  slug: string;
 }
 
-export default function MedicineDetailPage({ medicine = MEDICINES[4] }: ProductDetailPageProps) {
+export default function MedicineDetailPage({ medicine = MEDICINES[4], slug }: ProductDetailPageProps) {
+  const router = useRouter()
   const [qty, setQty] = useState(1);
+  const [med, setMed] = useState<ProductData | null>(null);
+  const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("Description");
   const [selectedImage, setSelectedImage] = useState(0);
 
   const CARD_COLORS = ["blue", "green", "orange", "purple"] as const;
   const thumbColors = ["blue", "green", "orange", "purple"] as const;
 
+  useEffect(() => {
+    async function fetchProduct() {
+      try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/product/${slug}`);
+        const json: ProductApiResponse = await res.json();
+        if (json?.success && json.data) {
+          setMed(json.data);
+          setQty(json.data.totalQuantity > 0 ? 1 : 1);
+        }
+      } catch (err) {
+        console.error("Failed to fetch product", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchProduct();
+  }, [slug]);
+
+  useEffect(() => {
+    console.log({ med });
+  }, [med]);
+
+  if (loading || !med) {
+    return (
+      <div className="bg-gray-50 flex-1 flex flex-col min-h-screen">
+        <MDWHeader cartCount={2} />
+        <main className="flex items-center gap-2 justify-center flex-1 max-w-7xl mx-auto">
+          <Spinner className="text-gray-800" />
+          <p className="text-sm text-gray-600">Loading product...</p>
+        </main>
+        <MDWFooterBar />
+      </div>
+    );
+  }
+
+  // Pick the first (primary) batch for pricing/stock-derived info
+  const primaryBatch: ProductBatch | undefined = med.batches?.[0];
+  const inStock = med.status !== "Not Available" && med.totalQuantity > 0;
+  const price = primaryBatch?.amount ?? 0;
+  const mrp = primaryBatch?.mrp ?? 0;
+  const discount = primaryBatch?.discount ?? 0;
+
   return (
     <div className="bg-gray-50 flex-1 flex flex-col min-h-screen">
-      <MDWHeader cartCount={2} />
+      <MDWHeader cartCount={0} />
 
-      <main className="flex-1 max-w-7xl mx-auto px-4 py-6">
+      <main className="flex-1 max-w-7xl px-4 py-6">
         {/* Breadcrumb */}
         <nav className="flex items-center gap-1.5 text-xs text-gray-500 mb-6">
-          {["Home", "Medicines", "Pain Relief", medicine.name].map((crumb, i, arr) => (
-            <span key={crumb} className="flex items-center gap-1.5">
+          {["Medicines", med.name].map((crumb, i, arr) => (
+            <span key={i} className="flex items-center gap-1.5">
               {i < arr.length - 1 ? (
-                <button className="hover:text-green-600 transition-colors">{crumb}</button>
+                <button className="hover:text-green-600 transition-colors" onClick={() => {
+                  router.push(`/medicine`)
+                }}>{crumb}</button>
               ) : (
                 <span className="text-gray-700 font-medium">{crumb}</span>
               )}
@@ -54,13 +163,10 @@ export default function MedicineDetailPage({ medicine = MEDICINES[4] }: ProductD
                   {/* Main image */}
                   <div className="relative">
                     <MedicineImagePlaceholder
-                      name={medicine.name}
-                      className="w-48 h-48"
+                      name={med.name}
+                      className="w-54 h-54"
                       color={CARD_COLORS[selectedImage % 4]}
                     />
-                    <span className="absolute top-2 left-2 bg-green-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
-                      BEST<br />SELLER
-                    </span>
                   </div>
                   {/* Thumbnails */}
                   <div className="flex gap-2">
@@ -71,7 +177,7 @@ export default function MedicineDetailPage({ medicine = MEDICINES[4] }: ProductD
                         className={`w-12 h-12 rounded-lg border-2 overflow-hidden transition-all ${selectedImage === i ? "border-green-500" : "border-gray-200"
                           }`}
                       >
-                        <MedicineImagePlaceholder name={medicine.name} className="w-full h-full" color={color} />
+                        <MedicineImagePlaceholder name={med.name} className="w-full h-full" color={color} />
                       </button>
                     ))}
                   </div>
@@ -80,48 +186,44 @@ export default function MedicineDetailPage({ medicine = MEDICINES[4] }: ProductD
                 {/* Product info */}
                 <div className="flex-1 space-y-3">
                   <div>
-                    <h1 className="text-xl font-bold text-gray-900">{medicine.name}</h1>
-                    <p className="text-sm text-gray-500">{medicine.subtitle}</p>
-                    <p className="text-sm text-gray-500">{medicine.quantity}</p>
-                  </div>
-
-                  {/* Rating */}
-                  <div className="flex items-center gap-2">
-                    <div className="flex items-center gap-1 bg-green-50 border border-green-200 rounded px-1.5 py-0.5">
-                      <Star className="w-3.5 h-3.5 fill-yellow-400 text-yellow-400" />
-                      <span className="text-xs font-semibold text-gray-800">{medicine.rating}</span>
-                    </div>
-                    <span className="text-xs text-gray-500">
-                      ({medicine.reviews?.toLocaleString()} ratings)
-                    </span>
-                    <span className="text-xs text-gray-400">|</span>
-                    <span className="text-xs text-gray-500">{medicine.orders} orders this month</span>
-                  </div>
-
-                  {/* Price */}
-                  <div className="space-y-0.5">
-                    <PriceDisplay price={medicine.price} mrp={medicine.mrp} discount={medicine.discount} size="lg" />
-                    <p className="text-[10px] text-gray-400">Inclusive of all taxes</p>
+                    <h1 className="text-xl font-bold text-gray-900">{med.name}</h1>
+                    <p className="text-sm text-gray-500">{med.saltName}</p>
+                    <p className="text-sm text-gray-500">
+                      {primaryBatch ? `${primaryBatch.unitAmount} ${primaryBatch.unit}` : ""}
+                    </p>
                   </div>
 
                   {/* Badges */}
                   <div className="flex gap-2">
-                    <InStockBadge inStock={medicine.inStock} />
+                    <InStockBadge inStock={inStock} />
                     <span className="flex items-center gap-1 text-xs font-medium text-green-600">
                       <Zap className="w-3.5 h-3.5" /> Fast Delivery
                     </span>
+                    {med.is_prescription_required && (
+                      <Badge variant="outline" className="text-[10px]">
+                        Rx Required
+                      </Badge>
+                    )}
                   </div>
 
-                  {/* Highlights */}
+                  {/* Price */}
+                  <div className="space-y-0.5">
+                    <PriceDisplay price={price} mrp={mrp} discount={discount} size="lg" />
+                    <p className="text-[10px] text-gray-400">Inclusive of all taxes</p>
+                  </div>
+
+                  {/* Highlights (category / location as available product meta) */}
                   <div>
                     <p className="text-sm font-semibold text-gray-800 mb-2">Product Highlights</p>
                     <ul className="space-y-1.5">
-                      {medicine.highlights?.map((h) => (
-                        <li key={h} className="flex items-start gap-2 text-sm text-gray-700">
-                          <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5" />
-                          {h}
-                        </li>
-                      ))}
+                      {[med.category, med.dosageType !== "None" ? med.dosageType : null, med.manufacturerName]
+                        .filter((h): h is string => Boolean(h))
+                        .map((h) => (
+                          <li key={h} className="flex items-start gap-2 text-sm text-gray-700">
+                            <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5" />
+                            {h}
+                          </li>
+                        ))}
                     </ul>
                   </div>
                 </div>
@@ -136,8 +238,8 @@ export default function MedicineDetailPage({ medicine = MEDICINES[4] }: ProductD
                     key={tab}
                     onClick={() => setActiveTab(tab)}
                     className={`px-5 py-3 text-sm font-medium transition-colors border-b-2 ${activeTab === tab
-                        ? "text-green-700 border-green-600"
-                        : "text-gray-500 border-transparent hover:text-gray-700"
+                      ? "text-green-700 border-green-600"
+                      : "text-gray-500 border-transparent hover:text-gray-700"
                       }`}
                   >
                     {tab}
@@ -146,7 +248,7 @@ export default function MedicineDetailPage({ medicine = MEDICINES[4] }: ProductD
               </div>
               <div className="p-5">
                 {activeTab === "Description" && (
-                  <p className="text-sm text-gray-600 leading-relaxed">{DESCRIPTION}</p>
+                  <p className="text-sm text-gray-600 leading-relaxed">{med.description}</p>
                 )}
                 {activeTab === "How to Use" && (
                   <p className="text-sm text-gray-600 leading-relaxed">
@@ -214,11 +316,15 @@ export default function MedicineDetailPage({ medicine = MEDICINES[4] }: ProductD
                   </div>
                 </div>
 
-                <Button className="w-full bg-green-600 hover:bg-green-700 text-white h-10 rounded-lg font-semibold gap-2">
+                <Button
+                  disabled={!inStock}
+                  className="w-full bg-green-600 hover:bg-green-700 text-white h-10 rounded-lg font-semibold gap-2"
+                >
                   <ShoppingCart className="w-4 h-4" />
                   Add to Cart
                 </Button>
                 <Button
+                  disabled={!inStock}
                   variant="outline"
                   className="w-full mt-2 border-green-600 text-green-700 hover:bg-green-50 h-10 rounded-lg font-semibold"
                 >

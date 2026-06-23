@@ -15,6 +15,7 @@ export interface Medicine {
   batches?: any[];
   _id?: string;
   totalQuantity?: number;
+  saltName?: string;
 }
 
 export interface CartItem {

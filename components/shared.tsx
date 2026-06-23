@@ -2,9 +2,7 @@
 
 import { MapPin, ShoppingCart, User, Search, Phone, ChevronDown, LocateFixed } from "lucide-react";
 import Link from "next/link";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { useRouter } from "next/navigation";
 import {
   Popover,
   PopoverContent,
@@ -243,6 +241,7 @@ export function AddressSelector() {
 }
 
 export function MedicineSearchInput() {
+  const router = useRouter();
   const { query, setQuery } =
     useMedicineSearchStore();
 
@@ -279,6 +278,10 @@ export function MedicineSearchInput() {
               <button
                 key={product.productId}
                 className="w-full text-left p-3 hover:bg-gray-50 border-b"
+                onClick={() => {
+                  setQuery("");
+                  router.push(`/medicine/${product._id}`);
+                }}
               >
                 <div className="font-medium text-xs">
                   {product.name}
