@@ -19,7 +19,7 @@ export function MedicineCard({ medicine, index = 0, onAddToCart, variant = "defa
   const color = CARD_COLORS[index % CARD_COLORS.length];
   const router = useRouter();
 
-  const handleNavigation = () => router.push(`/medicine/${medicine.id}`);
+  const handleNavigation = () => router.push(`/medicine/${medicine._id}`);
 
   // return null;
   if (variant === "compact") {
