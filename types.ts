@@ -217,3 +217,70 @@ export interface SearchProduct {
   dosageType: string;
   unitAmount?: string;
 }
+
+export interface ProductCreatedBy {
+  name: string;
+  role: string;
+  email: string;
+}
+
+export interface CategoryGroup {
+  category: string;
+  medicines: ProductData[];
+}
+
+export interface ProductBatch {
+  _id: string;
+  createdBy: ProductCreatedBy;
+  batchNumber: string;
+  quantity: number;
+  ptr: number;
+  taxRate: string;
+  amount: number;
+  mrp: number;
+  unitAmount: string;
+  unit: string;
+  expireAt: string;
+  marginPercent: number;
+  discount: number;
+  billNumber: string;
+  distributorName: string;
+  manufacturer?: string;
+  free?: number;
+}
+
+export interface ProductData {
+  _id: string;
+  createdBy: ProductCreatedBy;
+  productId: string;
+  unitAmountNumber: number[];
+  unitAmount: string;
+  name: string;
+  description: string;
+  productImage: string[];
+  status: string;
+  category: string;
+  dosageType: string;
+  hsnCode: string;
+  saltName: string;
+  location: string;
+  batches: ProductBatch[];
+  totalQuantity: number;
+  billNumber: string;
+  is_prescription_required: boolean;
+  createdAt: string;
+  updatedAt: string;
+  manufacturerName: string;
+}
+
+export interface CategoryMedicineEntry {
+  _id: string;
+  category: string;
+  medicine?: ProductData;
+}
+
+export interface CategoriesMedicinesResponse {
+  success: boolean;
+  count: number;
+  data: CategoryGroup[];
+}

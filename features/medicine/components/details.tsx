@@ -107,10 +107,6 @@ export default function MedicineDetailPage({ medicine = MEDICINES[4], slug }: Pr
     fetchProduct();
   }, [slug]);
 
-  useEffect(() => {
-    console.log({ med });
-  }, [med]);
-
   if (loading || !med) {
     return (
       <div className="bg-gray-50 flex-1 flex flex-col min-h-screen">
@@ -127,9 +123,12 @@ export default function MedicineDetailPage({ medicine = MEDICINES[4], slug }: Pr
   // Pick the first (primary) batch for pricing/stock-derived info
   const primaryBatch: ProductBatch | undefined = med.batches?.[0];
   const inStock = med.status !== "Not Available" && med.totalQuantity > 0;
-  const price = primaryBatch?.amount ?? 0;
+  const price = primaryBatch?.ptr ?? 0;
   const mrp = primaryBatch?.mrp ?? 0;
-  const discount = primaryBatch?.discount ?? 0;
+  const discount =
+    mrp > 0
+      ? Math.round(((mrp - price) / mrp) * 100)
+      : 0;
 
   return (
     <div className="bg-gray-50 flex-1 flex flex-col min-h-screen">

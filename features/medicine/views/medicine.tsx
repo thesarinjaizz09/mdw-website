@@ -20,7 +20,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { MDWHeader, MDWFooterBar, MedicineImagePlaceholder, MedicineSearchInput } from "@/components/shared";
 import { MedicineCard } from "../components/card";
-import { MEDICINES } from "@/types";
+import { Medicine, MEDICINES, CategoryMedicineEntry, CategoriesMedicinesResponse, ProductData, CategoryGroup } from "@/types";
 import { FaPills } from "react-icons/fa";
 import { TbReplace } from "react-icons/tb";
 import { GiStomach, GiMedicines, GiLiver, GiLoveInjection, GiFrontTeeth, GiLungs } from "react-icons/gi";
@@ -50,8 +50,23 @@ const WHY_CHOOSE = [
   { icon: <Shield className="w-5 h-5 text-green-600" />, title: "Secure Payments", sub: "100% Safe" },
 ];
 
+function toMedicine(product: ProductData): Medicine {
+  const primaryBatch = product.batches?.[0];
+  return {
+    id: product._id,
+    name: product.name,
+    saltName: product.saltName,
+    totalQuantity: product.totalQuantity,
+    price: primaryBatch?.amount ?? 0,
+    mrp: primaryBatch?.mrp ?? 0,
+    discount: primaryBatch?.discount ?? 0,
+    inStock: product.status !== "Not Available" && product.totalQuantity > 0,
+  } as Medicine;
+}
+
 export default function MedicinesPage() {
-  const [featuredProducts, setFeaturedProducts] = useState(MEDICINES);
+  const [featuredProducts, setFeaturedProducts] = useState<Medicine[]>(MEDICINES);
+  const [categoryGroups, setCategoryGroups] = useState<CategoryGroup[]>([]);
 
   useEffect(() => {
     async function fetchProducts() {
@@ -62,6 +77,18 @@ export default function MedicinesPage() {
     }
 
     fetchProducts();
+  }, [])
+
+  useEffect(() => {
+    async function fetchCategoryProducts() {
+      const response = await axios.get<CategoriesMedicinesResponse>(
+        `${process.env.NEXT_PUBLIC_API_URL}/product/categories-medicines`
+      );
+
+      setCategoryGroups(response.data.data);
+    }
+
+    fetchCategoryProducts();
   }, [])
 
 
@@ -181,7 +208,7 @@ export default function MedicinesPage() {
           </div>
         </section>
 
-        {/* Search + Upload Row */}
+        {/* Upload Prescription */}
         <section className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-green-50 via-emerald-50 to-teal-50s min-h-[220px] flex items-center justify-center">
           <div className="bg-white rounded-xl border border-gray-100 p-5 py-7 shadow-sm w-xl">
             <div className="flex items-center gap-4">
@@ -203,6 +230,53 @@ export default function MedicinesPage() {
             </div>
           </div>
         </section>
+
+        {/* <section>
+          <div className="">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-bold text-gray-900 ml-2">Shop by Category Picks</h2>
+              <button className="text-sm text-green-600 hover:text-green-700 font-medium flex items-center gap-0.5">
+                View All Medicines <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+              {categoryMedicines.map((product, i) => (
+                <MedicineCard
+                  key={product._id ?? i}
+                  medicine={{
+                    id: product._id,
+                    name: product.name,
+                    saltName: product.saltName,
+                    totalQuantity: product.totalQuantity,
+                    price: product.batches?.[0]?.amount ?? 0,
+                    mrp: product.batches?.[0]?.mrp ?? 0,
+                    discount: product.batches?.[0]?.discount ?? 0,
+                    inStock: product.status !== "Not Available" && product.totalQuantity > 0,
+                  } as Medicine}
+                  index={i}
+                />
+              ))}
+            </div>
+          </div>
+        </section> */}
+
+        {categoryGroups
+          .filter((group) => group.medicines && group.medicines.length > 0)
+          .map((group) => (
+            <section key={group.category}>
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-xl font-bold text-gray-900 ml-2">{group.category}</h2>
+                <button className="text-sm text-green-600 hover:text-green-700 font-medium flex items-center gap-0.5">
+                  View All Medicines <ChevronRight className="w-4 h-4" />
+                </button>
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+                {group.medicines.slice(0, 5).map((product, i) => (
+                  <MedicineCard key={product._id ?? i} medicine={toMedicine(product)} index={i} />
+                ))}
+              </div>
+            </section>
+          ))}
 
         {/* Why Choose MDW */}
         <section className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm">
