@@ -1,5 +1,7 @@
 "use client";
 
+import { cn } from "@/lib/utils";
+
 const steps = [
   {
     step: "1",
@@ -58,12 +60,21 @@ export default function HowItWorksSection({ theme = 2 }: { theme?: number }) {
           </h2>
 
           <div className="relative flex flex-col md:flex-row items-start justify-center gap-8 md:gap-0">
+            <div
+              className={cn(
+                "hidden md:block absolute border-t-2 border-dashed border-[#1a7a4a]/30 z-0",
+                theme === 1
+                  ? "top-6 left-[10.66%] right-[22.66%]"
+                  : "top-10 left-[16.66%] right-[16.66%]"
+              )}
+            />
+
             {steps.map((step, idx) => (
-              <div key={step.step} className="relative flex flex-col items-center text-center flex-1 px-4">
+              <div key={step.step} className="relative flex flex-col items-start text-center flex-1 px-4">
                 {/* Connector line */}
-                {idx < steps.length - 1 && (
+                {/* {idx < steps.length - 1 && (
                   <div className="hidden md:block absolute top-[20%] left-[calc(50%+38px)] right-0 border-t-2 border-dashed border-[#1a7a4a]/30 z-0 flex flex-col items-start justify-start" />
-                )}
+                )} */}
 
                 {/* Icon Circle */}
                 <div className="relative z-10 w-12 h-12 rounded-md bg-white border-2 border-[#1a7a4a]/20 shadow-md flex items-center justify-center mb-5 p-1.5">
@@ -91,13 +102,22 @@ export default function HowItWorksSection({ theme = 2 }: { theme?: number }) {
           How It Works
         </h2>
 
-        <div className="relative flex flex-col md:flex-row items-start justify-center gap-8 md:gap-0">
+        <div className="relative
+         flex flex-col md:flex-row items-start justify-center gap-8 md:gap-0">
+          <div
+            className={cn(
+              "hidden md:block absolute border-t-2 border-dashed border-[#1a7a4a]/30 z-0",
+              theme === 1
+                ? "top-6 left-[16.66%] right-[16.66%]"
+                : "top-10 left-[16.66%] right-[16.66%]"
+            )}
+          />
           {steps.map((step, idx) => (
             <div key={step.step} className="relative flex flex-col items-center text-center flex-1 px-4">
               {/* Connector line */}
-              {idx < steps.length - 1 && (
+              {/* {idx < steps.length - 1 && (
                 <div className="hidden md:block absolute top-10 left-[calc(50%+48px)] right-0 border-t-2 border-dashed border-[#1a7a4a]/30 z-0" />
-              )}
+              )} */}
 
               {/* Icon Circle */}
               <div className="relative z-10 w-20 h-20 rounded-full bg-white border-2 border-[#1a7a4a]/20 shadow-md flex items-center justify-center mb-5">

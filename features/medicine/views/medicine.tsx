@@ -16,18 +16,19 @@ import {
   PackageCheck,
   Popcorn,
   HeartPulse,
+  UploadIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { MDWHeader, MDWFooterBar, MedicineImagePlaceholder, MedicineSearchInput } from "@/components/shared";
 import { MedicineCard } from "../components/card";
 import { Medicine, MEDICINES, CategoryMedicineEntry, CategoriesMedicinesResponse, ProductData, CategoryGroup } from "@/types";
-import { FaPills } from "react-icons/fa";
+import { FaPills, FaWhatsapp } from "react-icons/fa";
 import { TbReplace } from "react-icons/tb";
 import { GiStomach, GiMedicines, GiLiver, GiLoveInjection, GiFrontTeeth, GiLungs } from "react-icons/gi";
 import { PiNuclearPlantFill } from "react-icons/pi";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { HowItWorksSection } from "@/features/landing/components";
+import { HowItWorksSection, WellnessBannerSection } from "@/features/landing/components";
 
 const CATEGORIES = [
   { icon: <Popcorn className="w-5 h-5" />, label: "Diabetes Care", color: "bg-blue-50" },
@@ -99,7 +100,7 @@ export default function MedicinesPage() {
 
       <main className="max-w-7xl mx-auto px-4 py-6 space-y-8">
         {/* Hero Banner */}
-        <section className="relative rounded-2xl bg-gradient-to-r from-green-50 via-emerald-50 to-teal-50s min-h-[220px] flex flex-col items-start justify-center py-5 px-4">
+        <section className="relative rounded-2xl bg-gradient-to-r from-green-50 via-emerald-50 to-teal-50s min-h-[220px] flex flex-row items-center justify-between py-5 px-4">
           {/* Content */}
           <div className="relative z-10 py-7 px-2 max-w-xl">
             <h1 className="text-4xl font-bold text-gray-900 mb-2">
@@ -117,8 +118,8 @@ export default function MedicinesPage() {
               Trusted Care
             </p>
           </div>
-          <div className="grid grid-cols-2 gap-2">
-            <HowItWorksSection theme={1} />
+          <div className="grid grid-cols-1 gap-2">
+            {/* <HowItWorksSection theme={1} /> */}
             <div className="bg-white rounded-md border border-gray-100 p-5 shadow-sm">
               <h2 className="font-bold text-gray-900 text-base mb-0.5">Search Medicine</h2>
               <p className="text-xs text-gray-500 mb-3">Find your medicines quickly</p>
@@ -140,6 +141,41 @@ export default function MedicinesPage() {
           </div>
         </section>
 
+        <div className="grid grid-cols-2 gap-2">
+          <HowItWorksSection theme={1} />
+          <section className="relative overflow-hidden rounded-xl flex items-center justify-center">
+            <div className="bg-white rounded-xl border border-gray-100 p-5 h-full py-7 shadow-sm w-xl">
+              <div className="flex items-center gap-4">
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-1">
+                    <h2 className="font-bold text-gray-900 text-base">Upload Prescription</h2>
+                  </div>
+                  <p className="text-xs text-gray-500 mb-4">Upload prescription and we will add all medicines for you</p>
+                  <div className="relative mb-1">
+                    <div className="flex items-center border rounded-md overflow-hidden border border-gray-200">
+                      <button className="flex-1 py-3 px-3 outline-none text-black text-xs">Upload Prescription</button>
+
+                      <button className="bg-green-600 text-white p-3">
+                        <UploadIcon size={18} />
+                      </button>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 mt-2.5 flex-wrap">
+                    <span className="text-xs text-gray-500">Formats Supported:</span>
+                    {["JPEG", "PNG", "PDF", "JPG"].map((s) => (
+                      <button
+                        key={s}
+                        className="text-xs text-gray-700 bg-gray-100 hover:bg-green-100 hover:text-green-700 px-2 py-0.5 rounded-full transition-colors"
+                      >
+                        {s}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
 
         {/* Health Categories */}
         <section className="z-1">
@@ -212,57 +248,7 @@ export default function MedicinesPage() {
           </div>
         </section>
 
-        {/* Upload Prescription */}
-        <section className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-green-50 via-emerald-50 to-teal-50s min-h-[220px] flex items-center justify-center">
-          <div className="bg-white rounded-xl border border-gray-100 p-5 py-7 shadow-sm w-xl">
-            <div className="flex items-center gap-4">
-              <div className="flex-1">
-                <div className="flex items-center gap-2 mb-1">
-                  <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
-                    <Upload className="w-4 h-4 text-green-600" />
-                  </div>
-                  <h2 className="font-bold text-gray-900 text-base">Upload Prescription</h2>
-                </div>
-                <p className="text-xs text-gray-500 mb-3 ml-10">Upload prescription and we will add all medicines for you</p>
-                <Button size="sm" className="ml-10 bg-green-600 hover:bg-green-700 text-white h-8 text-xs rounded-lg">
-                  Upload Prescription
-                </Button>
-              </div>
-              <div className="flex-shrink-0 w-16 h-16 bg-gray-50 rounded-xl border border-dashed border-gray-200 flex items-center justify-center">
-                <span className="text-2xl font-serif font-bold text-gray-300">Rx</span>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* <section>
-          <div className="">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-bold text-gray-900 ml-2">Shop by Category Picks</h2>
-              <button className="text-sm text-green-600 hover:text-green-700 font-medium flex items-center gap-0.5">
-                View All Medicines <ChevronRight className="w-4 h-4" />
-              </button>
-            </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
-              {categoryMedicines.map((product, i) => (
-                <MedicineCard
-                  key={product._id ?? i}
-                  medicine={{
-                    id: product._id,
-                    name: product.name,
-                    saltName: product.saltName,
-                    totalQuantity: product.totalQuantity,
-                    price: product.batches?.[0]?.amount ?? 0,
-                    mrp: product.batches?.[0]?.mrp ?? 0,
-                    discount: product.batches?.[0]?.discount ?? 0,
-                    inStock: product.status !== "Not Available" && product.totalQuantity > 0,
-                  } as Medicine}
-                  index={i}
-                />
-              ))}
-            </div>
-          </div>
-        </section> */}
+        <WellnessBannerSection theme={1} />
 
         {categoryGroups
           .filter((group) => group.medicines && group.medicines.length > 0)
@@ -301,20 +287,20 @@ export default function MedicinesPage() {
         </section>
 
         {/* Need Help */}
-        <section className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-100 p-5 flex items-center gap-6">
+        <section className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-100 p-5 flex items-start justify-between gap-6 max-w-4xl mx-auto min-h-[200px]">
           {/* Doctor avatar placeholder */}
           <div className="w-16 h-16 bg-green-200 rounded-full flex-shrink-0 flex items-center justify-center overflow-hidden">
             <span className="text-3xl">👨‍⚕️</span>
           </div>
           <div className="flex-1">
-            <h3 className="font-bold text-gray-900 text-base mb-0.5">Need Help Finding Medicines?</h3>
+            <h2 className="font-bold text-gray-900 text-lg mb-0.5">Need Help Finding Medicines?</h2>
             <p className="text-sm text-gray-500 mb-3">Our Pharmacist is here to help you.</p>
             <div className="flex gap-3">
-              <Button size="sm" className="bg-green-600 hover:bg-green-700 text-white h-8 text-xs rounded-lg gap-1.5">
-                <MessageCircle className="w-3.5 h-3.5" />
+              <Button size="sm" className="bg-green-600 hover:bg-green-700 text-white h-12 text-xs rounded-md gap-1.5 px-5">
+                <FaWhatsapp className="w-3.5 h-3.5" />
                 Chat on WhatsApp
               </Button>
-              <Button size="sm" variant="outline" className="border-green-600 text-green-700 hover:bg-green-50 h-8 text-xs rounded-lg gap-1.5">
+              <Button size="sm" variant="outline" className="border-green-600 text-green-700 h-12 px-5 text-xs rounded-md gap-1.5">
                 <Phone className="w-3.5 h-3.5" />
                 Call Us Now
               </Button>
