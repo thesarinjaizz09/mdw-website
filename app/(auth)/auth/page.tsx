@@ -4,7 +4,6 @@ import { LoginForm } from "./auth-form";
 
 export default async function LoginPage() {
     const user = await getCurrentUser();
-    console.log({ user })
 
     if (user) {
         redirect("/");

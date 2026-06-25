@@ -21,8 +21,6 @@ async function postJson<T>(
 
     const data = await res.json().catch(() => ({}));
 
-    console.log({ data })
-
     if (!res.ok) {
         throw new AuthApiError(
             data.message || "Something went wrong. Please try again.",

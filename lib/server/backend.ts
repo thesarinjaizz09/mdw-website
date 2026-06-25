@@ -14,11 +14,11 @@ export async function backendFetch(
     )?.value;
 
   // Debug: log access token presence and endpoint
-  console.log({
-    msg: "backendFetch called",
-    endpoint,
-    accessTokenPresent: !!accessToken,
-  });
+  // console.log({
+  //   msg: "backendFetch called",
+  //   endpoint,
+  //   accessTokenPresent: !!accessToken,
+  // });
 
   let response = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}${endpoint}`,

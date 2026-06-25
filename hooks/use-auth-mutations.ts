@@ -31,7 +31,6 @@ export function useLogin() {
             router.refresh();
         },
         onError: (err) => {
-            console.log(errorMessage(err))
             toast.error(errorMessage(err));
         },
     });
