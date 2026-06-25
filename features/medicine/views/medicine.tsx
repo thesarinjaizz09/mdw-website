@@ -141,9 +141,9 @@ export default function MedicinesPage() {
           </div>
         </section>
 
-        <div className="grid grid-cols-2 gap-2">
+        <div className="flex items-center justify-center">
           <HowItWorksSection theme={1} />
-          <section className="relative overflow-hidden rounded-xl flex items-center justify-center">
+          {/* <section className="relative overflow-hidden rounded-xl flex items-center justify-center">
             <div className="bg-white rounded-xl border border-gray-100 p-5 h-full py-7 shadow-sm w-xl">
               <div className="flex items-center gap-4">
                 <div className="flex-1">
@@ -174,7 +174,7 @@ export default function MedicinesPage() {
                 </div>
               </div>
             </div>
-          </section>
+          </section> */}
         </div>
 
         {/* Health Categories */}
@@ -233,6 +233,39 @@ export default function MedicinesPage() {
           </div>
         </section> */}
 
+        <section className="relative overflow-hidden rounded-xl flex items-center justify-center p-2">
+          <div className="bg-white rounded-lg border border-gray-100 p-5 h-full py-7 shadow-sm w-xl max-w-2xl">
+            <div className="flex items-center gap-4">
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-1">
+                  <h2 className="font-bold text-gray-900 text-base">Upload Prescription</h2>
+                </div>
+                <p className="text-xs text-gray-500 mb-4">Upload prescription and we will add all medicines for you</p>
+                <div className="relative mb-1">
+                  <div className="flex items-center border rounded-md overflow-hidden border border-gray-200">
+                    <button className="flex-1 py-3 px-3 outline-none text-black text-xs">Upload Prescription</button>
+
+                    <button className="bg-green-600 text-white p-3">
+                      <UploadIcon size={18} />
+                    </button>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 mt-2.5 flex-wrap">
+                  <span className="text-xs text-gray-500">Formats Supported:</span>
+                  {["JPEG", "PNG", "PDF", "JPG"].map((s) => (
+                    <button
+                      key={s}
+                      className="text-xs text-gray-700 bg-gray-100 hover:bg-green-100 hover:text-green-700 px-2 py-0.5 rounded-full transition-colors"
+                    >
+                      {s}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* Popular Medicines */}
         <section>
           <div className="flex items-center justify-between mb-4">
@@ -287,7 +320,7 @@ export default function MedicinesPage() {
         </section>
 
         {/* Need Help */}
-        <section className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-100 p-5 flex items-start justify-between gap-6 max-w-4xl mx-auto min-h-[200px]">
+        <section className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-100 p-5 flex items-start justify-between gap-6 max-w-3xl mx-auto min-h-[200px]">
           {/* Doctor avatar placeholder */}
           <div className="w-16 h-16 bg-green-200 rounded-full flex-shrink-0 flex items-center justify-center overflow-hidden">
             <span className="text-3xl">👨‍⚕️</span>
@@ -300,23 +333,25 @@ export default function MedicinesPage() {
                 <FaWhatsapp className="w-3.5 h-3.5" />
                 Chat on WhatsApp
               </Button>
-              <Button size="sm" variant="outline" className="border-green-600 text-green-700 h-12 px-5 text-xs rounded-md gap-1.5">
+              <Button className="border border-green-900 hover:bg-green-50 text-green-700 h-12 px-5 text-xs rounded-md gap-1.5 bg-white">
                 <Phone className="w-3.5 h-3.5" />
                 Call Us Now
               </Button>
             </div>
           </div>
-          <div className="flex gap-6 ml-auto">
-            {[
-              { icon: <PackageCheck className="w-5 h-5 text-green-600" />, label: "Prescription\nAssistance" },
-              { icon: <Bell className="w-5 h-5 text-green-600" />, label: "Medicine\nReminder" },
-              { icon: <Truck className="w-5 h-5 text-green-600" />, label: "Order\nTracking" },
-            ].map((item) => (
-              <div key={item.label} className="flex flex-col items-center gap-1 text-center">
-                {item.icon}
-                <span className="text-[10px] text-gray-600 whitespace-pre-line leading-tight">{item.label}</span>
-              </div>
-            ))}
+          <div className="w-full h-[150px] flex flex-col items-end justify-center rounded-md">
+            <div className="grid grid-cols-3 gap-2 ">
+              {[
+                { icon: <PackageCheck className="w-5 h-5 text-green-600" />, label: "Prescription\nAssistance" },
+                { icon: <Bell className="w-5 h-5 text-green-600" />, label: "Medicine\nReminder" },
+                { icon: <Truck className="w-5 h-5 text-green-600" />, label: "Order\nTracking" },
+              ].map((item) => (
+                <div key={item.label} className="flex flex-col items-center gap-1 text-center border border-gray-200 rounded-md p-2.5">
+                  {item.icon}
+                  <span className="text-[10px] text-gray-600 whitespace-pre-line leading-tight">{item.label}</span>
+                </div>
+              ))}
+            </div>
           </div>
         </section>
       </main>

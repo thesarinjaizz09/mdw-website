@@ -53,7 +53,7 @@ const steps = [
 export default function HowItWorksSection({ theme = 2 }: { theme?: number }) {
   if (theme === 1) {
     return (
-      <section className="bg-gray-50 py-10 lg:py-5 rounded-md border border-gray-100 shadow-sm">
+      <section className="max-w-2xl bg-gray-50 py-10 lg:py-5 rounded-md border border-gray-100 shadow-sm">
         <div className="px-4 sm:px-6 lg:px-8">
           <h2 className="text-md sm:text-md font-extrabold text-gray-900 text-left mb-8">
             How It Works
@@ -77,7 +77,7 @@ export default function HowItWorksSection({ theme = 2 }: { theme?: number }) {
                 )} */}
 
                 {/* Icon Circle */}
-                <div className="relative z-10 w-12 h-12 rounded-md bg-white border-2 border-[#1a7a4a]/20 shadow-md flex items-center justify-center mb-5 p-1.5">
+                <div className="relative  w-12 h-12 rounded-md bg-white border-2 border-[#1a7a4a]/20 shadow-md flex items-center justify-center mb-5 p-1.5">
                   {step.icon}
                 </div>
 

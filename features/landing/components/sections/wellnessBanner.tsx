@@ -12,8 +12,8 @@ export default function WellnessBannerSection({ theme = 2 }: { theme?: number })
     if (theme === 1) {
         return (
             <section className="bg-gray-50">
-                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="rounded-2xl overflow-hidden bg-white shadow-sm border border-gray-100 bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 p">
+                <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="rounded-lg overflow-hidden bg-white shadow-sm border border-gray-100 bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 p">
                         <div className="flex flex-col lg:flex-row">
                             {/* Image Side */}
                             <div className="lg:w-[40%] min-h-[250px] relative flex items-center justify-center overflow-hidden">
