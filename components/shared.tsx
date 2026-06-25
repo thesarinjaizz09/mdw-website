@@ -3,6 +3,15 @@
 import { MapPin, ShoppingCart, User, Search, Phone, ChevronDown, LocateFixed } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useSession } from "@/hooks/use-session";
+import LoginDialog from "@/components/login-dialog";
+
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   Popover,
   PopoverContent,
@@ -101,6 +110,13 @@ export function PriceDisplay({
 
 // ─── Main Header ──────────────────────────────────────────────────────────────
 export function MDWHeader({ cartCount = 2 }: { cartCount?: number }) {
+  const [showLogin, setShowLogin] =
+    useState(false);
+
+  const {
+    user,
+    loading,
+  } = useSession();
   return (
     <header className="bg-white border-b border-gray-100 sticky top-0 z-50 shadow-sm">
       {/* Top bar */}
@@ -111,10 +127,45 @@ export function MDWHeader({ cartCount = 2 }: { cartCount?: number }) {
 
         {/* Right actions */}
         <div className="flex items-center gap-4 ml-auto flex-shrink-0">
-          <button className="flex flex-col items-center gap-0.5 text-gray-600 hover:text-green-700 transition-colors">
-            <User className="w-5 h-5" />
-            {/* <span className="text-[10px]">My Orders</span> */}
-          </button>
+          {
+            !loading &&
+            (user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className="flex flex-col items-center justify-center rounded-full hover:bg-green-50 text-gray-500 p-2.5">
+                    <User size={20} />
+                  </button>
+                </DropdownMenuTrigger>
+
+                <DropdownMenuContent className="bg-white text-black border border-gray-200 rounded-md text-xs rounded-sm w-full" align="end">
+                  <DropdownMenuItem className="hover:text-blue-600 text-xs">
+                    My Account
+                  </DropdownMenuItem>
+
+                  <DropdownMenuItem className="hover:text-gray-600 text-xs">
+                    Orders
+                  </DropdownMenuItem>
+
+                  <DropdownMenuItem className="hover:text-gray-600 text-xs">
+                    Prescriptions
+                  </DropdownMenuItem>
+
+                  <DropdownMenuItem className="hover:text-gray-600 text-xs">
+                    Logout
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <button
+                onClick={() =>
+                  setShowLogin(true)
+                }
+                className="p-2.5 text-gray-500 hover:text-[#1a7a4a] hover:bg-green-50 rounded-full transition-colors"
+              >
+                <User size={21} />
+              </button>
+            ))
+          }
           <button className="flex flex-col items-center gap-0.5 text-gray-600 hover:text-green-700 transition-colors relative">
             <ShoppingCart className="w-5 h-5" />
             {cartCount > 0 && (
@@ -126,6 +177,10 @@ export function MDWHeader({ cartCount = 2 }: { cartCount?: number }) {
           </button>
         </div>
       </div>
+      <LoginDialog
+        open={showLogin}
+        onOpenChange={setShowLogin}
+      />
     </header>
   );
 }
