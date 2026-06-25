@@ -284,3 +284,22 @@ export interface CategoriesMedicinesResponse {
   count: number;
   data: CategoryGroup[];
 }
+
+export interface User {
+  id: string;
+  userfName: string;
+  userlName: string;
+  userEmail: string;
+  userPhone: string;
+  gender?: string;
+  dob?: string;
+  role: string;
+  permissions: string[];
+  isActive: boolean;
+  isProfileComplete: boolean;
+}
+
+export interface AuthResponse {
+  success: boolean;
+  user: User;
+}
