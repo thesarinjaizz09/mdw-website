@@ -12,6 +12,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Spinner } from "@/components/ui/spinner";
 
 const navLinks = [
   { label: "Home", href: "#", active: true },
@@ -69,7 +70,7 @@ export default function Navbar() {
               <Search size={21} />
             </button>
             {
-              !loading &&
+              !loading ?
               (user ? (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -105,7 +106,9 @@ export default function Navbar() {
                 >
                   <User size={21} />
                 </button>
-              ))
+              )) : (
+                <Spinner className="size-4" />
+              )
             }
             <button className="relative p-2.5 text-gray-500 hover:text-[#1a7a4a] hover:bg-green-50 rounded-full transition-colors">
               <ShoppingCart size={21} />

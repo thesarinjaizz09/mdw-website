@@ -22,6 +22,7 @@ import { useAddress } from "@/hooks/use-address";
 import { useState } from "react";
 import { useMedicineSearchStore } from "@/stores/use-medicine-search";
 import { useMedicineSearch } from "@/hooks/use-medicine-search";
+import { Spinner } from "./ui/spinner";
 
 // ─── MDW Logo ────────────────────────────────────────────────────────────────
 export function MDWLogo({ size = "md" }: { size?: "sm" | "md" | "lg" }) {
@@ -128,7 +129,7 @@ export function MDWHeader({ cartCount = 2 }: { cartCount?: number }) {
         {/* Right actions */}
         <div className="flex items-center gap-4 ml-auto flex-shrink-0">
           {
-            !loading &&
+            !loading ?
             (user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -164,7 +165,9 @@ export function MDWHeader({ cartCount = 2 }: { cartCount?: number }) {
               >
                 <User size={21} />
               </button>
-            ))
+            )) : (
+              <Spinner className="size-4"/>
+            )
           }
           <button className="flex flex-col items-center gap-0.5 text-gray-600 hover:text-green-700 transition-colors relative">
             <ShoppingCart className="w-5 h-5" />
