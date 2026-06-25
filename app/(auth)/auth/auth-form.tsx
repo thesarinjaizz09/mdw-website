@@ -19,11 +19,11 @@ import { AuthShell } from "@/shells/auth-shell";
 import { useLogin } from "@/hooks/use-auth-mutations";
 
 const loginSchema = z.object({
-    email: z
+    userEmailOrPhone: z
         .string()
         .min(1, "Email is required")
         .email("Enter a valid email"),
-    password: z.string().min(1, "Password is required"),
+    userPassword: z.string().min(1, "Password is required"),
 });
 
 type LoginValues = z.infer<typeof loginSchema>;
@@ -35,7 +35,7 @@ export function LoginForm() {
 
     const form = useForm<LoginValues>({
         resolver: zodResolver(loginSchema),
-        defaultValues: { email: "", password: "" },
+        defaultValues: { userEmailOrPhone: "", userPassword: "" },
         mode: "onChange",
     });
 
@@ -56,7 +56,7 @@ export function LoginForm() {
                     Don&apos;t have an account?{" "}
                     <Link
                         href="/create"
-                        className="font-medium text-primary underline-offset-4 hover:underline"
+                        className="font-medium text-emerald-500 underline-offset-4 hover:underline"
                     >
                         Create one
                     </Link>
@@ -66,7 +66,7 @@ export function LoginForm() {
             <form onSubmit={form.handleSubmit(onSubmit)}>
                 <FieldGroup>
                     <Controller
-                        name="email"
+                        name="userEmailOrPhone"
                         control={form.control}
                         render={({ field, fieldState }) => (
                             <Field data-invalid={fieldState.invalid}>
@@ -90,7 +90,7 @@ export function LoginForm() {
                     />
 
                     <Controller
-                        name="password"
+                        name="userPassword"
                         control={form.control}
                         render={({ field, fieldState }) => (
                             <Field data-invalid={fieldState.invalid}>

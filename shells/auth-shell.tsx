@@ -5,15 +5,17 @@ export function AuthShell({
     description,
     children,
     footer,
+    showCompany = true
 }: {
     title: string;
     description: string;
     children: React.ReactNode;
     footer?: React.ReactNode;
+    showCompany?: boolean
 }) {
     return (
         <div className="flex min-h-screen w-full items-center justify-center bg-emerald-50 px-4 py-10">
-            <div className="w-full max-w-sm">
+            <div className="w-full max-w-md">
 
                 <div className="rounded-xl p-6 sm:p-8 shadow-lg border border-gray-200 text-black">
                     {/* <div className="mb-2 flex flex-col items-start gap-2 text-left">
@@ -25,9 +27,9 @@ export function AuthShell({
                         </Link>
                     </div> */}
                     <h1 className="text-2xl font-semibold tracking-tight">
-                        {title} to <span className="text-emerald-500">
+                        {title} {showCompany && 'to'} {showCompany && <span className="text-emerald-500">
                             MyDawaiWala
-                        </span>
+                        </span>}
                     </h1>
                     <p className="text-sm text-muted-foreground mb-5">
                         {description}

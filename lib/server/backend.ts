@@ -13,6 +13,13 @@ export async function backendFetch(
       "pharmacy_access"
     )?.value;
 
+  // Debug: log access token presence and endpoint
+  console.log({
+    msg: "backendFetch called",
+    endpoint,
+    accessTokenPresent: !!accessToken,
+  });
+
   let response = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}${endpoint}`,
     {
