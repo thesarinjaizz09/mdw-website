@@ -47,9 +47,10 @@ function ThemeHotkey() {
         return
       }
 
-      if (event.key.toLowerCase() !== "d") {
-        return
-      }
+       // Guard against events without a "key" property (e.g., synthetic events)
+       if (!event.key || event.key.toLowerCase() !== "d") {
+         return
+       }
 
       if (isTypingTarget(event.target)) {
         return
