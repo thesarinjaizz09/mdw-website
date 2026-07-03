@@ -290,13 +290,13 @@ export interface User {
   userfName: string;
   userlName: string;
   userEmail: string;
-  userPhone: string;
+  userPhone?: string;
   gender?: string;
   dob?: string;
   role: string;
   permissions: string[];
-  isActive: boolean;
-  isProfileComplete: boolean;
+  isActive?: boolean;
+  isProfileComplete?: boolean;
 }
 
 export interface AuthResponse {

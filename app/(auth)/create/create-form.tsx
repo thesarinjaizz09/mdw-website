@@ -116,6 +116,7 @@ export function RegisterForm() {
                                 placeholder="John"
                                 aria-invalid={fieldState.invalid}
                                 disabled={submitting}
+                                className="border border-gray-500"
                             />
                             {fieldState.invalid && (
                                 <FieldError errors={[fieldState.error]} />
@@ -140,6 +141,7 @@ export function RegisterForm() {
                                 placeholder="Doe"
                                 aria-invalid={fieldState.invalid}
                                 disabled={submitting}
+                                className="border border-gray-500"
                             />
                             {fieldState.invalid && (
                                 <FieldError errors={[fieldState.error]} />
@@ -165,6 +167,7 @@ export function RegisterForm() {
                                 placeholder="john@example.com"
                                 aria-invalid={fieldState.invalid}
                                 disabled={submitting}
+                                className="border border-gray-500"
                             />
                             {fieldState.invalid && (
                                 <FieldError errors={[fieldState.error]} />
@@ -189,6 +192,7 @@ export function RegisterForm() {
                                 placeholder="9876543210"
                                 aria-invalid={fieldState.invalid}
                                 disabled={submitting}
+                                className="border border-gray-500"
                             />
                             {fieldState.invalid && (
                                 <FieldError errors={[fieldState.error]} />
@@ -218,6 +222,7 @@ export function RegisterForm() {
                                     placeholder="••••••••"
                                     aria-invalid={fieldState.invalid}
                                     disabled={submitting}
+                                    className="border border-gray-500"
                                 />
                                 <button
                                     type="button"
@@ -258,6 +263,7 @@ export function RegisterForm() {
                                             placeholder="••••••••"
                                             aria-invalid={fieldState.invalid}
                                             disabled={submitting}
+                                            className="border border-gray-500"
                                         />
                                         <button
                                             type="button"

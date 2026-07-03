@@ -81,6 +81,7 @@ export function LoginForm() {
                                     placeholder="you@example.com"
                                     aria-invalid={fieldState.invalid}
                                     disabled={submitting}
+                                    className="border border-gray-500"
                                 />
                                 {fieldState.invalid && (
                                     <FieldError errors={[fieldState.error]} />
@@ -114,6 +115,7 @@ export function LoginForm() {
                                         placeholder="••••••••"
                                         aria-invalid={fieldState.invalid}
                                         disabled={submitting}
+                                        className="border border-gray-500"
                                     />
                                     <button
                                         type="button"

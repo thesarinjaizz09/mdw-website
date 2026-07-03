@@ -23,6 +23,7 @@ import { useState } from "react";
 import { useMedicineSearchStore } from "@/stores/use-medicine-search";
 import { useMedicineSearch } from "@/hooks/use-medicine-search";
 import { Spinner } from "./ui/spinner";
+import { NAV_USER_DROPDOWN_ITEMS } from "@/contants";
 
 // ─── MDW Logo ────────────────────────────────────────────────────────────────
 export function MDWLogo({ size = "md" }: { size?: "sm" | "md" | "lg" }) {
@@ -113,6 +114,7 @@ export function PriceDisplay({
 export function MDWHeader({ cartCount = 2 }: { cartCount?: number }) {
   const [showLogin, setShowLogin] =
     useState(false);
+  const router = useRouter();
 
   const {
     user,
@@ -130,44 +132,39 @@ export function MDWHeader({ cartCount = 2 }: { cartCount?: number }) {
         <div className="flex items-center gap-4 ml-auto flex-shrink-0">
           {
             !loading ?
-            (user ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <button className="flex flex-col items-center justify-center rounded-full hover:bg-green-50 text-gray-500 p-2.5">
-                    <User size={20} />
-                  </button>
-                </DropdownMenuTrigger>
+              (user ? (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button className="flex flex-col items-center justify-center rounded-full hover:bg-green-50 text-gray-500 p-2.5">
+                      <div className="relative">
+                        <User size={20} />
+                        <span className="bg-green-500 w-1.5 h-1.5 absolute top-0 -right-0.5 rounded-full"></span>
+                      </div>
+                    </button>
+                  </DropdownMenuTrigger>
 
-                <DropdownMenuContent className="bg-white text-black border border-gray-200 rounded-md text-xs rounded-sm w-full" align="end">
-                  <DropdownMenuItem className="hover:text-blue-600 text-xs">
-                    My Account
-                  </DropdownMenuItem>
-
-                  <DropdownMenuItem className="hover:text-gray-600 text-xs">
-                    Orders
-                  </DropdownMenuItem>
-
-                  <DropdownMenuItem className="hover:text-gray-600 text-xs">
-                    Prescriptions
-                  </DropdownMenuItem>
-
-                  <DropdownMenuItem className="hover:text-gray-600 text-xs">
-                    Logout
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            ) : (
-              <button
-                onClick={() =>
-                  setShowLogin(true)
-                }
-                className="p-2.5 text-gray-500 hover:text-[#1a7a4a] hover:bg-green-50 rounded-full transition-colors"
-              >
-                <User size={21} />
-              </button>
-            )) : (
-              <Spinner className="size-4"/>
-            )
+                  <DropdownMenuContent className="bg-white text-black border border-gray-200 rounded-md text-xs rounded-sm w-full" align="end">
+                    {NAV_USER_DROPDOWN_ITEMS.map((item) => (
+                      <DropdownMenuItem onClick={() => {
+                        router.push(item.href)
+                      }} key={item.label} className="text-gray-600 text-xs">
+                        {item.label}
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : (
+                <button
+                  onClick={() =>
+                    setShowLogin(true)
+                  }
+                  className="p-2.5 text-gray-500 hover:text-[#1a7a4a] hover:bg-green-50 rounded-full transition-colors"
+                >
+                  <User size={21} />
+                </button>
+              )) : (
+                <Spinner className="size-5 text-gray-500" />
+              )
           }
           <button className="flex flex-col items-center gap-0.5 text-gray-600 hover:text-green-700 transition-colors relative">
             <ShoppingCart className="w-5 h-5" />

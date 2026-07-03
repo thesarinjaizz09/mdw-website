@@ -14,18 +14,10 @@ export function AuthShell({
     showCompany?: boolean
 }) {
     return (
-        <div className="flex min-h-screen w-full items-center justify-center bg-emerald-50 px-4 py-10">
+        <div className="flex min-h-screen w-full items-center justify-center bg-white px-4 py-10">
             <div className="w-full max-w-md">
 
-                <div className="rounded-xl p-6 sm:p-8 shadow-lg border border-gray-200 text-black">
-                    {/* <div className="mb-2 flex flex-col items-start gap-2 text-left">
-                        <Link
-                            href="/"
-                            className="mb-2 text-2xl font-semibold tracking-tight text-emerald-500"
-                        >
-                            MyDawaiWala
-                        </Link>
-                    </div> */}
+                <div className="rounded-xl p-6 sm:p-8 shadow-lg border border-gray-200 text-black bg-emerald-50">
                     <h1 className="text-2xl font-semibold tracking-tight">
                         {title} {showCompany && 'to'} {showCompany && <span className="text-emerald-500">
                             MyDawaiWala

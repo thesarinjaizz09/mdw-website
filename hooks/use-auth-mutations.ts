@@ -12,6 +12,7 @@ import {
     type ResetPasswordInput,
 } from "@/lib/apu/auth";
 import { useAuth } from "@/providers/auth-provider";
+import { type User } from "@/types";
 
 function errorMessage(err: unknown) {
     if (err instanceof AuthApiError) return err.message;
@@ -21,11 +22,19 @@ function errorMessage(err: unknown) {
 export function useLogin() {
     const router = useRouter();
     const { setUser } = useAuth();
+    const mapAuthUserToUser = (authUser: any): User => ({
+        id: authUser.id,
+        userfName: authUser.userfName,
+        userlName: authUser.userlName,
+        userEmail: authUser.userEmail,
+        role: authUser.role,
+        permissions: authUser.permissions,
+    });
 
     return useMutation({
         mutationFn: (input: LoginInput) => authApi.login(input),
         onSuccess: (data) => {
-            setUser(data.user);
+            setUser(mapAuthUserToUser(data.user));
             toast.success("Welcome back.");
             router.push("/");
             router.refresh();
@@ -39,12 +48,20 @@ export function useLogin() {
 export function useRegister() {
     const router = useRouter();
     const { setUser } = useAuth();
+    const mapAuthUserToUser = (authUser: any): User => ({
+        id: authUser.id,
+        userfName: authUser.userfName,
+        userlName: authUser.userlName,
+        userEmail: authUser.userEmail,
+        role: authUser.role,
+        permissions: authUser.permissions,
+    });
 
     return useMutation({
         mutationFn: (input: RegisterInput) =>
             authApi.register(input),
         onSuccess: (data) => {
-            setUser(data.user);
+            setUser(mapAuthUserToUser(data.user));
             toast.success("Account created.");
             router.push("/");
             router.refresh();

@@ -71,44 +71,47 @@ export default function Navbar() {
             </button>
             {
               !loading ?
-              (user ? (
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <button className="flex flex-col items-center justify-center rounded-full hover:bg-green-50 text-gray-500 p-2.5">
-                      <User size={20} />
-                    </button>
-                  </DropdownMenuTrigger>
+                (user ? (
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <button className="flex flex-col items-center justify-center rounded-full hover:bg-green-50 text-gray-500 p-2.5">
+                        <div className="relative">
+                          <User size={20} />
+                          <span className="bg-green-500 w-1.5 h-1.5 absolute top-0 -right-0.5 rounded-full"></span>
+                        </div>
+                      </button>
+                    </DropdownMenuTrigger>
 
-                  <DropdownMenuContent className="bg-white text-black border border-gray-200 rounded-md text-xs rounded-sm w-full" align="end">
-                    <DropdownMenuItem className="hover:text-blue-600 text-xs">
-                      My Account
-                    </DropdownMenuItem>
+                    <DropdownMenuContent className="bg-white text-black border border-gray-200 rounded-md text-xs rounded-sm w-full" align="end">
+                      <DropdownMenuItem className="text-gray-600 hover:text-black text-xs">
+                        My Account
+                      </DropdownMenuItem>
 
-                    <DropdownMenuItem className="hover:text-gray-600 text-xs">
-                      Orders
-                    </DropdownMenuItem>
+                      <DropdownMenuItem className="text-gray-600 hover:text-black text-xs">
+                        Orders
+                      </DropdownMenuItem>
 
-                    <DropdownMenuItem className="hover:text-gray-600 text-xs">
-                      Prescriptions
-                    </DropdownMenuItem>
+                      <DropdownMenuItem className="text-gray-600 hover:text-black text-xs">
+                        Prescriptions
+                      </DropdownMenuItem>
 
-                    <DropdownMenuItem className="hover:text-gray-600 text-xs">
-                      Logout
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              ) : (
-                <button
-                  onClick={() =>
-                    setShowLogin(true)
-                  }
-                  className="p-2.5 text-gray-500 hover:text-[#1a7a4a] hover:bg-green-50 rounded-full transition-colors"
-                >
-                  <User size={21} />
-                </button>
-              )) : (
-                <Spinner className="size-4" />
-              )
+                      <DropdownMenuItem className="text-gray-600 hover:text-black text-xs">
+                        Logout
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                ) : (
+                  <button
+                    onClick={() =>
+                      setShowLogin(true)
+                    }
+                    className="p-2.5 text-gray-500 hover:text-[#1a7a4a] hover:bg-green-50 rounded-full transition-colors"
+                  >
+                    <User size={21} />
+                  </button>
+                )) : (
+                  <Spinner className="size-5 text-gray-500" />
+                )
             }
             <button className="relative p-2.5 text-gray-500 hover:text-[#1a7a4a] hover:bg-green-50 rounded-full transition-colors">
               <ShoppingCart size={21} />

@@ -31,7 +31,7 @@ export default function RootLayout({
        <div className="flex-1 flex flex-col">
          <TooltipProvider>
            <QueryProvider>
-             <AuthProvider initialUser={null}>
+             <AuthProvider>
                <ThemeProvider>{children}</ThemeProvider>
              </AuthProvider>
            </QueryProvider>
