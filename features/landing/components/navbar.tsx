@@ -13,6 +13,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Spinner } from "@/components/ui/spinner";
+import { NAV_USER_DROPDOWN_ITEMS } from "@/contants";
+import { useRouter } from "next/navigation";
 
 const navLinks = [
   { label: "Home", href: "#", active: true },
@@ -25,6 +27,7 @@ const navLinks = [
 ];
 
 export default function Navbar() {
+  const router = useRouter()
   const [mobileOpen, setMobileOpen] = useState(false);
   const [showLogin, setShowLogin] =
     useState(false);
@@ -83,21 +86,13 @@ export default function Navbar() {
                     </DropdownMenuTrigger>
 
                     <DropdownMenuContent className="bg-white text-black border border-gray-200 rounded-md text-xs rounded-sm w-full" align="end">
-                      <DropdownMenuItem className="text-gray-600 hover:text-black text-xs">
-                        My Account
-                      </DropdownMenuItem>
-
-                      <DropdownMenuItem className="text-gray-600 hover:text-black text-xs">
-                        Orders
-                      </DropdownMenuItem>
-
-                      <DropdownMenuItem className="text-gray-600 hover:text-black text-xs">
-                        Prescriptions
-                      </DropdownMenuItem>
-
-                      <DropdownMenuItem className="text-gray-600 hover:text-black text-xs">
-                        Logout
-                      </DropdownMenuItem>
+                      {NAV_USER_DROPDOWN_ITEMS.map((item) => (
+                        <DropdownMenuItem onClick={() => {
+                          router.push(item.href)
+                        }} key={item.label} className="text-gray-600 text-xs">
+                          {item.label}
+                        </DropdownMenuItem>
+                      ))}
                     </DropdownMenuContent>
                   </DropdownMenu>
                 ) : (
