@@ -23,11 +23,11 @@ import { useAuth } from "@/providers/auth-provider";
 const NAV_ITEMS = [
   { id: "profile", label: "My Profile", icon: <User className="w-4 h-4" /> },
   { id: "orders", label: "My Orders", icon: <ShoppingBag className="w-4 h-4" /> },
-  { id: "prescriptions", label: "My Prescriptions", icon: <FileText className="w-4 h-4" /> },
+  // { id: "prescriptions", label: "My Prescriptions", icon: <FileText className="w-4 h-4" /> },
   { id: "addresses", label: "Addresses", icon: <MapPin className="w-4 h-4" /> },
-  { id: "payment", label: "Payment Methods", icon: <CreditCard className="w-4 h-4" /> },
-  { id: "wallet", label: "My Wallet", icon: <Wallet className="w-4 h-4" /> },
-  { id: "notifications", label: "Notifications", icon: <Bell className="w-4 h-4" /> },
+  // { id: "payment", label: "Payment Methods", icon: <CreditCard className="w-4 h-4" /> },
+  // { id: "wallet", label: "My Wallet", icon: <Wallet className="w-4 h-4" /> },
+  // { id: "notifications", label: "Notifications", icon: <Bell className="w-4 h-4" /> },
   { id: "refer", label: "Refer & Earn", icon: <Gift className="w-4 h-4" /> },
   { id: "help", label: "Help & Support", icon: <HelpCircle className="w-4 h-4" /> },
 ];
@@ -52,10 +52,10 @@ export default function ProfilePage() {
   const { user } = useAuth();
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <MDWHeader cartCount={0} />
+    <div className="min-h-screen bg-gray-50 flex flex-col justify-between">
+      <MDWHeader />
 
-      <main className="max-w-5xl mx-auto px-4 py-6">
+      <main className="px-4 py-6">
         <h1 className="text-xl font-bold text-gray-900 mb-6">My Profile</h1>
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-5">
@@ -85,10 +85,10 @@ export default function ProfilePage() {
                 ))}
 
                 {/* Logout */}
-                <button className="w-full flex items-center gap-3 px-4 py-3 text-sm text-red-500 hover:bg-red-50 transition-colors text-left">
+                {/* <button className="w-full flex items-center gap-3 px-4 py-3 text-sm text-red-500 hover:bg-red-50 transition-colors text-left">
                   <LogOut className="w-4 h-4 flex-shrink-0" />
                   Logout
-                </button>
+                </button> */}
               </nav>
             </div>
           </div>
@@ -135,7 +135,7 @@ export default function ProfilePage() {
             </div>
 
             {/* MDW Wallet */}
-            <div className="bg-white rounded-lg border border-gray-100 shadow-sm p-5">
+            {/* <div className="bg-white rounded-lg border border-gray-100 shadow-sm p-5">
               <h3 className="font-semibold text-gray-900 mb-3">MDW Wallet</h3>
               <div className="flex items-center justify-between">
                 <div>
@@ -147,7 +147,7 @@ export default function ProfilePage() {
                   Add Money
                 </Button>
               </div>
-            </div>
+            </div> */}
 
             {/* More Actions */}
             <div className="bg-white rounded-lg border border-gray-100 shadow-sm p-5">

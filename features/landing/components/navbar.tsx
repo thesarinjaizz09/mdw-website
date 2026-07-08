@@ -110,9 +110,6 @@ export default function Navbar() {
             }
             <button className="relative p-2.5 text-gray-500 hover:text-[#1a7a4a] hover:bg-green-50 rounded-full transition-colors">
               <ShoppingCart size={21} />
-              <span className="absolute top-1.5 right-1.5 w-4 h-4 bg-[#1a7a4a] text-white text-[10px] font-bold rounded-full flex items-center justify-center">
-                0
-              </span>
             </button>
             <button
               className="lg:hidden p-2.5 text-gray-500 hover:text-[#1a7a4a] rounded-full transition-colors"

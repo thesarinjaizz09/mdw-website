@@ -23,6 +23,31 @@ export interface CartItem {
   quantity: number;
 }
 
+export interface CartItemData {
+  productId: string;
+  productName: string;
+  quantity: number;
+  amount: number;
+  productDetails?: ProductData | null;
+  unitPrice?: number;
+}
+
+export interface CartSummary {
+  cartId: string;
+  totalAmount: number;
+  itemCount: number;
+  items: CartItemData[];
+  status?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface CartQueryData {
+  cart: CartSummary | null;
+  guestItems: CartItemData[];
+  isGuest: boolean;
+}
+
 export interface Address {
   id: string;
   label: string;

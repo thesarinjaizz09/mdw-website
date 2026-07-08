@@ -4,6 +4,7 @@ import { MapPin, ShoppingCart, User, Search, Phone, ChevronDown, LocateFixed } f
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useSession } from "@/hooks/use-session";
+import { useCart } from "@/hooks/use-cart";
 import LoginDialog from "@/components/login-dialog";
 
 import {
@@ -111,10 +112,10 @@ export function PriceDisplay({
 }
 
 // ─── Main Header ──────────────────────────────────────────────────────────────
-export function MDWHeader({ cartCount = 2 }: { cartCount?: number }) {
-  const [showLogin, setShowLogin] =
-    useState(false);
+export function MDWHeader() {
+  const [showLogin, setShowLogin] = useState(false);
   const router = useRouter();
+  const { itemCount } = useCart();
 
   const {
     user,
@@ -168,9 +169,9 @@ export function MDWHeader({ cartCount = 2 }: { cartCount?: number }) {
           }
           <button className="flex flex-col items-center gap-0.5 text-gray-600 hover:text-green-700 transition-colors relative">
             <ShoppingCart className="w-5 h-5" />
-            {cartCount > 0 && (
+            {itemCount > 0 && (
               <span className="absolute -top-1 -right-1.5 bg-green-600 text-white text-[9px] w-4 h-4 rounded-full flex items-center justify-center font-bold">
-                {cartCount}
+                {itemCount}
               </span>
             )}
             {/* <span className="text-[10px]">Cart</span> */}

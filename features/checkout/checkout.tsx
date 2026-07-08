@@ -4,6 +4,7 @@ import { useState } from "react";
 import { CheckCircle, Plus, MessageCircle, Phone, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { MDWHeader, MDWFooterBar } from "@/components/shared";
+import { useCart } from "@/hooks/use-cart";
 import { ADDRESSES } from "@/types";
 
 const PAYMENT_OPTIONS = [
@@ -14,12 +15,13 @@ const PAYMENT_OPTIONS = [
 ];
 
 export default function CheckoutPage() {
+  const { itemCount, totalAmount } = useCart();
   const [selectedAddress, setSelectedAddress] = useState("home");
   const [selectedPayment, setSelectedPayment] = useState("upi");
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <MDWHeader cartCount={2} />
+      <MDWHeader />
 
       <main className="max-w-4xl mx-auto px-4 py-6">
         <h1 className="text-xl font-bold text-gray-900 mb-6">Checkout</h1>
@@ -148,8 +150,8 @@ export default function CheckoutPage() {
 
               <div className="space-y-2.5 text-sm">
                 <div className="flex justify-between text-gray-700">
-                  <span>2 Items</span>
-                  <span className="font-medium">₹85.00</span>
+                  <span>{itemCount} Item{itemCount !== 1 ? "s" : ""}</span>
+                  <span className="font-medium">₹{totalAmount.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-green-600">
                   <span>Delivery</span>

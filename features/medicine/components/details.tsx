@@ -5,6 +5,7 @@ import { Star, ShoppingCart, Zap, ChevronRight, Shield, CheckCircle, Truck, MapP
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { MDWHeader, MDWFooterBar, MedicineImagePlaceholder, PriceDisplay, InStockBadge } from "@/components/shared";
+import { useCartActions } from "@/hooks/use-cart";
 import type { Medicine } from "@/types";
 import { MEDICINES } from "@/types";
 import { useRouter } from "next/navigation";
@@ -84,6 +85,7 @@ export default function MedicineDetailPage({ medicine = MEDICINES[4], slug }: Pr
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("Description");
   const [selectedImage, setSelectedImage] = useState(0);
+  const { addToCart } = useCartActions();
 
   const CARD_COLORS = ["blue", "green", "orange", "purple"] as const;
   const thumbColors = ["blue", "green", "orange", "purple"] as const;
@@ -110,7 +112,7 @@ export default function MedicineDetailPage({ medicine = MEDICINES[4], slug }: Pr
   if (loading || !med) {
     return (
       <div className="bg-gray-50 flex-1 flex flex-col min-h-screen">
-        <MDWHeader cartCount={2} />
+        <MDWHeader />
         <main className="flex items-center gap-2 justify-center flex-1 max-w-7xl mx-auto">
           <Spinner className="text-gray-800" />
           <p className="text-sm text-gray-600">Loading product...</p>
@@ -132,7 +134,7 @@ export default function MedicineDetailPage({ medicine = MEDICINES[4], slug }: Pr
 
   return (
     <div className="bg-gray-50 flex-1 flex flex-col min-h-screen">
-      <MDWHeader cartCount={0} />
+      <MDWHeader />
 
       <main className="flex-1 max-w-7xl px-4 py-6">
         {/* Breadcrumb */}
@@ -317,10 +319,19 @@ export default function MedicineDetailPage({ medicine = MEDICINES[4], slug }: Pr
 
                 <Button
                   disabled={!inStock}
+                  onClick={() =>
+                    addToCart.mutate({
+                      productId: med._id,
+                      quantity: qty,
+                      productName: med.name,
+                      amount: price,
+                      unitPrice: price,
+                    })
+                  }
                   className="w-full bg-green-600 hover:bg-green-700 text-white h-10 rounded-lg font-semibold gap-2"
                 >
                   <ShoppingCart className="w-4 h-4" />
-                  Add to Cart
+                  {addToCart.status === "pending" ? "Adding..." : "Add to Cart"}
                 </Button>
                 <Button
                   disabled={!inStock}

@@ -24,7 +24,7 @@ import { MedicineCard } from "../components/card";
 import { Medicine, MEDICINES, CategoryMedicineEntry, CategoriesMedicinesResponse, ProductData, CategoryGroup } from "@/types";
 import { FaPills, FaWhatsapp } from "react-icons/fa";
 import { TbReplace } from "react-icons/tb";
-import { GiStomach, GiMedicines, GiLiver, GiLoveInjection, GiFrontTeeth, GiLungs } from "react-icons/gi";
+import { GiStomach, GiMedicines, GiLiver, GiLoveInjection, GiFrontTeeth, GiLungs, GiSpiderMask } from "react-icons/gi";
 import { PiNuclearPlantFill } from "react-icons/pi";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -42,6 +42,7 @@ const CATEGORIES = [
   { icon: <GiLoveInjection className="w-5 h-5" />, label: "Injections", color: "bg-green-50" },
   { icon: <GiFrontTeeth className="w-5 h-5" />, label: "Oral Care", color: "bg-green-50" },
   { icon: <GiLungs className="w-5 h-5" />, label: "Respiratory Care", color: "bg-green-50" },
+  { icon: <GiSpiderMask className="w-5 h-5" />, label: "Derma Care", color: "bg-green-50" },
 ];
 
 const WHY_CHOOSE = [
@@ -96,7 +97,7 @@ export default function MedicinesPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <MDWHeader cartCount={0} />
+      <MDWHeader />
 
       <main className="max-w-7xl mx-auto px-4 py-6 space-y-8">
         {/* Hero Banner */}

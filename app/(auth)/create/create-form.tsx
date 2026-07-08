@@ -15,7 +15,7 @@ import {
     FieldGroup,
     FieldLabel,
 } from "@/components/ui/field";
-import { AuthShell } from "@/shells/auth-shell";
+import { AuthShell } from "@/layouts/auth-shell";
 import { useRegister } from "@/hooks/use-auth-mutations";
 
 // Schema aligned with backend expectations
