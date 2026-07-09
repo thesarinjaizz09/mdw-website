@@ -2,23 +2,34 @@ import { backendFetch } from "@/lib/server/backend";
 import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
-  const url = new URL(request.url);
-  const status = url.searchParams.get("status") || "active";
+    const url = new URL(request.url);
 
-  const response = await backendFetch(`/api/users/cart/get-cart?status=${encodeURIComponent(status)}`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+    const status =
+        url.searchParams.get("status") ??
+        "active";
 
-  const data = await response.json().catch(() => ({}));
+    const response = await backendFetch(
+        `/api/users/cart/get-cart?status=${status}`
+    );
 
-  if (!response.ok) {
-    return NextResponse.json(data, { status: response.status });
-  }
+    const data = await response.json();
 
-  const cart = Array.isArray(data?.carts) ? data.carts[0] ?? null : null;
+    if (!response.ok) {
+        return NextResponse.json(
+            data,
+            {
+                status: response.status,
+            }
+        );
+    }
 
-  return NextResponse.json({ success: true, cart, raw: data }, { status: 200 });
+    const cart =
+        data.carts?.[0] ?? null;
+
+    return NextResponse.json(
+        cart,
+        {
+            status: 200,
+        }
+    );
 }

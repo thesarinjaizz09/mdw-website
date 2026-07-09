@@ -26,7 +26,7 @@ export default function CartPage() {
       )
       .filter((item) => item.quantity > 0);
 
-    updateCart.mutate(nextItems);
+    updateCart.mutate({ items: nextItems, cartId: cart?.cartId });
   };
 
   const removeItem = (productId: string) => {
@@ -38,6 +38,9 @@ export default function CartPage() {
     item.unitPrice ?? (item.quantity > 0 ? item.amount / item.quantity : item.amount);
 
   const itemTotal = cartItems.reduce((sum, item) => sum + lineTotal(item), 0);
+  const handlingCharges = Math.max(0, totalAmount - itemTotal);
+  const deliveryCharges: number = 0;
+  const totalPayable = totalAmount ?? itemTotal + handlingCharges + deliveryCharges;
   const mrpTotal = itemTotal;
   const discount = 0;
 
@@ -48,10 +51,10 @@ export default function CartPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex-1 flex flex-col">
+    <div className="min-h-screen bg-gray-50 flex-1 flex flex-col justify-between">
       <MDWHeader />
 
-      <main className="max-w-5xl mx-auto px-4 py-6">
+      <main className="max-w-7xl mx-auto px-4 py-6">
         <h1 className="text-xl font-bold text-gray-900 mb-1">My Cart</h1>
         <p className="text-sm text-gray-500 mb-4">({itemCount} Items)</p>
 
@@ -66,9 +69,10 @@ export default function CartPage() {
             <Button className="mt-4 bg-green-600 hover:bg-green-700 text-white" onClick={() => router.push("/medicine")}>Shop Medicines</Button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
-            <div className="lg:col-span-3 space-y-3">
-              {cartItems.map((item) => (
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+              <div className="lg:col-span-2 space-y-3">
+                {cartItems.map((item) => (
                 <div
                   key={item.productId}
                   className="bg-white rounded-xl border border-gray-100 shadow-sm p-4 flex gap-4"
@@ -132,7 +136,7 @@ export default function CartPage() {
                 Add more items
               </button>
 
-              <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-4">
+              {/* <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-4">
                 <h3 className="text-sm font-semibold text-gray-800 mb-3 flex items-center gap-1.5">
                   <Tag className="w-4 h-4 text-green-600" />
                   Apply Coupon
@@ -152,35 +156,27 @@ export default function CartPage() {
                     Apply
                   </Button>
                 </div>
-              </div>
+              </div> */}
             </div>
 
-            <div className="lg:col-span-2">
-              <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5 sticky top-24">
+              <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
                 <h3 className="font-semibold text-gray-900 mb-4">Price Details</h3>
-                <div className="space-y-2.5 text-sm">
+                <div className="space-y-3 text-sm">
                   <div className="flex justify-between text-gray-700">
-                    <span>Item Total</span>
+                    <span>Subtotal</span>
                     <span className="font-medium">₹{itemTotal.toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between text-gray-700">
-                    <span>MRP Total</span>
-                    <span className="font-medium">₹{mrpTotal.toFixed(2)}</span>
+                    <span>Handling Charges</span>
+                    <span className="font-medium text-gray-900">₹{handlingCharges.toFixed(2)}</span>
                   </div>
-                  <div className="flex justify-between text-green-600">
-                    <span>Discount on MRP</span>
-                    <span className="font-medium">-₹{discount.toFixed(2)}</span>
-                  </div>
-                  <div className="flex justify-between text-green-600">
+                  <div className="flex justify-between text-gray-700">
                     <span>Delivery Charges</span>
-                    <span className="font-semibold">FREE</span>
+                    <span className="font-medium text-gray-900">{deliveryCharges === 0 ? "FREE" : `₹${deliveryCharges.toFixed(2)}`}</span>
                   </div>
-                  <div className="bg-green-50 text-green-700 text-xs font-medium py-1.5 px-2 rounded-lg text-center">
-                    You saved ₹{discount.toFixed(2)}
-                  </div>
-                  <div className="border-t border-gray-100 pt-2.5 flex justify-between font-bold text-gray-900 text-base">
-                    <span>To Pay</span>
-                    <span>₹{itemTotal.toFixed(2)}</span>
+                  <div className="border-t border-gray-100 pt-3 flex justify-between font-bold text-gray-900 text-base">
+                    <span>Total</span>
+                    <span>₹{totalPayable.toFixed(2)}</span>
                   </div>
                 </div>
 
@@ -190,12 +186,13 @@ export default function CartPage() {
                 <Button
                   variant="outline"
                   className="w-full mt-2 border-green-600 text-green-700 hover:bg-green-50 h-11 rounded-lg font-semibold text-sm"
+                  onClick={() => router.push("/medicine")}
                 >
                   Continue Shopping
                 </Button>
 
-                <p className="text-center text-xs text-green-600 mt-3 font-medium">
-                  🌱 You will save ₹{discount.toFixed(2)} on this order
+                <p className="text-center text-xs text-gray-500 mt-3">
+                  Prices include all applicable charges.
                 </p>
               </div>
             </div>

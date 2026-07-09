@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 
 export async function PUT(req: Request) {
   const body = await req.json();
-  const response = await backendFetch("/api/users/cart/update", {
+  const response = await backendFetch(`/api/users/cart/update/${body.cartId}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",

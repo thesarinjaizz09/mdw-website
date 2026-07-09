@@ -43,9 +43,13 @@ export function useCart() {
 
   const totalAmount = useMemo(() => {
     if (isGuest) {
-      return guestItems.reduce((sum, item) => sum + item.amount, 0);
+      return guestItems.reduce(
+        (sum, item) => sum + item.amount,
+        0
+      );
     }
-    return cart?.totalAmount ?? 0;
+
+    return cart?.totalAmount ?? cart?.pricing?.subtotal ?? 0;
   }, [cart, guestItems, isGuest]);
 
   return {
@@ -122,30 +126,30 @@ export function useCartActions() {
       }
     },
     onError: (err) => {
-      console.error(err);
       toast.error(err.message || "Could not add to cart.");
     },
   });
 
-  const updateCart = useMutation<CartSummary | null, Error, CartItemData[]>({
-    mutationFn: async (items: CartItemData[]) => {
+  const updateCart = useMutation<CartSummary | null, Error, { items: CartItemData[]; cartId?: string }>({
+    mutationFn: async ({ items, cartId }) => {
       if (!user) {
         updateGuestCartItems(items);
         return null;
       }
-      return updateCartItem(items);
+      return updateCartItem(items, cartId);
     },
     onSuccess: (data) => {
-      if (data) {
+      if (data && Array.isArray(data.items) && typeof data.itemCount === "number") {
         qc.setQueryData(CART_QUERY_KEY, data);
       }
+      qc.invalidateQueries({ queryKey: CART_QUERY_KEY });
       if (!user) {
         qc.invalidateQueries({ queryKey: GUEST_CART_QUERY_KEY });
       }
       toast.success("Cart updated.");
     },
-    onError: () => {
-      toast.error("Could not update cart.");
+    onError: (err) => {
+      toast.error(err.message || "Could not update cart.");
     },
   });
 
@@ -166,8 +170,8 @@ export function useCartActions() {
         qc.invalidateQueries({ queryKey: CART_QUERY_KEY });
       }
     },
-    onError: () => {
-      toast.error("Could not remove item from cart.");
+    onError: (err) => {
+      toast.error(err.message || "Could not remove item from cart.");
     },
   });
 
@@ -187,8 +191,8 @@ export function useCartActions() {
         qc.invalidateQueries({ queryKey: CART_QUERY_KEY });
       }
     },
-    onError: () => {
-      toast.error("Could not clear cart.");
+    onError: (err) => {
+      toast.error(err.message || "Could not clear cart.");
     },
   });
 

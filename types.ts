@@ -35,6 +35,11 @@ export interface CartItemData {
 export interface CartSummary {
   cartId: string;
   totalAmount: number;
+  pricing?: {
+    subtotal: number;
+    handlingCharges: number;
+    totalAmount: number;
+  }
   itemCount: number;
   items: CartItemData[];
   status?: string;
