@@ -123,7 +123,7 @@ export function useCartActions() {
     },
     onError: (err) => {
       console.error(err);
-      toast.error("Could not add item to cart.");
+      toast.error(err.message || "Could not add to cart.");
     },
   });
 

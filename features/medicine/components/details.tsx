@@ -307,7 +307,7 @@ export default function MedicineDetailPage({ medicine = MEDICINES[4], slug }: Pr
                     >
                       <Minus className="w-3.5 h-3.5" />
                     </button>
-                    <span className="text-sm font-semibold w-5 text-center">{qty}</span>
+                    <span className="text-sm font-semibold w-5 text-center text-gray-600">{qty}</span>
                     <button
                       onClick={() => setQty(qty + 1)}
                       className="w-5 h-5 flex items-center justify-center text-gray-500 hover:text-green-600"
@@ -333,13 +333,13 @@ export default function MedicineDetailPage({ medicine = MEDICINES[4], slug }: Pr
                   <ShoppingCart className="w-4 h-4" />
                   {addToCart.status === "pending" ? "Adding..." : "Add to Cart"}
                 </Button>
-                <Button
+                {/* <Button
                   disabled={!inStock}
                   variant="outline"
                   className="w-full mt-2 border-green-600 text-green-700 hover:bg-green-50 h-10 rounded-lg font-semibold"
                 >
                   Buy Now
-                </Button>
+                </Button> */}
               </div>
 
               {/* Trust badges */}
