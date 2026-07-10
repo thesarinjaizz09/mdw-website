@@ -243,5 +243,7 @@ export function useAddress() {
         createAddress,
         fetchCurrentLocation,
         loadAddresses,
+        updateAddress,
+        deleteAddress,
     };
 }
