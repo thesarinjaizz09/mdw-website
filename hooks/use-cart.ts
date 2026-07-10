@@ -104,6 +104,7 @@ export function useCartActions() {
       productName,
       amount,
     }) => {
+      console.log("Adding to cart:", { productId, quantity, productName, amount });
       if (!user) {
         const currentGuest = addGuestCartItem({
           productId,

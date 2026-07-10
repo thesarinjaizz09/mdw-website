@@ -29,6 +29,8 @@ import { PiNuclearPlantFill } from "react-icons/pi";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { HowItWorksSection, WellnessBannerSection } from "@/features/landing/components";
+import { useCartActions } from "@/hooks/use-cart";
+import { toast } from "sonner";
 
 const CATEGORIES = [
   { icon: <Popcorn className="w-5 h-5" />, label: "Diabetes Care", color: "bg-blue-50" },
@@ -56,7 +58,7 @@ const WHY_CHOOSE = [
 function toMedicine(product: ProductData): Medicine {
   const primaryBatch = product.batches?.[0];
   return {
-    id: product._id,
+    _id: product._id,
     name: product.name,
     saltName: product.saltName,
     totalQuantity: product.totalQuantity,
@@ -68,6 +70,8 @@ function toMedicine(product: ProductData): Medicine {
 }
 
 export default function MedicinesPage() {
+
+  const { addToCart } = useCartActions();
   const [featuredProducts, setFeaturedProducts] = useState<Medicine[]>(MEDICINES);
   const [categoryGroups, setCategoryGroups] = useState<CategoryGroup[]>([]);
 
@@ -93,6 +97,21 @@ export default function MedicinesPage() {
 
     fetchCategoryProducts();
   }, [])
+
+  const addToCartFunction = (medicine: Medicine) => {
+    if (!medicine._id) {
+      toast.error("Invalid medicine ID. Cannot add to cart.");
+      return;
+    }
+    
+    addToCart.mutate({
+      productId: medicine._id,
+      quantity: 1,
+      productName: medicine.name,
+      amount: medicine.price,
+      unitPrice: medicine.price,
+    })
+  }
 
 
   return (
@@ -277,7 +296,7 @@ export default function MedicinesPage() {
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
             {featuredProducts.map((med, i) => (
-              <MedicineCard key={i} medicine={med} index={i} />
+              <MedicineCard key={i} medicine={med} index={i} onAddToCart={addToCartFunction} />
             ))}
           </div>
         </section>
@@ -296,7 +315,7 @@ export default function MedicinesPage() {
               </div>
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
                 {group.medicines.slice(0, 5).map((product, i) => (
-                  <MedicineCard key={product._id ?? i} medicine={toMedicine(product)} index={i} />
+                  <MedicineCard key={product._id ?? i} medicine={toMedicine(product)} index={i} onAddToCart={addToCartFunction}/>
                 ))}
               </div>
             </section>

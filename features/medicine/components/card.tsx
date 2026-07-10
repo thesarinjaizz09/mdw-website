@@ -3,8 +3,10 @@
 import { ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { InStockBadge, MedicineImagePlaceholder, PriceDisplay } from "@/components/shared";
-import type { Medicine } from "@/types";
+import type { CartItemData, Medicine } from "@/types";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useCart, useCartActions } from "@/hooks/use-cart";
 
 const CARD_COLORS = ["blue", "green", "orange", "purple", "teal"] as const;
 
@@ -18,6 +20,12 @@ interface MedicineCardProps {
 export function MedicineCard({ medicine, index = 0, onAddToCart, variant = "default" }: MedicineCardProps) {
   const color = CARD_COLORS[index % CARD_COLORS.length];
   const router = useRouter();
+
+  const { cart, guestItems, isGuest } = useCart();
+  const { removeFromCart } = useCartActions();
+
+  const cartItems: CartItemData[] = isGuest ? guestItems : (cart?.items ?? []);
+  const isAddedToCart = cartItems.some((item) => item.productId === medicine._id);
 
   const handleNavigation = () => router.push(`/medicine/${medicine._id}`);
 
@@ -58,14 +66,27 @@ export function MedicineCard({ medicine, index = 0, onAddToCart, variant = "defa
       </div>
 
       {/* Add to Cart */}
-      <Button
+      {!isAddedToCart ? <Button
         size="sm"
-        onClick={() => onAddToCart?.(medicine)}
+        onClick={(e) => {
+          e.stopPropagation();
+          onAddToCart?.(medicine);
+        }}
         className="mt-3 w-full bg-white border border-green-600 text-green-700 hover:bg-green-600 hover:text-white transition-colors h-8 text-xs font-medium rounded-md border border-gray-200 gap-1.5"
       >
         <ShoppingCart className="w-3.5 h-3.5" />
         Add to Cart
-      </Button>
+      </Button> : <Button
+        size="sm"
+        onClick={(e) => {
+          e.stopPropagation();
+          removeFromCart.mutate(medicine._id!);
+        }}
+        className="mt-3 w-full bg-white border border-red-600 text-red-700 hover:bg-red-600 hover:text-white transition-colors h-8 text-xs font-medium rounded-md border border-red-200 gap-1.5"
+      >
+        <ShoppingCart className="w-3.5 h-3.5" />
+        Remove from Cart
+      </Button>}
     </div>
   );
 }

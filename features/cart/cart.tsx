@@ -73,70 +73,70 @@ export default function CartPage() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
               <div className="lg:col-span-2 space-y-3">
                 {cartItems.map((item) => (
-                <div
-                  key={item.productId}
-                  className="bg-white rounded-xl border border-gray-100 shadow-sm p-4 flex gap-4"
-                >
-                  <MedicineImagePlaceholder
-                    name={item.productName || item.productId}
-                    className="w-16 h-16 flex-shrink-0"
-                    color={medicineColorMap[item.productId] || "blue"}
-                  />
-
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-start justify-between gap-2">
-                      <div>
-                        <h3 className="font-semibold text-gray-900 text-sm">{item.productName || item.productId}</h3>
-                        <p className="text-xs text-gray-500">{item.quantity} unit{item.quantity !== 1 ? "s" : ""}</p>
-                      </div>
-                      <button
-                        onClick={() => removeItem(item.productId)}
-                        className="text-gray-400 hover:text-red-500 transition-colors flex-shrink-0"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </div>
-
-                    <PriceDisplay
-                      price={unitPrice(item)}
-                      mrp={unitPrice(item)}
-                      discount={0}
-                      size="sm"
+                  <div
+                    key={item.productId}
+                    className="bg-white rounded-xl border border-gray-100 shadow-sm p-4 flex gap-4"
+                  >
+                    <MedicineImagePlaceholder
+                      name={item.productName || item.productId}
+                      className="w-16 h-16 flex-shrink-0"
+                      color={medicineColorMap[item.productId] || "blue"}
                     />
 
-                    <div className="flex items-center gap-2 mt-2">
-                      <div className="flex items-center border border-gray-200 rounded-lg overflow-hidden">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-start justify-between gap-2">
+                        <div>
+                          <h3 className="font-semibold text-gray-900 text-sm">{item.productName || item.productId}</h3>
+                          <p className="text-xs text-gray-500">{item.quantity} unit{item.quantity !== 1 ? "s" : ""}</p>
+                        </div>
                         <button
-                          onClick={() => updateQty(item.productId, -1)}
-                          className="px-2.5 py-1 text-gray-500 hover:bg-gray-50 hover:text-green-600 transition-colors"
+                          onClick={() => removeItem(item.productId)}
+                          className="text-gray-400 hover:text-red-500 transition-colors flex-shrink-0"
                         >
-                          <Minus className="w-3.5 h-3.5" />
-                        </button>
-                        <span className="px-3 py-1 text-sm font-semibold text-gray-900 border-x border-gray-200">
-                          {item.quantity}
-                        </span>
-                        <button
-                          onClick={() => updateQty(item.productId, 1)}
-                          className="px-2.5 py-1 text-gray-500 hover:bg-gray-50 hover:text-green-600 transition-colors"
-                        >
-                          <Plus className="w-3.5 h-3.5" />
+                          <Trash2 className="w-4 h-4" />
                         </button>
                       </div>
-                      <span className="text-sm font-medium text-gray-700">₹{lineTotal(item).toFixed(2)}</span>
+
+                      <PriceDisplay
+                        price={unitPrice(item)}
+                        mrp={unitPrice(item)}
+                        discount={0}
+                        size="sm"
+                      />
+
+                      <div className="flex items-center gap-2 mt-2">
+                        <div className="flex items-center border border-gray-200 rounded-lg overflow-hidden">
+                          <button
+                            onClick={() => updateQty(item.productId, -1)}
+                            className="px-2.5 py-1 text-gray-500 hover:bg-gray-50 hover:text-green-600 transition-colors"
+                          >
+                            <Minus className="w-3.5 h-3.5" />
+                          </button>
+                          <span className="px-3 py-1 text-sm font-semibold text-gray-900 border-x border-gray-200">
+                            {item.quantity}
+                          </span>
+                          <button
+                            onClick={() => updateQty(item.productId, 1)}
+                            className="px-2.5 py-1 text-gray-500 hover:bg-gray-50 hover:text-green-600 transition-colors"
+                          >
+                            <Plus className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                        <span className="text-sm font-medium text-gray-700">₹{lineTotal(item).toFixed(2)}</span>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))}
 
-              <button
-                onClick={() => router.push("/medicine")}
-                className="w-full py-3 text-sm text-green-600 font-medium hover:text-green-700 border border-dashed border-green-300 rounded-xl hover:bg-green-50 transition-colors flex items-center justify-center gap-2"
-              >
-                <ShoppingBag className="w-4 h-4" />
-                Add more items
-              </button>
+                <button
+                  onClick={() => router.push("/medicine")}
+                  className="w-full py-3 text-sm text-green-600 font-medium hover:text-green-700 border border-dashed border-green-300 rounded-xl hover:bg-green-50 transition-colors flex items-center justify-center gap-2"
+                >
+                  <ShoppingBag className="w-4 h-4" />
+                  Add more items
+                </button>
 
-              {/* <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-4">
+                {/* <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-4">
                 <h3 className="text-sm font-semibold text-gray-800 mb-3 flex items-center gap-1.5">
                   <Tag className="w-4 h-4 text-green-600" />
                   Apply Coupon
@@ -157,9 +157,9 @@ export default function CartPage() {
                   </Button>
                 </div>
               </div> */}
-            </div>
+              </div>
 
-              <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
+              <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5 max-h-[350px]">
                 <h3 className="font-semibold text-gray-900 mb-4">Price Details</h3>
                 <div className="space-y-3 text-sm">
                   <div className="flex justify-between text-gray-700">

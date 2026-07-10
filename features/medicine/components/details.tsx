@@ -5,8 +5,8 @@ import { Star, ShoppingCart, Zap, ChevronRight, Shield, CheckCircle, Truck, MapP
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { MDWHeader, MDWFooterBar, MedicineImagePlaceholder, PriceDisplay, InStockBadge } from "@/components/shared";
-import { useCartActions } from "@/hooks/use-cart";
-import type { Medicine } from "@/types";
+import { useCart, useCartActions } from "@/hooks/use-cart";
+import type { CartItemData, Medicine } from "@/types";
 import { MEDICINES } from "@/types";
 import { useRouter } from "next/navigation";
 import { Spinner } from "@/components/ui/spinner";
@@ -86,6 +86,12 @@ export default function MedicineDetailPage({ medicine = MEDICINES[4], slug }: Pr
   const [activeTab, setActiveTab] = useState("Description");
   const [selectedImage, setSelectedImage] = useState(0);
   const { addToCart } = useCartActions();
+
+  const { cart, guestItems, isGuest } = useCart();
+  const { removeFromCart } = useCartActions();
+
+  const cartItems: CartItemData[] = isGuest ? guestItems : (cart?.items ?? []);
+  const isAddedToCart = cartItems.some((item) => item.productId === med?._id);
 
   const CARD_COLORS = ["blue", "green", "orange", "purple"] as const;
   const thumbColors = ["blue", "green", "orange", "purple"] as const;
@@ -298,7 +304,7 @@ export default function MedicineDetailPage({ medicine = MEDICINES[4], slug }: Pr
               </div>
 
               <div className="border-t border-gray-100 pt-3">
-                <div className="flex items-center justify-between mb-3">
+                {!isAddedToCart && <div className="flex items-center justify-between mb-3">
                   <span className="text-sm font-medium text-gray-700">Quantity</span>
                   <div className="flex items-center gap-3 border border-gray-200 rounded-lg px-2 py-1">
                     <button
@@ -315,9 +321,9 @@ export default function MedicineDetailPage({ medicine = MEDICINES[4], slug }: Pr
                       <Plus className="w-3.5 h-3.5" />
                     </button>
                   </div>
-                </div>
+                </div>}
 
-                <Button
+                {!isAddedToCart ? <Button
                   disabled={!inStock}
                   onClick={() =>
                     addToCart.mutate({
@@ -328,18 +334,17 @@ export default function MedicineDetailPage({ medicine = MEDICINES[4], slug }: Pr
                       unitPrice: price,
                     })
                   }
-                  className="w-full bg-green-600 hover:bg-green-700 text-white h-10 rounded-lg font-semibold gap-2"
+                  className="w-full bg-green-600 hover:bg-green-700 text-white h-10 rounded-md font-semibold gap-2"
                 >
                   <ShoppingCart className="w-4 h-4" />
                   {addToCart.status === "pending" ? "Adding..." : "Add to Cart"}
-                </Button>
-                {/* <Button
-                  disabled={!inStock}
-                  variant="outline"
-                  className="w-full mt-2 border-green-600 text-green-700 hover:bg-green-50 h-10 rounded-lg font-semibold"
+                </Button> : <Button
+                  onClick={() => removeFromCart.mutate(med._id)}
+                  className="w-full bg-red-300  hover:bg-red-500 text-black hover:text-white h-10 rounded-md font-semibold gap-2"
                 >
-                  Buy Now
-                </Button> */}
+                  <ShoppingCart className="w-4 h-4" />
+                  {removeFromCart.status === "pending" ? "Removing..." : "Remove from Cart"}
+                </Button>}
               </div>
 
               {/* Trust badges */}
