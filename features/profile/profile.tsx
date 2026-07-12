@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { usePathname } from "next/navigation";
+import Link from "next/link";
 import {
   User,
   ShoppingBag,
@@ -21,10 +22,10 @@ import { MDWHeader, MDWFooterBar } from "@/components/shared";
 import { useAuth } from "@/providers/auth-provider";
 
 const NAV_ITEMS = [
-  { id: "profile", label: "My Profile", icon: <User className="w-4 h-4" /> },
-  { id: "orders", label: "My Orders", icon: <ShoppingBag className="w-4 h-4" /> },
+  { id: "profile", label: "My Profile", icon: <User className="w-4 h-4" />, href: "/account" },
+  { id: "orders", label: "My Orders", icon: <ShoppingBag className="w-4 h-4" />, href: "/orders" },
   // { id: "prescriptions", label: "My Prescriptions", icon: <FileText className="w-4 h-4" /> },
-  { id: "addresses", label: "Addresses", icon: <MapPin className="w-4 h-4" /> },
+  { id: "addresses", label: "Addresses", icon: <MapPin className="w-4 h-4" />, href: "/address" },
   // { id: "payment", label: "Payment Methods", icon: <CreditCard className="w-4 h-4" /> },
   // { id: "wallet", label: "My Wallet", icon: <Wallet className="w-4 h-4" /> },
   // { id: "notifications", label: "Notifications", icon: <Bell className="w-4 h-4" /> },
@@ -48,7 +49,6 @@ const USER = {
 };
 
 export default function ProfilePage() {
-  const [activeSection, setActiveSection] = useState("profile");
   const { user } = useAuth();
 
   return (
@@ -60,38 +60,7 @@ export default function ProfilePage() {
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-5">
           {/* Sidebar nav */}
-          <div className="lg:col-span-1">
-            <div className="bg-white rounded-lg border border-gray-100 shadow-sm overflow-hidden">
-              <nav className="divide-y divide-gray-50">
-                {NAV_ITEMS.map((item) => (
-                  <button
-                    key={item.id}
-                    onClick={() => setActiveSection(item.id)}
-                    className={`w-full flex items-center gap-3 px-4 py-3 text-sm transition-all text-left ${
-                      activeSection === item.id
-                        ? "bg-green-50 text-green-700 font-semibold border border-green-100"
-                        : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
-                    }`}
-                  >
-                    <span
-                      className={`flex-shrink-0 ${
-                        activeSection === item.id ? "text-green-600" : "text-gray-400"
-                      }`}
-                    >
-                      {item.icon}
-                    </span>
-                    {item.label}
-                  </button>
-                ))}
-
-                {/* Logout */}
-                {/* <button className="w-full flex items-center gap-3 px-4 py-3 text-sm text-red-500 hover:bg-red-50 transition-colors text-left">
-                  <LogOut className="w-4 h-4 flex-shrink-0" />
-                  Logout
-                </button> */}
-              </nav>
-            </div>
-          </div>
+          <UserSidebar />
 
           {/* Main content */}
           <div className="lg:col-span-3 space-y-4">
@@ -156,7 +125,7 @@ export default function ProfilePage() {
                 {QUICK_ACTIONS.map((action) => (
                   <button
                     key={action.id}
-                    onClick={() => setActiveSection(action.id)}
+                    // onClick={() => setActiveSection(action.id)}
                     className="flex flex-col items-center gap-2 p-3 rounded-md hover:bg-green-50 transition-colors group"
                   >
                     <div className="w-10 h-10 rounded-md bg-green-50 group-hover:bg-green-100 flex items-center justify-center transition-colors">
@@ -176,4 +145,65 @@ export default function ProfilePage() {
       <MDWFooterBar />
     </div>
   );
+}
+
+export function UserSidebar() {
+  const pathname = usePathname();
+
+  const activeSection = pathname === "/orders"
+    ? "orders"
+    : pathname === "/address"
+      ? "addresses"
+      : "profile";
+
+  return (
+    <div className="lg:col-span-1">
+      <div className="bg-white rounded-lg border border-gray-100 shadow-sm overflow-hidden">
+        <nav className="divide-y divide-gray-50">
+          {NAV_ITEMS.map((item) => (
+            item.href ? (
+              <Link
+                key={item.id}
+                href={item.href}
+                className={`w-full flex items-center gap-3 px-4 py-3 text-sm transition-all text-left ${activeSection === item.id
+                  ? "bg-green-50 text-green-700 font-semibold border border-green-100"
+                  : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                  }`}
+              >
+                <span
+                  className={`flex-shrink-0 ${activeSection === item.id ? "text-green-600" : "text-gray-400"
+                    }`}
+                >
+                  {item.icon}
+                </span>
+                {item.label}
+              </Link>
+            ) : (
+              <button
+                key={item.id}
+                className={`w-full flex items-center gap-3 px-4 py-3 text-sm transition-all text-left ${activeSection === item.id
+                  ? "bg-green-50 text-green-700 font-semibold border border-green-100"
+                  : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                  }`}
+              >
+                <span
+                  className={`flex-shrink-0 ${activeSection === item.id ? "text-green-600" : "text-gray-400"
+                    }`}
+                >
+                  {item.icon}
+                </span>
+                {item.label}
+              </button>
+            )
+          ))}
+
+          {/* Logout */}
+          {/* <button className="w-full flex items-center gap-3 px-4 py-3 text-sm text-red-500 hover:bg-red-50 transition-colors text-left">
+                  <LogOut className="w-4 h-4 flex-shrink-0" />
+                  Logout
+                </button> */}
+        </nav>
+      </div>
+    </div>
+  )
 }

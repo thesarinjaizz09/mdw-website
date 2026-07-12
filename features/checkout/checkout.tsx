@@ -369,7 +369,7 @@ export default function CheckoutPage() {
                       const orderId = result?.order?.userOrderId || result?.orderId || 'N/A';
 
                       toast.success('Order placed successfully! Order ID: ' + orderId);
-                      router.push(`/orders/${orderId}`);
+                      router.push(`/orders`);
                     } catch (err) {
                       console.error(err);
                       toast.error('Order failed. Check console for details.');
