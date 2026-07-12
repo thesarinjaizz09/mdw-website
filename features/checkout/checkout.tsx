@@ -8,11 +8,12 @@ import { useCart } from "@/hooks/use-cart";
 import { useAddress } from "@/hooks/use-address";
 import AddressDialog from "@/components/address-dialog";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const PAYMENT_OPTIONS = [
-  { id: "upi", label: "UPI", icon: "📱" },
-  { id: "card", label: "Credit / Debit Card", icon: "💳" },
-  { id: "netbanking", label: "Net Banking", icon: "🏦" },
+  // { id: "upi", label: "UPI", icon: "📱" },
+  // { id: "card", label: "Credit / Debit Card", icon: "💳" },
+  // { id: "netbanking", label: "Net Banking", icon: "🏦" },
   { id: "cod", label: "Cash on Delivery", icon: "💵" },
 ];
 
@@ -21,7 +22,7 @@ export default function CheckoutPage() {
   const { addresses, selectedAddress: hookSelected, saveAddress, fetchCurrentLocation } = useAddress();
   const [selectedAddress, setSelectedAddress] = useState<string | null>(hookSelected?.id || (addresses[0]?.id ?? null));
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [selectedPayment, setSelectedPayment] = useState("upi");
+  const [selectedPayment, setSelectedPayment] = useState("cod");
   const [orderType, setOrderType] = useState<"QUICK" | "SCHEDULE">("QUICK");
   const [scheduledDate, setScheduledDate] = useState<string>("");
   const [scheduledSlot, setScheduledSlot] = useState<string>("Morning");
@@ -35,6 +36,7 @@ export default function CheckoutPage() {
       setSelectedAddress(addresses[0].id);
     }
   }, [hookSelected, addresses]);
+
 
   return (
     <div className="min-h-screen bg-gray-50 flex-1 flex flex-col justify-between">
@@ -64,8 +66,8 @@ export default function CheckoutPage() {
                     <label
                       key={addr.id}
                       className={`flex items-start gap-3 p-3.5 rounded-lg border cursor-pointer transition-all ${selectedAddress === addr.id
-                          ? "border-green-500 bg-green-50"
-                          : "border-gray-200 hover:border-gray-300"
+                        ? "border-green-500 bg-green-50"
+                        : "border-gray-200 hover:border-gray-300"
                         }`}
                     >
                       <div className="flex-1">
@@ -92,8 +94,8 @@ export default function CheckoutPage() {
                       />
                       <div
                         className={`w-4 h-4 rounded-full border-2 flex-shrink-0 mt-0.5 transition-all ${selectedAddress === addr.id
-                            ? "border-green-600 bg-green-600"
-                            : "border-gray-300"
+                          ? "border-green-600 bg-green-600"
+                          : "border-gray-300"
                           }`}
                       />
                     </label>
@@ -150,9 +152,9 @@ export default function CheckoutPage() {
                           setScheduledDate(date);
                           // if selected date is tomorrow, restrict slot to 24H
                           const today = new Date();
-                          today.setHours(0,0,0,0);
+                          today.setHours(0, 0, 0, 0);
                           const sel = new Date(date);
-                          sel.setHours(0,0,0,0);
+                          sel.setHours(0, 0, 0, 0);
                           const tomorrow = new Date(today);
                           tomorrow.setDate(tomorrow.getDate() + 1);
                           if (sel.getTime() === tomorrow.getTime()) {
@@ -172,9 +174,9 @@ export default function CheckoutPage() {
                         {(() => {
                           // compute options based on selected date
                           const today = new Date();
-                          today.setHours(0,0,0,0);
+                          today.setHours(0, 0, 0, 0);
                           const sel = scheduledDate ? new Date(scheduledDate) : today;
-                          sel.setHours(0,0,0,0);
+                          sel.setHours(0, 0, 0, 0);
                           const tomorrow = new Date(today);
                           tomorrow.setDate(tomorrow.getDate() + 1);
 
@@ -212,8 +214,8 @@ export default function CheckoutPage() {
                     <label
                       key={option.id}
                       className={`flex items-center justify-between p-3.5 rounded-lg border cursor-pointer transition-all ${selectedPayment === option.id
-                          ? "border-green-500 bg-green-50"
-                          : "border-gray-200 hover:border-gray-300"
+                        ? "border-green-500 bg-green-50"
+                        : "border-gray-200 hover:border-gray-300"
                         }`}
                     >
                       <div className="flex items-center gap-3">
@@ -226,8 +228,8 @@ export default function CheckoutPage() {
                         )}
                         <div
                           className={`w-4 h-4 rounded-full border-2 transition-all ${selectedPayment === option.id
-                              ? "border-green-600 bg-green-600"
-                              : "border-gray-300"
+                            ? "border-green-600 bg-green-600"
+                            : "border-gray-300"
                             }`}
                         />
                       </div>
@@ -284,14 +286,14 @@ export default function CheckoutPage() {
                   className="w-full mt-4 bg-green-600 hover:bg-green-700 text-white h-11 rounded-lg font-semibold"
                   onClick={async () => {
                     try {
-                      const cartId = cart?.cartId || (cart as any)?._id || null;
+                      const cartId = cart?.id || (cart as any)?._id || null;
                       const addressId = selectedAddress;
                       if (!cartId) {
-                        alert("No cart found");
+                        toast.error("No cart found");
                         return;
                       }
                       if (!addressId) {
-                        alert("Please select a delivery address");
+                        toast.error("Please select a delivery address");
                         return;
                       }
 
@@ -304,14 +306,14 @@ export default function CheckoutPage() {
                       if (orderType === 'SCHEDULE') {
                         // front-end validation
                         if (!scheduledDate) {
-                          alert('Please select a delivery date');
+                          toast.error('Please select a delivery date');
                           return;
                         }
                         // enforce allowed slot for tomorrow
                         const today = new Date();
-                        today.setHours(0,0,0,0);
+                        today.setHours(0, 0, 0, 0);
                         const sel = new Date(scheduledDate);
-                        sel.setHours(0,0,0,0);
+                        sel.setHours(0, 0, 0, 0);
                         const tomorrow = new Date(today);
                         tomorrow.setDate(tomorrow.getDate() + 1);
                         if (sel.getTime() === tomorrow.getTime() && scheduledSlot !== '24H') {
@@ -335,24 +337,42 @@ export default function CheckoutPage() {
                         payload.scheduleDeliveryTime = scheduleDeliveryTime;
                       }
 
-                      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/orders/create-order`, {
+                      const res = await fetch(`/api/order/create`, {
                         method: 'POST',
                         credentials: 'include',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(payload),
                       });
 
+
                       const data = await res.json().catch(() => ({}));
+
+                      // Normalize payload: some Next API routes forward backend JSON
+                      // directly, others wrap it under `data`. Support both shapes.
+                      const result = data?.data ?? data;
+
                       if (!res.ok) {
-                        alert(data?.message || 'Failed to create order');
+                        if (data.errors.length > 0) {
+                          data.errors.forEach((err: any) => toast.error(err));
+                          return;
+                        }
+                        toast.error(result?.message || 'Failed to create order');
                         return;
                       }
 
-                      // Success - navigate to orders page
-                      router.push('/orders');
+
+                      if (result?.success !== true) {
+                        toast.error(result?.message || 'Failed to create order');
+                        return;
+                      }
+
+                      const orderId = result?.order?.userOrderId || result?.orderId || 'N/A';
+
+                      toast.success('Order placed successfully! Order ID: ' + orderId);
+                      router.push(`/orders/${orderId}`);
                     } catch (err) {
                       console.error(err);
-                      alert('Order failed. Check console for details.');
+                      toast.error('Order failed. Check console for details.');
                     }
                   }}
                 >

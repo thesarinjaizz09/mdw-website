@@ -36,7 +36,7 @@ export function useLogin() {
         onSuccess: (data) => {
             setUser(mapAuthUserToUser(data.user));
             toast.success("Welcome back.");
-            router.push("/");
+            router.push("/medicine");
             router.refresh();
         },
         onError: (err) => {
@@ -63,7 +63,7 @@ export function useRegister() {
         onSuccess: (data) => {
             setUser(mapAuthUserToUser(data.user));
             toast.success("Account created.");
-            router.push("/");
+            router.push("/medicine");
             router.refresh();
         },
         onError: (err) => {

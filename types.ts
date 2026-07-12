@@ -33,6 +33,7 @@ export interface CartItemData {
 }
 
 export interface CartSummary {
+  id: string;
   cartId: string;
   totalAmount: number;
   pricing?: {

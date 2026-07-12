@@ -29,16 +29,16 @@ export function useAddress() {
     const loadAddresses = async () => {
         try {
             setLoading(true);
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/address/get-addresses`, {
+            const res = await fetch(`/api/address/get`, {
                 credentials: "include",
             });
-
             if (!res.ok) return;
 
             const data = await res.json();
-            if (data?.addresses && Array.isArray(data.addresses)) {
+            const addressesPayload = data?.addresses || data?.data?.addresses;
+            if (addressesPayload && Array.isArray(addressesPayload)) {
                 // map backend shape to frontend Address
-                const mapped: Address[] = data.addresses.map((a: any) => ({
+                const mapped: Address[] = addressesPayload.map((a: any) => ({
                     id: a._id,
                     label: a.label || "Saved Address",
                     line1: a.address || "",
@@ -121,7 +121,7 @@ export function useAddress() {
         setSelectedAddress(address);
         localStorage.setItem("selected-address", JSON.stringify(address));
     };
-    
+
     const createAddress = async (address: Address & { latitude?: number; longitude?: number }) => {
         // If user is logged in, persist to backend
         if (user) {
@@ -142,7 +142,7 @@ export function useAddress() {
                     payload.longitude = address.longitude;
                 }
 
-                const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/address/add-address`, {
+                const res = await fetch(`/api/address/create`, {
                     method: "POST",
                     credentials: "include",
                     headers: {
@@ -153,6 +153,7 @@ export function useAddress() {
 
                 if (!res.ok) {
                     const err = await res.json().catch(() => ({}));
+                    console.log({ err })
                     throw new Error(err?.message || "Failed to add address");
                 }
 
@@ -161,7 +162,7 @@ export function useAddress() {
                 // refresh addresses
                 await loadAddresses();
 
-                const created = data?.address;
+                const created = data?.address || data?.data?.address;
                 if (created) {
                     const mapped: Address = {
                         id: created._id,

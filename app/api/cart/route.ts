@@ -25,6 +25,7 @@ export async function GET(request: Request) {
 
     const cart =
         data.carts?.[0] ?? null;
+        // console.log({ cart });
 
     return NextResponse.json(
         cart,

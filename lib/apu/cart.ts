@@ -56,6 +56,7 @@ function normalizeCartResponse(data: any): CartSummary | null {
         : items.reduce((sum, item) => sum + (item.amount || 0), 0);
 
   return {
+    id: data._id,
     cartId: data.cartId || data.id || data._id || "",
     itemCount,
     totalAmount,
