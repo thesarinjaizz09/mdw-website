@@ -1,4 +1,4 @@
-"use client";
+"use client"
 
 import {
   Search,
@@ -17,46 +17,137 @@ import {
   Popcorn,
   HeartPulse,
   UploadIcon,
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { MDWHeader, MDWFooterBar, MedicineImagePlaceholder, MedicineSearchInput } from "@/components/shared";
-import { MedicineCard } from "../components/card";
-import { Medicine, MEDICINES, CategoryMedicineEntry, CategoriesMedicinesResponse, ProductData, CategoryGroup } from "@/types";
-import { FaPills, FaWhatsapp } from "react-icons/fa";
-import { TbReplace } from "react-icons/tb";
-import { GiStomach, GiMedicines, GiLiver, GiLoveInjection, GiFrontTeeth, GiLungs, GiSpiderMask } from "react-icons/gi";
-import { PiNuclearPlantFill } from "react-icons/pi";
-import { useEffect, useState } from "react";
-import axios from "axios";
-import { HowItWorksSection, WellnessBannerSection } from "@/features/landing/components";
-import { useCartActions } from "@/hooks/use-cart";
-import { toast } from "sonner";
+} from "lucide-react"
+import { Button } from "@/components/ui/button"
+import {
+  MDWHeader,
+  MDWFooterBar,
+  MedicineImagePlaceholder,
+  MedicineSearchInput,
+} from "@/components/shared"
+import { MedicineCard } from "../components/card"
+import {
+  Medicine,
+  MEDICINES,
+  CategoryMedicineEntry,
+  CategoriesMedicinesResponse,
+  ProductData,
+  CategoryGroup,
+} from "@/types"
+import { FaPills, FaWhatsapp } from "react-icons/fa"
+import { TbReplace } from "react-icons/tb"
+import {
+  GiStomach,
+  GiMedicines,
+  GiLiver,
+  GiLoveInjection,
+  GiFrontTeeth,
+  GiLungs,
+  GiSpiderMask,
+} from "react-icons/gi"
+import { PiNuclearPlantFill } from "react-icons/pi"
+import { useEffect, useState } from "react"
+import axios from "axios"
+import {
+  HowItWorksSection,
+  WellnessBannerSection,
+} from "@/features/landing/components"
+import { useCartActions } from "@/hooks/use-cart"
+import { toast } from "sonner"
 
 const CATEGORIES = [
-  { icon: <Popcorn className="w-5 h-5" />, label: "Diabetes Care", color: "bg-blue-50" },
-  { icon: <HeartPulse className="w-5 h-5" />, label: "Cardiac Care", color: "bg-red-50" },
-  { icon: <GiStomach className="w-5 h-5" />, label: "Stomach Care", color: "bg-pink-50" },
-  { icon: <GiMedicines className="w-5 h-5" />, label: "Pain Relief", color: "bg-purple-50" },
-  { icon: <GiLiver className="w-5 h-5" />, label: "Liver Care", color: "bg-indigo-50" },
-  { icon: <FaPills className="w-5 h-5" />, label: "Drugs", color: "bg-yellow-50" },
-  { icon: <PiNuclearPlantFill className="w-5 h-5" />, label: "Nutraceuticals", color: "bg-teal-50" },
-  { icon: <TbReplace className="w-5 h-5" />, label: "Substitute", color: "bg-green-50" },
-  { icon: <GiLoveInjection className="w-5 h-5" />, label: "Injections", color: "bg-green-50" },
-  { icon: <GiFrontTeeth className="w-5 h-5" />, label: "Oral Care", color: "bg-green-50" },
-  { icon: <GiLungs className="w-5 h-5" />, label: "Respiratory Care", color: "bg-green-50" },
-  { icon: <GiSpiderMask className="w-5 h-5" />, label: "Derma Care", color: "bg-green-50" },
-];
+  {
+    icon: <Popcorn className="h-5 w-5" />,
+    label: "Diabetes Care",
+    color: "bg-blue-50",
+  },
+  {
+    icon: <HeartPulse className="h-5 w-5" />,
+    label: "Cardiac Care",
+    color: "bg-red-50",
+  },
+  {
+    icon: <GiStomach className="h-5 w-5" />,
+    label: "Stomach Care",
+    color: "bg-pink-50",
+  },
+  {
+    icon: <GiMedicines className="h-5 w-5" />,
+    label: "Pain Relief",
+    color: "bg-purple-50",
+  },
+  {
+    icon: <GiLiver className="h-5 w-5" />,
+    label: "Liver Care",
+    color: "bg-indigo-50",
+  },
+  {
+    icon: <FaPills className="h-5 w-5" />,
+    label: "Drugs",
+    color: "bg-yellow-50",
+  },
+  {
+    icon: <PiNuclearPlantFill className="h-5 w-5" />,
+    label: "Nutraceuticals",
+    color: "bg-teal-50",
+  },
+  {
+    icon: <TbReplace className="h-5 w-5" />,
+    label: "Substitute",
+    color: "bg-green-50",
+  },
+  {
+    icon: <GiLoveInjection className="h-5 w-5" />,
+    label: "Injections",
+    color: "bg-green-50",
+  },
+  {
+    icon: <GiFrontTeeth className="h-5 w-5" />,
+    label: "Oral Care",
+    color: "bg-green-50",
+  },
+  {
+    icon: <GiLungs className="h-5 w-5" />,
+    label: "Respiratory Care",
+    color: "bg-green-50",
+  },
+  {
+    icon: <GiSpiderMask className="h-5 w-5" />,
+    label: "Derma Care",
+    color: "bg-green-50",
+  },
+]
 
 const WHY_CHOOSE = [
-  { icon: <UserCheck className="w-5 h-5 text-green-600" />, title: "Licensed Pharmacy", sub: "Drug License Approved" },
-  { icon: <Shield className="w-5 h-5 text-green-600" />, title: "Registered Pharmacist", sub: "Always Available" },
-  { icon: <CheckCircle className="w-5 h-5 text-green-600" />, title: "100% Genuine", sub: "Medicines" },
-  { icon: <Truck className="w-5 h-5 text-green-600" />, title: "20 Min Delivery*", sub: "In Selected Areas" },
-  { icon: <Shield className="w-5 h-5 text-green-600" />, title: "Secure Payments", sub: "100% Safe" },
-];
+  {
+    icon: <UserCheck className="h-5 w-5 text-green-600" />,
+    title: "Licensed Pharmacy",
+    sub: "Drug License Approved",
+  },
+  {
+    icon: <Shield className="h-5 w-5 text-green-600" />,
+    title: "Registered Pharmacist",
+    sub: "Always Available",
+  },
+  {
+    icon: <CheckCircle className="h-5 w-5 text-green-600" />,
+    title: "100% Genuine",
+    sub: "Medicines",
+  },
+  {
+    icon: <Truck className="h-5 w-5 text-green-600" />,
+    title: "20 Min Delivery*",
+    sub: "In Selected Areas",
+  },
+  {
+    icon: <Shield className="h-5 w-5 text-green-600" />,
+    title: "Secure Payments",
+    sub: "100% Safe",
+  },
+]
 
 function toMedicine(product: ProductData): Medicine {
-  const primaryBatch = product.batches?.[0];
+  const primaryBatch = product.batches?.[0]
   return {
     _id: product._id,
     name: product.name,
@@ -66,44 +157,45 @@ function toMedicine(product: ProductData): Medicine {
     mrp: primaryBatch?.mrp ?? 0,
     discount: primaryBatch?.discount ?? 0,
     inStock: product.status !== "Not Available" && product.totalQuantity > 0,
-  } as Medicine;
+  } as Medicine
 }
 
 export default function MedicinesPage() {
-
-  const { addToCart } = useCartActions();
-  const [featuredProducts, setFeaturedProducts] = useState<Medicine[]>(MEDICINES);
-  const [categoryGroups, setCategoryGroups] = useState<CategoryGroup[]>([]);
+  const { addToCart } = useCartActions()
+  const [featuredProducts, setFeaturedProducts] =
+    useState<Medicine[]>(MEDICINES)
+  const [categoryGroups, setCategoryGroups] = useState<CategoryGroup[]>([])
 
   useEffect(() => {
     async function fetchProducts() {
-      const response =
-        await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/product/featured-medicines`);
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/product/featured-medicines`
+      )
 
-      setFeaturedProducts(response.data.data);
+      setFeaturedProducts(response.data.data)
     }
 
-    fetchProducts();
+    fetchProducts()
   }, [])
 
   useEffect(() => {
     async function fetchCategoryProducts() {
       const response = await axios.get<CategoriesMedicinesResponse>(
         `${process.env.NEXT_PUBLIC_API_URL}/product/categories-medicines`
-      );
+      )
 
-      setCategoryGroups(response.data.data);
+      setCategoryGroups(response.data.data)
     }
 
-    fetchCategoryProducts();
+    fetchCategoryProducts()
   }, [])
 
   const addToCartFunction = (medicine: Medicine) => {
     if (!medicine._id) {
-      toast.error("Invalid medicine ID. Cannot add to cart.");
-      return;
+      toast.error("Invalid medicine ID. Cannot add to cart.")
+      return
     }
-    
+
     addToCart.mutate({
       productId: medicine._id,
       quantity: 1,
@@ -113,49 +205,50 @@ export default function MedicinesPage() {
     })
   }
 
-
   return (
     <div className="min-h-screen bg-gray-50">
       <MDWHeader />
 
-      <main className="max-w-7xl mx-auto px-4 py-6 space-y-8">
+      <main className="mx-auto max-w-7xl space-y-8 px-4 py-6">
         {/* Hero Banner */}
-        <section className="relative rounded-2xl bg-gradient-to-r from-green-50 via-emerald-50 to-teal-50s min-h-[220px] flex flex-row items-center justify-between py-5 px-4">
+        <section className="to-teal-50s relative flex min-h-[220px] flex-row justify-between rounded-2xl bg-gradient-to-r from-green-50 via-emerald-50 px-4 py-5 max-[700px]:flex-col min-[700px]:items-center">
           {/* Content */}
-          <div className="relative z-10 py-7 px-2 max-w-xl">
-            <h1 className="text-4xl font-bold text-gray-900 mb-2">
-              Medicines
-            </h1>
+          <div className="relative z-10 max-w-xl px-2 py-7">
+            <h1 className="mb-2 text-4xl font-bold text-gray-900">Medicines</h1>
 
-            <p className="text-base text-gray-600 flex flex-wrap items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-green-500" />
+            <p className="flex flex-wrap items-center gap-2 text-base text-gray-600">
+              <span className="h-1.5 w-1.5 rounded-full bg-green-500" />
               Genuine Medicines
-
-              <span className="w-1.5 h-1.5 rounded-full bg-green-500" />
+              <span className="h-1.5 w-1.5 rounded-full bg-green-500" />
               Fast Delivery
-
-              <span className="w-1.5 h-1.5 rounded-full bg-green-500" />
+              <span className="h-1.5 w-1.5 rounded-full bg-green-500" />
               Trusted Care
             </p>
           </div>
           <div className="grid grid-cols-1 gap-2">
             {/* <HowItWorksSection theme={1} /> */}
-            <div className="bg-white rounded-md border border-gray-100 p-5 shadow-sm">
-              <h2 className="font-bold text-gray-900 text-base mb-0.5">Search Medicine</h2>
-              <p className="text-xs text-gray-500 mb-3">Find your medicines quickly</p>
+            <div className="rounded-md border border-gray-100 bg-white p-5 shadow-sm">
+              <h2 className="mb-0.5 text-base font-bold text-gray-900">
+                Search Medicine
+              </h2>
+              <p className="mb-3 text-xs text-gray-500">
+                Find your medicines quickly
+              </p>
               <div className="relative">
                 <MedicineSearchInput />
               </div>
-              <div className="flex items-center gap-2 mt-2.5 flex-wrap">
+              <div className="mt-2.5 flex flex-wrap items-center gap-2">
                 <span className="text-xs text-gray-500">Popular Searches:</span>
-                {["Telma 40", "Ecosprin 75", "Thyronorm 50", "Crocin 650"].map((s) => (
-                  <button
-                    key={s}
-                    className="text-xs text-gray-700 bg-gray-100 hover:bg-green-100 hover:text-green-700 px-2 py-0.5 rounded-full transition-colors"
-                  >
-                    {s}
-                  </button>
-                ))}
+                {["Telma 40", "Ecosprin 75", "Thyronorm 50", "Crocin 650"].map(
+                  (s) => (
+                    <button
+                      key={s}
+                      className="rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-700 transition-colors hover:bg-green-100 hover:text-green-700"
+                    >
+                      {s}
+                    </button>
+                  )
+                )}
               </div>
             </div>
           </div>
@@ -199,20 +292,22 @@ export default function MedicinesPage() {
 
         {/* Health Categories */}
         <section className="z-1">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-bold text-gray-900 ml-2">Shop by Health Categories</h2>
-            <button className="text-sm text-green-600 hover:text-green-700 font-medium flex items-center gap-0.5">
-              View All Categories <ChevronRight className="w-4 h-4" />
+          <div className="mb-4 flex items-center justify-between">
+            <h2 className="text-md ml-2 font-bold text-gray-900 min-[500px]:text-xl">
+              Shop by Health Categories
+            </h2>
+            <button className="flex items-center gap-0.5 text-xs font-medium text-green-600 hover:text-green-700 min-[500px]:text-sm">
+              View All Categories <ChevronRight className="h-4 w-4" />
             </button>
           </div>
-          <div className="grid grid-cols-4 sm:grid-cols-6 gap-3">
+          <div className="grid grid-cols-2 gap-3 min-[450px]:grid-cols-3 min-[650px]:grid-cols-4 min-[800px]:grid-cols-6">
             {CATEGORIES.map((cat) => (
               <button
                 key={cat.label}
-                className={`${cat.color} rounded-lg p-3 flex flex-row items-center justify-start gap-3 hover:shadow-sm hover:scale-105 transition-all text-black border hover:border-gray-100 border-gray-200`}
+                className={`${cat.color} flex flex-row items-center justify-start gap-3 rounded-lg border border-gray-200 p-3 text-black transition-all hover:scale-105 hover:border-gray-100 hover:shadow-sm`}
               >
-                {cat.icon}
-                <span className="text-xs text-gray-700 font-medium text-center leading-tight whitespace-pre-line">
+                <span>{cat.icon}</span>
+                <span className="text-center text-xs leading-tight font-medium whitespace-pre-line text-gray-700">
                   {cat.label}
                 </span>
               </button>
@@ -253,29 +348,37 @@ export default function MedicinesPage() {
           </div>
         </section> */}
 
-        <section className="relative overflow-hidden rounded-xl flex items-center justify-center p-2">
-          <div className="bg-white rounded-lg border border-gray-100 p-5 h-full py-7 shadow-sm w-xl max-w-2xl">
+        <section className="relative flex items-center justify-center overflow-hidden rounded-xl p-2">
+          <div className="h-full w-xl max-w-2xl rounded-lg border border-gray-100 bg-white p-5 py-7 shadow-sm">
             <div className="flex items-center gap-4">
               <div className="flex-1">
-                <div className="flex items-center gap-2 mb-1">
-                  <h2 className="font-bold text-gray-900 text-base">Upload Prescription</h2>
+                <div className="mb-1 flex items-center gap-2">
+                  <h2 className="text-base font-bold text-gray-900">
+                    Upload Prescription
+                  </h2>
                 </div>
-                <p className="text-xs text-gray-500 mb-4">Upload prescription and we will add all medicines for you</p>
+                <p className="mb-4 text-xs text-gray-500">
+                  Upload prescription and we will add all medicines for you
+                </p>
                 <div className="relative mb-1">
-                  <div className="flex items-center border rounded-md overflow-hidden border border-gray-200">
-                    <button className="flex-1 py-3 px-3 outline-none text-black text-xs">Upload Prescription</button>
+                  <div className="flex items-center overflow-hidden rounded-md border border-gray-200">
+                    <button className="flex-1 px-3 py-3 text-xs text-black outline-none">
+                      Upload Prescription
+                    </button>
 
-                    <button className="bg-green-600 text-white p-3">
+                    <button className="bg-green-600 p-3 text-white">
                       <UploadIcon size={18} />
                     </button>
                   </div>
                 </div>
-                <div className="flex items-center gap-2 mt-2.5 flex-wrap">
-                  <span className="text-xs text-gray-500">Formats Supported:</span>
+                <div className="mt-2.5 flex flex-wrap items-center gap-2">
+                  <span className="text-xs text-gray-500">
+                    Formats Supported:
+                  </span>
                   {["JPEG", "PNG", "PDF", "JPG"].map((s) => (
                     <button
                       key={s}
-                      className="text-xs text-gray-700 bg-gray-100 hover:bg-green-100 hover:text-green-700 px-2 py-0.5 rounded-full transition-colors"
+                      className="rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-700 transition-colors hover:bg-green-100 hover:text-green-700"
                     >
                       {s}
                     </button>
@@ -288,15 +391,22 @@ export default function MedicinesPage() {
 
         {/* Popular Medicines */}
         <section>
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-bold text-gray-900 ml-2">Popular Medicines</h2>
-            <button className="text-sm text-green-600 hover:text-green-700 font-medium flex items-center gap-0.5">
-              View All Medicines <ChevronRight className="w-4 h-4" />
+          <div className="mb-4 flex items-center justify-between">
+            <h2 className="text-md ml-2 font-bold text-gray-900 min-[500px]:text-xl">
+              Popular Medicines
+            </h2>
+            <button className="flex items-center gap-0.5 text-xs font-medium text-green-600 hover:text-green-700 min-[500px]:text-sm">
+              View All Medicines <ChevronRight className="h-4 w-4" />
             </button>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+          <div className="mx-auto grid max-w-[15rem] gap-2 min-[380px]:max-w-none min-[380px]:grid-cols-2 min-[400px]:gap-4 sm:grid-cols-3 lg:grid-cols-5">
             {featuredProducts.map((med, i) => (
-              <MedicineCard key={i} medicine={med} index={i} onAddToCart={addToCartFunction} />
+              <MedicineCard
+                key={i}
+                medicine={med}
+                index={i}
+                onAddToCart={addToCartFunction}
+              />
             ))}
           </div>
         </section>
@@ -307,31 +417,47 @@ export default function MedicinesPage() {
           .filter((group) => group.medicines && group.medicines.length > 0)
           .map((group) => (
             <section key={group.category}>
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-bold text-gray-900 ml-2">{group.category}</h2>
-                <button className="text-sm text-green-600 hover:text-green-700 font-medium flex items-center gap-0.5">
-                  View All <ChevronRight className="w-4 h-4" />
+              <div className="mb-4 flex items-center justify-between">
+                <h2 className="text-md ml-2 font-bold text-gray-900 min-[500px]:text-xl">
+                  {group.category}
+                </h2>
+                <button className="flex items-center gap-0.5 text-xs font-medium text-green-600 hover:text-green-700 min-[500px]:text-sm">
+                  View All <ChevronRight className="h-4 w-4" />
                 </button>
               </div>
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+              <div className="mx-auto grid max-w-[15rem] gap-2 min-[380px]:max-w-none min-[380px]:grid-cols-2 min-[400px]:gap-4 sm:grid-cols-3 lg:grid-cols-5">
                 {group.medicines.slice(0, 5).map((product, i) => (
-                  <MedicineCard key={product._id ?? i} medicine={toMedicine(product)} index={i} onAddToCart={addToCartFunction}/>
+                  <MedicineCard
+                    key={product._id ?? i}
+                    medicine={toMedicine(product)}
+                    index={i}
+                    onAddToCart={addToCartFunction}
+                  />
                 ))}
               </div>
             </section>
           ))}
 
         {/* Why Choose MDW */}
-        <section className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm">
-          <div className="flex items-center gap-8 flex-wrap">
-            <h3 className="font-bold text-gray-900 text-sm min-w-fit">Why Choose MDW?</h3>
-            <div className="flex gap-8 flex-wrap flex-1 items-center justify-around">
+        <section className="mx-auto rounded-xl border border-gray-100 bg-white p-5 shadow-sm min-[450px]:w-full">
+          <div className="flex flex-col items-center gap-8 min-[1000px]:flex-row">
+            <h3 className="mx-auto min-w-fit text-sm font-bold text-gray-900">
+              Why Choose MDW?
+            </h3>
+            <div className="flex w-min flex-1 flex-wrap items-center justify-center gap-8 min-[430px]:w-full min-[850px]:flex-nowrap min-[850px]:justify-around">
               {WHY_CHOOSE.map((item) => (
-                <div key={item.title} className="flex items-center gap-2">
+                <div
+                  key={item.title}
+                  className="flex w-[10rem] items-center gap-2 min-[850px]:w-fit"
+                >
                   {item.icon}
                   <div>
-                    <div className="text-xs font-semibold text-gray-800">{item.title}</div>
-                    <div className="text-[10px] text-gray-500">{item.sub}</div>
+                    <div className="text-xs font-semibold whitespace-nowrap text-gray-800">
+                      {item.title}
+                    </div>
+                    <div className="text-[10px] whitespace-nowrap text-gray-500">
+                      {item.sub}
+                    </div>
                   </div>
                 </div>
               ))}
@@ -340,35 +466,59 @@ export default function MedicinesPage() {
         </section>
 
         {/* Need Help */}
-        <section className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-100 p-5 flex items-start justify-between gap-6 max-w-3xl mx-auto min-h-[200px]">
+        <section className="mx-auto flex min-h-[200px] max-w-3xl flex-col items-start justify-between gap-6 rounded-xl border border-green-100 bg-gradient-to-r from-green-50 to-emerald-50 p-5 md:flex-row">
           {/* Doctor avatar placeholder */}
-          <div className="w-16 h-16 bg-green-200 rounded-full flex-shrink-0 flex items-center justify-center overflow-hidden">
-            <span className="text-3xl">👨‍⚕️</span>
-          </div>
-          <div className="flex-1">
-            <h2 className="font-bold text-gray-900 text-lg mb-0.5">Need Help Finding Medicines?</h2>
-            <p className="text-sm text-gray-500 mb-3">Our Pharmacist is here to help you.</p>
-            <div className="flex gap-3">
-              <Button size="sm" className="bg-green-600 hover:bg-green-700 text-white h-12 text-xs rounded-md gap-1.5 px-5">
-                <FaWhatsapp className="w-3.5 h-3.5" />
-                Chat on WhatsApp
-              </Button>
-              <Button className="border border-green-900 hover:bg-green-50 text-green-700 h-12 px-5 text-xs rounded-md gap-1.5 bg-white">
-                <Phone className="w-3.5 h-3.5" />
-                Call Us Now
-              </Button>
+          <section className="flex items-start justify-between gap-6">
+            <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-green-200">
+              <span className="text-3xl">👨‍⚕️</span>
             </div>
-          </div>
-          <div className="w-full h-[150px] flex flex-col items-end justify-center rounded-md">
-            <div className="grid grid-cols-3 gap-2 ">
+            <div className="flex-1">
+              <h2 className="text-md mb-0.5 font-bold text-gray-900 min-[500px]:text-lg">
+                Need Help Finding Medicines?
+              </h2>
+              <p className="mb-3 text-sm text-gray-500">
+                Our Pharmacist is here to help you.
+              </p>
+              <div className="flex flex-wrap gap-3 sm:flex-nowrap">
+                <Button
+                  size="sm"
+                  className="w-fulls h-12 gap-1.5 rounded-md bg-green-600 px-5 text-xs text-white hover:bg-green-700 sm:w-fit"
+                >
+                  <FaWhatsapp className="h-3.5 w-3.5" />
+                  Chat on WhatsApp
+                </Button>
+                <Button className="h-12 w-[10.2rem] gap-1.5 rounded-md border border-green-900 bg-white px-5 text-xs text-green-700 hover:bg-green-50 min-[468px]:w-fit">
+                  <Phone className="h-3.5 w-3.5" />
+                  Call Us Now
+                </Button>
+              </div>
+            </div>
+          </section>
+
+          <div className="flex h-[150px] w-full flex-col justify-center rounded-md md:items-end">
+            <div className="grid grid-cols-3 gap-2">
               {[
-                { icon: <PackageCheck className="w-5 h-5 text-green-600" />, label: "Prescription\nAssistance" },
-                { icon: <Bell className="w-5 h-5 text-green-600" />, label: "Medicine\nReminder" },
-                { icon: <Truck className="w-5 h-5 text-green-600" />, label: "Order\nTracking" },
+                {
+                  icon: <PackageCheck className="h-5 w-5 text-green-600" />,
+                  label: "Prescription\nAssistance",
+                },
+                {
+                  icon: <Bell className="h-5 w-5 text-green-600" />,
+                  label: "Medicine\nReminder",
+                },
+                {
+                  icon: <Truck className="h-5 w-5 text-green-600" />,
+                  label: "Order\nTracking",
+                },
               ].map((item) => (
-                <div key={item.label} className="flex flex-col items-center gap-1 text-center border border-gray-200 rounded-md p-2.5">
+                <div
+                  key={item.label}
+                  className="flex flex-col items-center gap-1 rounded-md border border-gray-200 p-2.5 text-center"
+                >
                   {item.icon}
-                  <span className="text-[10px] text-gray-600 whitespace-pre-line leading-tight">{item.label}</span>
+                  <span className="text-[10px] leading-tight whitespace-pre-line text-gray-600">
+                    {item.label}
+                  </span>
                 </div>
               ))}
             </div>
@@ -378,5 +528,5 @@ export default function MedicinesPage() {
 
       <MDWFooterBar />
     </div>
-  );
+  )
 }
