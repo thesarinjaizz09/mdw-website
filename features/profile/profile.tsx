@@ -1,6 +1,6 @@
 "use client";
 
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   User,
@@ -34,10 +34,10 @@ const NAV_ITEMS = [
 ];
 
 const QUICK_ACTIONS = [
-  { id: "prescriptions", label: "My\nOrders", icon: <Box className="w-5 h-5 text-green-600" /> },
-  { id: "addresses", label: "My\nAddresses", icon: <MapPin className="w-5 h-5 text-green-600" /> },
-  { id: "payment", label: "Help\nCenter", icon: <HelpCircle className="w-5 h-5 text-green-600" /> },
-  { id: "refer", label: "Refer &\nEarn", icon: <Gift className="w-5 h-5 text-green-600" /> },
+  { id: "prescriptions", label: "My\nOrders", icon: <Box className="w-5 h-5 text-green-600" />, href: "/orders" },
+  { id: "addresses", label: "My\nAddresses", icon: <MapPin className="w-5 h-5 text-green-600" />, href: "/address" },
+  { id: "payment", label: "Help\nCenter", icon: <HelpCircle className="w-5 h-5 text-green-600" />, href: "/help" },
+  { id: "refer", label: "Refer &\nEarn", icon: <Gift className="w-5 h-5 text-green-600" />, href: "/refer" },
 ];
 
 const USER = {
@@ -50,6 +50,7 @@ const USER = {
 
 export default function ProfilePage() {
   const { user } = useAuth();
+  const router = useRouter();
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-between">
@@ -125,7 +126,7 @@ export default function ProfilePage() {
                 {QUICK_ACTIONS.map((action) => (
                   <button
                     key={action.id}
-                    // onClick={() => setActiveSection(action.id)}
+                    onClick={() => router.push(action.href)}
                     className="flex flex-col items-center gap-2 p-3 rounded-md hover:bg-green-50 transition-colors group"
                   >
                     <div className="w-10 h-10 rounded-md bg-green-50 group-hover:bg-green-100 flex items-center justify-center transition-colors">

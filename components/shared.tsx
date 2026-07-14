@@ -174,11 +174,18 @@ export function MDWHeader() {
 
                   <DropdownMenuContent className="bg-white text-black border border-gray-200 rounded-md text-xs rounded-sm w-full" align="end">
                     {NAV_USER_DROPDOWN_ITEMS.map((item) => (
-                      <DropdownMenuItem onClick={() => {
-                        router.push(item.href)
-                      }} key={item.label} className="text-gray-600 text-xs">
+                      // <DropdownMenuItem onClick={() => {
+                      //   router.push(item.href)
+                      // }} key={item.label} className="text-gray-600 text-xs">
+                      //   {item.label}
+                      // </DropdownMenuItem>
+                      <Link
+                        key={item.label}
+                        href={item.href}
+                        className="block px-4 py-2 text-gray-600 text-xs hover:bg-gray-50"
+                      >
                         {item.label}
-                      </DropdownMenuItem>
+                      </Link>
                     ))}
                   </DropdownMenuContent>
                 </DropdownMenu>

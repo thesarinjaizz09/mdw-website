@@ -180,7 +180,7 @@ export default function CartPage() {
                   </div>
                 </div>
 
-                <Button className="w-full mt-4 bg-green-600 hover:bg-green-700 text-white h-11 rounded-lg font-semibold text-sm">
+                <Button onClick={() => router.push("/checkout") } className="w-full mt-4 bg-green-600 hover:bg-green-700 text-white h-11 rounded-lg font-semibold text-sm">
                   Proceed to Checkout
                 </Button>
                 <Button
