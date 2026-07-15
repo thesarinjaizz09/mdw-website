@@ -164,7 +164,7 @@ export default function MedicineDetailPage({
     return (
       <div className="flex min-h-screen flex-1 flex-col bg-gray-50">
         <MDWHeader />
-        <main className="mx-auto flex max-w-7xl flex-1 items-center justify-center gap-2">
+        <main className="mx-auto flex w-full max-w-7xl flex-1 items-center justify-center gap-2">
           <Spinner className="text-gray-800" />
           <p className="text-sm text-gray-600">Loading product...</p>
         </main>
@@ -184,7 +184,7 @@ export default function MedicineDetailPage({
     <div className="flex min-h-screen flex-1 flex-col bg-gray-50">
       <MDWHeader />
 
-      <main className="mx-auto max-w-7xl flex-1 px-4 py-6">
+      <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-6">
         {/* Breadcrumb */}
         <nav className="mb-6 flex items-center gap-1.5 text-xs text-gray-500">
           {["Medicines", med.name].map((crumb, i, arr) => (
