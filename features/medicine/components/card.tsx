@@ -72,7 +72,7 @@ export function MedicineCard({ medicine, index = 0, onAddToCart, variant = "defa
           e.stopPropagation();
           onAddToCart?.(medicine);
         }}
-        className="mt-3 w-full bg-white border border-green-600 text-green-700 hover:bg-green-600 hover:text-white transition-colors h-8 text-xs font-medium rounded-md border border-gray-200 gap-1.5"
+        className="mt-3 w-full bg-white border border-[#F4568B] text-[#F4568B] hover:bg-[#F4568B] hover:text-white transition-colors h-8 text-xs font-medium rounded-md border border-gray-200 gap-1.5"
       >
         <ShoppingCart className="w-3.5 h-3.5" />
         Add to Cart

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import AddressDialog from "@/components/address-dialog";
 import { ArrowLeft, MapPin, Plus, Phone, Home, Building2 } from "lucide-react";
 import { MDWHeader, MDWFooterBar } from "@/components/shared";
 import { UserSidebar } from "./profile";
@@ -20,6 +21,7 @@ interface AddressRecord {
 
 export default function AddressPage() {
     const [addresses, setAddresses] = useState<AddressRecord[]>([]);
+    const [dialogOpen, setDialogOpen] = useState(false);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
@@ -45,11 +47,11 @@ export default function AddressPage() {
     }, []);
 
     return (
-        <div className="min-h-screen bg-slate-50 text-slate-900">
+        <div className="min-h-screen bg-gray-50 flex flex-col justify-between">
             <MDWHeader />
 
             <main className="mx-auto flex w-full max-w-7xl flex-col gap-5 px-4 py-5 sm:px-6 lg:px-8">
-                <h1 className="text-xl font-bold text-gray-900 mb-6">My Orders</h1>
+                <h1 className="text-xl font-bold text-gray-900 mb-6">My Addresses</h1>
 
                 <div className="grid grid-cols-3 gap-5">
                     {/* Sidebar nav */}
@@ -61,10 +63,11 @@ export default function AddressPage() {
                                     <h2 className="text-lg font-semibold text-slate-900">Your addresses</h2>
                                     <p className="text-sm text-slate-500">Keep your delivery locations organized for fast checkout.</p>
                                 </div>
-                                <button className="flex items-center gap-2 rounded-full bg-emerald-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-emerald-700">
+                                <button className="flex items-center gap-2 rounded-md bg-[#F4568B] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#F4568B]/80" onClick={() => setDialogOpen(true)}>
                                     <Plus className="h-4 w-4" />
                                     Add address
                                 </button>
+                                <AddressDialog open={dialogOpen} onOpenChange={setDialogOpen} />
                             </div>
 
                             {loading ? (
@@ -81,7 +84,7 @@ export default function AddressPage() {
                                         <article key={address._id || index} className="rounded-md border border-slate-200 bg-white p-4 shadow-sm">
                                             <div className="flex items-start justify-between gap-3">
                                                 <div className="flex items-center gap-2">
-                                                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-50 text-emerald-600">
+                                                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#F4568B]/10 text-[#F4568B]">
                                                         {index % 2 === 0 ? <Home className="h-5 w-5" /> : <Building2 className="h-5 w-5" />}
                                                     </div>
                                                     <div>
@@ -89,11 +92,11 @@ export default function AddressPage() {
                                                         <p className="text-sm text-slate-500">Primary delivery spot</p>
                                                     </div>
                                                 </div>
-                                                <span className="rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-xs font-medium text-emerald-700">Default</span>
+                                                <span className="rounded-full border border-[#F4568B]/20 bg-[#F4568B]/10 px-2.5 py-1 text-xs font-medium text-[#F4568B]">Default</span>
                                             </div>
 
                                             <div className="mt-4 flex items-start gap-2 text-sm text-slate-600">
-                                                <MapPin className="mt-0.5 h-4 w-4 text-emerald-600" />
+                                                <MapPin className="mt-0.5 h-4 w-4 text-[#F4568B]" />
                                                 <div>
                                                     <p>{address.address || "No street address provided"}</p>
                                                     <p>{[address.city, address.state, address.zipCode, address.country].filter(Boolean).join(", ")}</p>
@@ -102,7 +105,7 @@ export default function AddressPage() {
                                             </div>
 
                                             <div className="mt-4 flex items-center gap-2 text-sm text-slate-600">
-                                                <Phone className="h-4 w-4 text-emerald-600" />
+                                                <Phone className="h-4 w-4 text-[#F4568B]" />
                                                 <span>{address.phone || "No phone provided"}</span>
                                             </div>
                                         </article>

@@ -161,7 +161,7 @@ export default function MedicineDetailPage({
     <div className="flex min-h-screen flex-1 flex-col bg-gray-50">
       <MDWHeader />
 
-      <main className="mx-auto max-w-7xl flex-1 px-4 py-6">
+      <main className="w-full flex-1 px-4 py-6">
         {/* Breadcrumb */}
         <nav className="mb-6 flex items-center gap-1.5 text-xs text-gray-500">
           {["Medicines", med.name].map((crumb, i, arr) => (
@@ -207,7 +207,7 @@ export default function MedicineDetailPage({
                         onClick={() => setSelectedImage(i)}
                         className={`h-12 w-12 overflow-hidden rounded-lg border-2 transition-all ${
                           selectedImage === i
-                            ? "border-green-500"
+                            ? "border-[#F4568B]"
                             : "border-gray-200"
                         }`}
                       >
@@ -238,7 +238,7 @@ export default function MedicineDetailPage({
                   {/* Badges */}
                   <div className="flex gap-2">
                     <InStockBadge inStock={inStock} />
-                    <span className="flex items-center gap-1 text-xs font-medium text-green-600">
+                    <span className="flex items-center gap-1 text-xs font-medium text-[#F4568B]">
                       <Zap className="h-3.5 w-3.5" /> Fast Delivery
                     </span>
                     {med.is_prescription_required && (
@@ -278,7 +278,7 @@ export default function MedicineDetailPage({
                             key={h}
                             className="flex items-start gap-2 text-sm text-gray-700"
                           >
-                            <CheckCircle className="mt-0.5 h-4 w-4 flex-shrink-0 text-green-500" />
+                            <CheckCircle className="mt-0.5 h-4 w-4 flex-shrink-0 text-[#F4568B]" />
                             {h}
                           </li>
                         ))}
@@ -297,7 +297,7 @@ export default function MedicineDetailPage({
                     onClick={() => setActiveTab(tab)}
                     className={`border-b-2 px-5 py-3 text-sm font-medium transition-colors ${
                       activeTab === tab
-                        ? "border-green-600 text-green-700"
+                        ? "border-[#F4568B] text-[#F4568B]"
                         : "border-transparent text-gray-500 hover:text-gray-700"
                     }`}
                   >
@@ -345,7 +345,7 @@ export default function MedicineDetailPage({
           <div className="space-y-4">
             {/* Delivery card */}
             <div className="space-y-4 rounded-xl border border-gray-100 bg-white p-4 shadow-sm">
-              <h3 className="text-sm font-semibold text-gray-900">
+              {/* <h3 className="text-sm font-semibold text-gray-900">
                 Delivery Details
               </h3>
               <div className="flex items-start gap-2">
@@ -371,9 +371,9 @@ export default function MedicineDetailPage({
                     Free Delivery above ₹199
                   </p>
                 </div>
-              </div>
+              </div> */}
 
-              <div className="border-t border-gray-100 pt-3">
+              <div className="">
                 {!isAddedToCart && (
                   <div className="mb-3 flex items-center justify-between">
                     <span className="text-sm font-medium text-gray-700">
@@ -411,7 +411,7 @@ export default function MedicineDetailPage({
                         unitPrice: price,
                       })
                     }
-                    className="h-10 w-full gap-2 rounded-md bg-green-600 font-semibold text-white hover:bg-green-700"
+                    className="h-10 w-full gap-2 rounded-md bg-[#F4568B] font-semibold text-white hover:bg-[#F4568B]/90"
                   >
                     <ShoppingCart className="h-4 w-4" />
                     {addToCart.status === "pending"
@@ -435,15 +435,15 @@ export default function MedicineDetailPage({
               <div className="space-y-2 border-t border-gray-100 pt-3">
                 {[
                   {
-                    icon: <Shield className="h-4 w-4 text-green-600" />,
+                    icon: <Shield className="h-4 w-4 text-[#F4568B]" />,
                     label: "100% Genuine Medicines",
                   },
                   {
-                    icon: <Shield className="h-4 w-4 text-green-600" />,
+                    icon: <Shield className="h-4 w-4 text-[#F4568B]" />,
                     label: "Secure Payments",
                   },
                   {
-                    icon: <Truck className="h-4 w-4 text-green-600" />,
+                    icon: <Truck className="h-4 w-4 text-[#F4568B]" />,
                     label: "Easy 20 Min Delivery",
                   },
                 ].map((item) => (

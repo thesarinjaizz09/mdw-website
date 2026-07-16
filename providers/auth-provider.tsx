@@ -40,6 +40,7 @@ export function AuthProvider({
       }
 
       const data = await res.json();
+      // console.log("User data fetched:", data);
 
       setUser(data);
     } finally {

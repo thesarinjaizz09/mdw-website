@@ -34,10 +34,10 @@ const NAV_ITEMS = [
 ];
 
 const QUICK_ACTIONS = [
-  { id: "prescriptions", label: "My\nOrders", icon: <Box className="w-5 h-5 text-green-600" />, href: "/orders" },
-  { id: "addresses", label: "My\nAddresses", icon: <MapPin className="w-5 h-5 text-green-600" />, href: "/address" },
-  { id: "payment", label: "Help\nCenter", icon: <HelpCircle className="w-5 h-5 text-green-600" />, href: "/help" },
-  { id: "refer", label: "Refer &\nEarn", icon: <Gift className="w-5 h-5 text-green-600" />, href: "/refer" },
+  { id: "prescriptions", label: "My\nOrders", icon: <Box className="w-5 h-5 text-[#F4568B]" />, href: "/orders" },
+  { id: "addresses", label: "My\nAddresses", icon: <MapPin className="w-5 h-5 text-[#F4568B]" />, href: "/address" },
+  { id: "payment", label: "Help\nCenter", icon: <HelpCircle className="w-5 h-5 text-[#F4568B]" />, href: "/help" },
+  { id: "refer", label: "Refer &\nEarn", icon: <Gift className="w-5 h-5 text-[#F4568B]" />, href: "/refer" },
 ];
 
 const USER = {
@@ -50,6 +50,7 @@ const USER = {
 
 export default function ProfilePage() {
   const { user } = useAuth();
+  // console.log({ user })
   const router = useRouter();
 
   return (
@@ -70,7 +71,7 @@ export default function ProfilePage() {
               <div className="flex items-start justify-between mb-5">
                 <div className="flex items-center gap-4">
                   {/* Avatar */}
-                  <div className="w-16 h-16 rounded-full bg-gradient-to-br from-green-100 to-emerald-200 flex items-center justify-center text-2xl border-2 border-green-200 overflow-hidden">
+                  <div className="w-16 h-16 rounded-full bg-[#F4568B]/50  flex items-center justify-center text-2xl border-2 border-[#F4568B] overflow-hidden">
                     👨‍💼
                   </div>
                   <div>
@@ -79,7 +80,7 @@ export default function ProfilePage() {
                     <p className="text-sm text-gray-500">{user?.userPhone}</p>
                   </div>
                 </div>
-                {/* <button className="flex items-center gap-1.5 text-green-600 text-sm font-medium hover:text-green-700 transition-colors">
+                {/* <button className="flex items-center gap-1.5 text-[#F4568B] text-sm font-medium hover:text-[#F4568B]/90 transition-colors">
                   <Pencil className="w-3.5 h-3.5" />
                   Edit Profile
                 </button> */}
@@ -112,7 +113,7 @@ export default function ProfilePage() {
                   <p className="text-xs text-gray-500 mb-0.5">Available Balance</p>
                   <p className="text-2xl font-bold text-gray-900">₹{USER.walletBalance.toFixed(2)}</p>
                 </div>
-                <Button className="bg-green-600 hover:bg-green-700 text-white h-9 px-5 rounded-md text-sm font-semibold gap-1.5">
+                <Button className="bg-[#F4568B] hover:bg-[#F4568B]/90 text-white h-9 px-5 rounded-md text-sm font-semibold gap-1.5">
                   <Plus className="w-4 h-4" />
                   Add Money
                 </Button>
@@ -127,9 +128,9 @@ export default function ProfilePage() {
                   <button
                     key={action.id}
                     onClick={() => router.push(action.href)}
-                    className="flex flex-col items-center gap-2 p-3 rounded-md hover:bg-green-50 transition-colors group"
+                    className="flex flex-col items-center gap-2 p-3 rounded-md hover:bg-[#F4568B]/10 transition-colors group"
                   >
-                    <div className="w-10 h-10 rounded-md bg-green-50 group-hover:bg-green-100 flex items-center justify-center transition-colors">
+                    <div className="w-10 h-10 rounded-md bg-[#F4568B]/10 group-hover:bg-[#F4568B]/20 flex items-center justify-center transition-colors">
                       {action.icon}
                     </div>
                     <span className="text-xs text-gray-600 font-medium text-center leading-tight whitespace-pre-line">
@@ -167,12 +168,12 @@ export function UserSidebar() {
                 key={item.id}
                 href={item.href}
                 className={`w-full flex items-center gap-3 px-4 py-3 text-sm transition-all text-left ${activeSection === item.id
-                  ? "bg-green-50 text-green-700 font-semibold border border-green-100"
+                  ? "bg-[#F4568B]/10 text-[#F4568B] font-semibold border border-[#F4568B]/20"
                   : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
                   }`}
               >
                 <span
-                  className={`flex-shrink-0 ${activeSection === item.id ? "text-green-600" : "text-gray-400"
+                  className={`flex-shrink-0 ${activeSection === item.id ? "text-[#F4568B]" : "text-gray-400"
                     }`}
                 >
                   {item.icon}
@@ -183,12 +184,12 @@ export function UserSidebar() {
               <button
                 key={item.id}
                 className={`w-full flex items-center gap-3 px-4 py-3 text-sm transition-all text-left ${activeSection === item.id
-                  ? "bg-green-50 text-green-700 font-semibold border border-green-100"
+                  ? "bg-[#F4568B]/10 text-[#F4568B] font-semibold border border-[#F4568B]/20"
                   : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
                   }`}
               >
                 <span
-                  className={`flex-shrink-0 ${activeSection === item.id ? "text-green-600" : "text-gray-400"
+                  className={`flex-shrink-0 ${activeSection === item.id ? "text-[#F4568B]" : "text-gray-400"
                     }`}
                 >
                   {item.icon}

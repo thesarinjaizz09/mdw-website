@@ -116,7 +116,7 @@ export default function OrdersPage() {
     }, [orders]);
 
     return (
-        <div className="min-h-screen bg-slate-50 text-slate-900">
+        <div className="min-h-screen bg-gray-50 flex flex-col justify-between">
             <MDWHeader />
 
             <main className="mx-auto flex w-full max-w-7xl flex-col gap-5 px-4 py-5 sm:px-6 lg:px-8">
@@ -128,8 +128,8 @@ export default function OrdersPage() {
                     <div className="col-span-2">
 
                         <section className="grid gap-4 rounded-md border border-slate-200 bg-white p-4 shadow-sm md:grid-cols-3 mb-4">
-                            <div className="rounded-xl bg-emerald-50 p-4">
-                                <p className="text-sm text-emerald-700">Total orders</p>
+                            <div className="rounded-xl bg-[#F4568B]/10 p-4">
+                                <p className="text-sm text-[#F4568B]">Total orders</p>
                                 <p className="mt-2 text-2xl font-semibold text-slate-900">{summary.totalOrders}</p>
                             </div>
                             <div className="rounded-xl bg-slate-50 p-4">
@@ -177,7 +177,7 @@ export default function OrdersPage() {
                                         <div className="grid gap-4 p-4 lg:grid-cols-[1.3fr_0.7fr]">
                                             <div className="space-y-3">
                                                 <div className="flex items-center gap-2 text-sm font-medium text-slate-700">
-                                                    <ShoppingBag className="h-4 w-4 text-emerald-600" />
+                                                    <ShoppingBag className="h-4 w-4 text-[#F4568B]" />
                                                     {order.items?.length ? `${order.items.length} item${order.items.length > 1 ? "s" : ""}` : "Items"}
                                                 </div>
                                                 <div className="space-y-2">
@@ -192,7 +192,7 @@ export default function OrdersPage() {
 
                                             <div className="rounded-xl bg-slate-50 p-3 text-sm text-slate-600">
                                                 <div className="flex items-start gap-2">
-                                                    <MapPin className="mt-0.5 h-4 w-4 text-emerald-600" />
+                                                    <MapPin className="mt-0.5 h-4 w-4 text-[#F4568B]" />
                                                     <div>
                                                         <p className="font-medium text-slate-900">Delivery address</p>
                                                         <p>{order.addressId?.address || "Address pending"}</p>

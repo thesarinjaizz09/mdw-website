@@ -59,7 +59,7 @@ export function MDWLogo({ size = "md" }: { size?: "sm" | "md" | "lg" }) {
           xmlns="http://www.w3.org/2000/svg"
           className="h-full w-full"
         >
-          <rect width="40" height="40" rx="6" fill="#16a34a" />
+          <rect width="40" height="40" rx="6" fill="#F4568B" />
           <path
             d="M8 20 L16 10 L20 16 L24 10 L32 20"
             stroke="white"
@@ -79,7 +79,7 @@ export function MDWLogo({ size = "md" }: { size?: "sm" | "md" | "lg" }) {
         </svg>
       </div>
       <div className="leading-tight">
-        <div className={`font-bold text-green-700 ${textSizes[size]}`}>MDW</div>
+        <div className={`font-bold text-[#F4568B] ${textSizes[size]}`}>MDW</div>
         <div className="-mt-0.5 text-[9px] tracking-wide text-gray-500 uppercase">
           My Dawaiwala
         </div>
@@ -121,10 +121,10 @@ export function MedicineImagePlaceholder({
 export function InStockBadge({ inStock }: { inStock: boolean }) {
   return (
     <span
-      className={`flex items-center gap-1 text-xs font-medium ${inStock ? "text-green-600" : "text-red-500"}`}
+      className={`flex items-center gap-1 text-xs font-medium ${inStock ? "text-[#F4568B]" : "text-red-500"}`}
     >
       <span
-        className={`h-1.5 w-1.5 rounded-full ${inStock ? "bg-green-500" : "bg-red-500"}`}
+        className={`h-1.5 w-1.5 rounded-full ${inStock ? "bg-[#F4568B]" : "bg-red-500"}`}
       />
       {inStock ? "In Stock" : "Out of Stock"}
     </span>
@@ -212,10 +212,10 @@ export function MDWHeader() {
             user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <button className="flex flex-col items-center justify-center rounded-full p-2.5 text-gray-500 hover:bg-green-50">
+                  <button className="flex flex-col items-center justify-center rounded-full p-2.5 text-gray-500 hover:bg-[#F4568B]/10 hover:text-[#F4568B] transition-colors">
                     <div className="relative">
                       <User size={20} />
-                      <span className="absolute top-0 -right-0.5 h-1.5 w-1.5 rounded-full bg-green-500"></span>
+                      <span className="absolute top-0 -right-0.5 h-1.5 w-1.5 rounded-full bg-[#F4568B]"></span>
                     </div>
                   </button>
                 </DropdownMenuTrigger>
@@ -242,7 +242,7 @@ export function MDWHeader() {
                   onClick={() =>
                     setShowLogin(true)
                   }
-                  className="p-2.5 text-gray-500 hover:text-[#1a7a4a] hover:bg-green-50 rounded-full transition-colors"
+                  className="p-2.5 text-gray-500 hover:text-[#F4568B] hover:bg-[#F4568B]/10 rounded-full transition-colors"
                 >
                   <User size={21} />
                 </button>
@@ -252,10 +252,10 @@ export function MDWHeader() {
           }
           <Sheet open={isCartOpen} onOpenChange={setIsCartOpen}>
             <SheetTrigger asChild>
-              <button className="relative flex flex-col items-center gap-0.5 text-gray-600 transition-colors hover:text-green-700">
+              <button className="relative flex flex-col items-center gap-0.5 text-gray-600 transition-colors hover:text-[#F4568B]">
                 <ShoppingCart className="h-5 w-5" />
                 {itemCount > 0 && (
-                  <span className="absolute -top-1 -right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-green-600 text-[9px] font-bold text-white">
+                  <span className="absolute -top-1 -right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-[#F4568B] text-[9px] font-bold text-white">
                     {itemCount}
                   </span>
                 )}
@@ -288,7 +288,7 @@ export function MDWHeader() {
                 <div className="flex-1 overflow-y-auto px-4 py-4">
                   {cartItems.length === 0 ? (
                     <div className="flex h-full flex-col items-center justify-center rounded-2xl border border-dashed border-gray-200 bg-gray-50 px-4 py-10 text-center">
-                      <div className="rounded-full bg-green-100 p-3 text-green-700">
+                      <div className="rounded-full bg-[#F4568B]/10 p-3 text-[#F4568B]">
                         <ShoppingCart className="h-6 w-6" />
                       </div>
                       <h3 className="mt-4 text-sm font-semibold text-gray-800">
@@ -302,7 +302,7 @@ export function MDWHeader() {
                           setIsCartOpen(false)
                           router.push("/medicine")
                         }}
-                        className="mt-4 rounded-lg bg-green-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-green-700"
+                        className="mt-4 rounded-sm bg-[#F4568B] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#F4568B]/80"
                       >
                         Browse medicines
                       </button>
@@ -363,7 +363,7 @@ export function MDWHeader() {
                                     onClick={() =>
                                       updateQty(item.productId, -1)
                                     }
-                                    className="px-2 py-1.5 text-gray-500 transition-colors hover:bg-gray-50 hover:text-green-600"
+                                    className="px-2 py-1.5 text-gray-500 transition-colors hover:bg-gray-50 hover:text-[#F4568B]"
                                   >
                                     <Minus className="h-3.5 w-3.5" />
                                   </button>
@@ -372,7 +372,7 @@ export function MDWHeader() {
                                   </span>
                                   <button
                                     onClick={() => updateQty(item.productId, 1)}
-                                    className="px-2 py-1.5 text-gray-500 transition-colors hover:bg-gray-50 hover:text-green-600"
+                                    className="px-2 py-1.5 text-gray-500 transition-colors hover:bg-gray-50 hover:text-[#F4568B]"
                                   >
                                     <Plus className="h-3.5 w-3.5" />
                                   </button>
@@ -401,7 +401,7 @@ export function MDWHeader() {
                       setIsCartOpen(false)
                       router.push("/cart")
                     }}
-                    className="flex w-full items-center justify-center gap-2 rounded-lg bg-green-600 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-green-700"
+                    className="flex w-full items-center justify-center gap-2 rounded-lg bg-[#F4568B] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#F4568B]/80"
                   >
                     View full cart
                     <ArrowRight className="h-4 w-4" />
@@ -411,7 +411,7 @@ export function MDWHeader() {
                       setIsCartOpen(false)
                       router.push("/checkout")
                     }}
-                    className="mt-2 flex w-full items-center justify-center rounded-lg border border-green-600 px-4 py-2.5 text-sm font-semibold text-green-700 transition-colors hover:bg-green-50"
+                    className="mt-2 flex w-full items-center justify-center rounded-lg border border-[#F4568B] px-4 py-2.5 text-sm font-semibold text-[#F4568B] transition-colors hover:bg-[#F4568B]/10"
                   >
                     Proceed to checkout
                   </button>
@@ -461,8 +461,8 @@ export function AddressSelector() {
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <button className="flex items-center gap-1 text-sm text-gray-600 hover:text-green-700">
-          <MapPin className="h-4 w-4 text-green-600" />
+        <button className="flex items-center gap-1 text-sm text-gray-600 hover:text-[#F4568B]">
+          <MapPin className="h-4 w-4 text-[#F4568B]" />
 
           <div className="text-left">
             <div className="text-[11px] text-gray-400">Deliver to</div>
@@ -513,7 +513,7 @@ export function AddressSelector() {
             disabled={loadingLocation}
             className="flex w-full items-center gap-2 rounded-md border border-gray-100 p-2 text-sm hover:bg-gray-50"
           >
-            <LocateFixed className="size-4 text-green-600" />
+            <LocateFixed className="size-4 text-[#F4568B]" />
 
             <span className="text-[12px]">
               {loadingLocation
@@ -543,7 +543,7 @@ export function MedicineSearchInput() {
           className="flex-1 px-3 py-3 text-xs text-black outline-none"
         />
 
-        <button className="bg-green-600 p-3 text-white">
+        <button className="bg-[#F4568B] p-3 text-white">
           <Search size={18} />
         </button>
       </div>

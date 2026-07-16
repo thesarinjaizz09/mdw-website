@@ -101,7 +101,7 @@ export default function AddressDialog({ open, onOpenChange, editAddress }: Props
         <DialogFooter>
           <div className="flex gap-2">
             <Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
-            <Button onClick={handleSave} disabled={loading}>
+            <Button onClick={handleSave} disabled={loading} className="bg-[#F4568B] hover:bg-[#F4568B]/90 text-white">
               {loading ? "Saving..." : "Save Address"}
             </Button>
           </div>

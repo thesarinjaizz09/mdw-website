@@ -66,7 +66,7 @@ export default function CartPage() {
           <div className="rounded-xl border border-gray-200 bg-white p-8 text-center">
             <p className="text-gray-700 text-lg font-semibold">Your cart is empty.</p>
             <p className="text-sm text-gray-500 mt-2">Add medicines to your cart to see them here.</p>
-            <Button className="mt-4 bg-green-600 hover:bg-green-700 text-white" onClick={() => router.push("/medicine")}>Shop Medicines</Button>
+            <Button className="mt-4 bg-[#F4568B] hover:bg-[#F4568B]/90 text-white" onClick={() => router.push("/medicine")}>Shop Medicines</Button>
           </div>
         ) : (
           <div className="space-y-6">
@@ -130,7 +130,7 @@ export default function CartPage() {
 
                 <button
                   onClick={() => router.push("/medicine")}
-                  className="w-full py-3 text-sm text-green-600 font-medium hover:text-green-700 border border-dashed border-green-300 rounded-xl hover:bg-green-50 transition-colors flex items-center justify-center gap-2"
+                  className="w-full py-3 text-sm text-[#F4568B] font-medium hover:text-[#F4568B]/90 border border-dashed border-[#F4568B] rounded-xl hover:bg-[#F4568B]/10 transition-colors flex items-center justify-center gap-2"
                 >
                   <ShoppingBag className="w-4 h-4" />
                   Add more items
@@ -180,12 +180,12 @@ export default function CartPage() {
                   </div>
                 </div>
 
-                <Button onClick={() => router.push("/checkout") } className="w-full mt-4 bg-green-600 hover:bg-green-700 text-white h-11 rounded-lg font-semibold text-sm">
+                <Button onClick={() => router.push("/checkout") } className="w-full mt-4 bg-[#F4568B] hover:bg-[#F4568B]/90 text-white h-11 rounded-lg font-semibold text-sm">
                   Proceed to Checkout
                 </Button>
                 <Button
                   variant="outline"
-                  className="w-full mt-2 border-green-600 text-green-700 hover:bg-green-50 h-11 rounded-lg font-semibold text-sm"
+                  className="w-full mt-2 border-[#F4568B] text-[#F4568B] hover:bg-[#F4568B]/10 h-11 rounded-lg font-semibold text-sm"
                   onClick={() => router.push("/medicine")}
                 >
                   Continue Shopping

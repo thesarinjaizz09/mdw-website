@@ -17,7 +17,7 @@ export default function WellnessBannerSection({
     return (
       <section className="bg-gray-50">
         <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
-          <div className="p overflow-hidden rounded-lg border border-gray-100 bg-white bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 shadow-sm">
+          <div className="p overflow-hidden rounded-lg border border-gray-100 shadow-sm bg-[#F4568B]">
             <div className="flex flex-col min-[500px]:flex-row">
               {/* Image Side */}
               <div className="relative flex min-h-[200px] items-center justify-center overflow-hidden sm:min-h-[250px] lg:w-[40%]">
@@ -69,14 +69,14 @@ export default function WellnessBannerSection({
               {/* Content Side */}
               <div className="flex items-center p-5 pt-0 lg:w-[60%]">
                 <div className="flex-1">
-                  <h2 className="mb-3 text-xl font-extrabold text-gray-900 min-[500px]:text-2xl sm:text-3xl">
+                  <h2 className="mb-3 text-xl font-extrabold text-white min-[500px]:text-2xl sm:text-3xl">
                     Wellness at Your Home
                   </h2>
-                  <p className="mb-6 max-w-sm text-sm leading-relaxed text-gray-500">
+                  <p className="mb-6 max-w-sm text-sm leading-relaxed text-white/90">
                     Physiotherapy, Pain Relief Therapy, Nutrition, Fitness,
                     Stress Management & more.
                   </p>
-                  <button className="rounded-md bg-[#1a7a4a] px-6 py-3 text-sm font-semibold text-white shadow-md transition-all duration-200 hover:bg-[#155e38] hover:shadow-lg active:scale-[0.98]">
+                  <button className="rounded-md bg-[#F4568B]/80 px-6 py-3 text-sm font-semibold text-white shadow-md transition-all duration-200 hover:bg-[#F4568B] hover:shadow-lg active:scale-[0.98] border border-white/20">
                     Explore Wellness Services
                   </button>
                 </div>
@@ -101,7 +101,7 @@ export default function WellnessBannerSection({
   return (
     <section className="bg-gray-50 py-16 lg:py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="p overflow-hidden rounded-2xl border border-gray-100 bg-white bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 shadow-sm">
+        <div className="p overflow-hidden rounded-2xl border border-gray-100  shadow-sm bg-[#F4568B]">
           <div className="flex flex-col lg:flex-row">
             {/* Image Side */}
             <div className="relative flex min-h-[350px] items-center justify-center overflow-hidden lg:w-[40%]">

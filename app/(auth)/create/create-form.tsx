@@ -87,7 +87,7 @@ export function RegisterForm() {
                     Already have an account?{" "}
                     <Link
                         href="/auth"
-                        className="font-medium text-emerald-500 underline-offset-4 hover:underline"
+                        className="font-medium text-[#F4568B] underline-offset-4 hover:underline"
                     >
                         Log in
                     </Link>
@@ -231,9 +231,9 @@ export function RegisterForm() {
                                     tabIndex={-1}
                                 >
                                     {!showPassword ? (
-                                        <EyeOff className="size-3.5 hover:text-emerald-600" />
+                                        <EyeOff className="size-3.5 hover:text-[#F4568B]" />
                                     ) : (
-                                        <Eye className="size-3.5 text-emerald-500 hover:text-emerald-600" />
+                                        <Eye className="size-3.5 text-[#F4568B] hover:text-[#F4568B]/80" />
                                     )}
                                 </button>
                             </div>
@@ -272,9 +272,9 @@ export function RegisterForm() {
                                             tabIndex={-1} // prevents stealing focus
                                         >
                                             {!showPassword2 ? (
-                                                <EyeOff className="size-3.5 hover:text-emerald-600" />
+                                                <EyeOff className="size-3.5 hover:text-[#F4568B]" />
                                             ) : (
-                                                <Eye className="size-3.5 text-emerald-500 hover:text-emerald-600" />
+                                                <Eye className="size-3.5 text-[#F4568B] hover:text-[#F4568B]/80" />
                                             )}
                                         </button>
                                     </div>
@@ -289,7 +289,7 @@ export function RegisterForm() {
 
                 <Button
                     type="submit"
-                    className="w-full transition-all bg-emerald-500 hover:bg-emerald-600 text-white cursor-pointer"
+                    className="w-full transition-all bg-[#F4568B] hover:bg-[#F4568B]/80 text-white cursor-pointer"
                     disabled={submitting}
                 >
                     {submitting && (
