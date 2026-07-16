@@ -12,6 +12,7 @@ import {
   MapPin,
   Minus,
   Plus,
+  ShieldAlert,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -27,8 +28,9 @@ import type { CartItemData, Medicine } from "@/types"
 import { MEDICINES } from "@/types"
 import { useRouter } from "next/navigation"
 import { Spinner } from "@/components/ui/spinner"
-
-const TABS = ["Description", "How to Use", "Side Effects", "FAQs"]
+import SubstituteMedicinesCard from "./substitutes-card"
+import ProductInfoDetails from "./product-info-details"
+import InlineSubstitutes from "./inline-substitutes"
 
 /* ---------------------------------- */
 /* Types matching the actual API response */
@@ -60,6 +62,18 @@ interface ProductBatch {
   free?: number
 }
 
+interface FAQ {
+  question: string
+  answer: string
+}
+
+interface SubstituteProduct {
+  _id: string
+  productId: string
+  name: string
+  price: number
+}
+
 interface ProductData {
   _id: string
   createdBy: ProductCreatedBy
@@ -67,7 +81,7 @@ interface ProductData {
   unitAmountNumber: number[]
   unitAmount: string
   name: string
-  description: string
+  productInformation: string
   productImage: string[]
   status: string
   category: string
@@ -82,6 +96,16 @@ interface ProductData {
   createdAt: string
   updatedAt: string
   manufacturerName: string
+  howToUse?: string
+  sideEffects?: string
+  faqs?: FAQ[]
+  usage?: string
+  benefits?: string
+  howItWorks?: string
+  safetyAdvice?: string
+  quickTips?: string
+  substitutes?: string[]
+  resolvedSubstitutes?: SubstituteProduct[]
 }
 
 interface ProductApiResponse {
@@ -103,7 +127,6 @@ export default function MedicineDetailPage({
   const [qty, setQty] = useState(1)
   const [med, setMed] = useState<ProductData | null>(null)
   const [loading, setLoading] = useState(true)
-  const [activeTab, setActiveTab] = useState("Description")
   const [selectedImage, setSelectedImage] = useState(0)
   const { addToCart } = useCartActions()
 
@@ -141,7 +164,7 @@ export default function MedicineDetailPage({
     return (
       <div className="flex min-h-screen flex-1 flex-col bg-gray-50">
         <MDWHeader />
-        <main className="mx-auto flex max-w-7xl flex-1 items-center justify-center gap-2">
+        <main className="mx-auto flex w-full max-w-7xl flex-1 items-center justify-center gap-2">
           <Spinner className="text-gray-800" />
           <p className="text-sm text-gray-600">Loading product...</p>
         </main>
@@ -184,7 +207,7 @@ export default function MedicineDetailPage({
         </nav>
 
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-          {/* Left: Images + Description */}
+          {/* Left: Images + Product Information */}
           <div className="space-y-4 lg:col-span-2">
             {/* Product card */}
             <div className="rounded-xl border border-gray-100 bg-white p-6 shadow-sm">
@@ -261,84 +284,44 @@ export default function MedicineDetailPage({
                     </p>
                   </div>
 
-                  {/* Highlights (category / location as available product meta) */}
-                  <div>
-                    <p className="mb-2 text-sm font-semibold text-gray-800">
-                      Product Highlights
-                    </p>
-                    <ul className="space-y-1.5">
-                      {[
-                        med.category,
-                        med.dosageType !== "None" ? med.dosageType : null,
-                        med.manufacturerName,
-                      ]
-                        .filter((h): h is string => Boolean(h))
-                        .map((h) => (
-                          <li
-                            key={h}
-                            className="flex items-start gap-2 text-sm text-gray-700"
-                          >
-                            <CheckCircle className="mt-0.5 h-4 w-4 flex-shrink-0 text-[#F4568B]" />
-                            {h}
-                          </li>
-                        ))}
-                    </ul>
+                  {/* Highlights & Substitutes Split Container */}
+                  <div className="border-gray-150/60 mt-3 flex justify-between">
+                    {/* Product Highlights */}
+                    <div className="w-[40%]">
+                      <p className="mb-2 text-sm font-semibold text-gray-900">
+                        Product Highlights
+                      </p>
+                      <ul className="space-y-1.5">
+                        {[
+                          med.category,
+                          med.dosageType !== "None" ? med.dosageType : null,
+                          med.manufacturerName,
+                        ]
+                          .filter((h): h is string => Boolean(h))
+                          .map((h) => (
+                            <li
+                              key={h}
+                              className="flex items-start gap-2 text-sm text-gray-700"
+                            >
+                              <CheckCircle className="mt-0.5 h-4 w-4 flex-shrink-0 text-green-500" />
+                              {h}
+                            </li>
+                          ))}
+                      </ul>
+                    </div>
+                    {/* Inline Substitutes */}
+                    <div className="w-[60%]">
+                      <InlineSubstitutes
+                        substitutes={med.resolvedSubstitutes || []}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Description tabs */}
-            <div className="overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm">
-              <div className="flex border-b border-gray-100">
-                {TABS.map((tab) => (
-                  <button
-                    key={tab}
-                    onClick={() => setActiveTab(tab)}
-                    className={`border-b-2 px-5 py-3 text-sm font-medium transition-colors ${
-                      activeTab === tab
-                        ? "border-[#F4568B] text-[#F4568B]"
-                        : "border-transparent text-gray-500 hover:text-gray-700"
-                    }`}
-                  >
-                    {tab}
-                  </button>
-                ))}
-              </div>
-              <div className="p-5">
-                {activeTab === "Description" && (
-                  <p className="text-sm leading-relaxed text-gray-600">
-                    {med.description}
-                  </p>
-                )}
-                {activeTab === "How to Use" && (
-                  <p className="text-sm leading-relaxed text-gray-600">
-                    Take this medication by mouth as directed. Swallow the
-                    tablet whole. Do not crush or chew. Take with or without
-                    food. Do not exceed the recommended dose.
-                  </p>
-                )}
-                {activeTab === "Side Effects" && (
-                  <p className="text-sm leading-relaxed text-gray-600">
-                    Nausea, vomiting, or stomach upset may occur. If any of
-                    these effects persist or worsen, contact your doctor.
-                    Serious side effects are rare when used as directed.
-                  </p>
-                )}
-                {activeTab === "FAQs" && (
-                  <div className="space-y-3">
-                    <div>
-                      <p className="text-sm font-semibold text-gray-800">
-                        Can I take this on an empty stomach?
-                      </p>
-                      <p className="mt-0.5 text-sm text-gray-600">
-                        Yes, it can be taken with or without food.
-                      </p>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
+            {/* Product Details Scrolling Sections */}
+            <ProductInfoDetails med={med} />
           </div>
 
           {/* Right: Delivery + Cart */}
@@ -457,6 +440,8 @@ export default function MedicineDetailPage({
                 ))}
               </div>
             </div>
+            {/* Substitute Medicines Card (Commented out as requested) */}
+            {/* <SubstituteMedicinesCard substitutes={med.resolvedSubstitutes || []} /> */}
           </div>
         </div>
       </main>

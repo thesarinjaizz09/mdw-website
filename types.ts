@@ -280,6 +280,18 @@ export interface ProductBatch {
   free?: number;
 }
 
+export interface FAQ {
+  question: string;
+  answer: string;
+}
+
+export interface SubstituteProduct {
+  _id: string;
+  productId: string;
+  name: string;
+  price: number;
+}
+
 export interface ProductData {
   _id: string;
   createdBy: ProductCreatedBy;
@@ -287,7 +299,7 @@ export interface ProductData {
   unitAmountNumber: number[];
   unitAmount: string;
   name: string;
-  description: string;
+  productInformation: string;
   productImage: string[];
   status: string;
   category: string;
@@ -302,6 +314,16 @@ export interface ProductData {
   createdAt: string;
   updatedAt: string;
   manufacturerName: string;
+  howToUse?: string;
+  sideEffects?: string;
+  faqs?: FAQ[];
+  usage?: string;
+  benefits?: string;
+  howItWorks?: string;
+  safetyAdvice?: string;
+  quickTips?: string;
+  substitutes?: string[];
+  resolvedSubstitutes?: SubstituteProduct[];
 }
 
 export interface CategoryMedicineEntry {
