@@ -1,19 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import {
-  Star,
-  ShoppingCart,
-  Zap,
-  ChevronRight,
-  Shield,
-  CheckCircle,
-  Truck,
-  MapPin,
-  Minus,
-  Plus,
-  ShieldAlert,
-} from "lucide-react"
+import { Zap, ChevronRight, CheckCircle, ShieldAlert } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import {
@@ -23,14 +11,15 @@ import {
   PriceDisplay,
   InStockBadge,
 } from "@/components/shared"
-import { useCart, useCartActions } from "@/hooks/use-cart"
-import type { CartItemData, Medicine } from "@/types"
+
+import type { Medicine } from "@/types"
 import { MEDICINES } from "@/types"
 import { useRouter } from "next/navigation"
 import { Spinner } from "@/components/ui/spinner"
 import SubstituteMedicinesCard from "./substitutes-card"
 import ProductInfoDetails from "./product-info-details"
 import InlineSubstitutes from "./inline-substitutes"
+import CartActions from "./cart-actions"
 
 /* ---------------------------------- */
 /* Types matching the actual API response */
@@ -124,17 +113,9 @@ export default function MedicineDetailPage({
   slug,
 }: ProductDetailPageProps) {
   const router = useRouter()
-  const [qty, setQty] = useState(1)
   const [med, setMed] = useState<ProductData | null>(null)
   const [loading, setLoading] = useState(true)
   const [selectedImage, setSelectedImage] = useState(0)
-  const { addToCart } = useCartActions()
-
-  const { cart, guestItems, isGuest } = useCart()
-  const { removeFromCart } = useCartActions()
-
-  const cartItems: CartItemData[] = isGuest ? guestItems : (cart?.items ?? [])
-  const isAddedToCart = cartItems.some((item) => item.productId === med?._id)
 
   const CARD_COLORS = ["blue", "green", "orange", "purple"] as const
   const thumbColors = ["blue", "green", "orange", "purple"] as const
@@ -148,7 +129,6 @@ export default function MedicineDetailPage({
         const json: ProductApiResponse = await res.json()
         if (json?.success && json.data) {
           setMed(json.data)
-          setQty(json.data.totalQuantity > 0 ? 1 : 1)
         }
       } catch (err) {
         console.error("Failed to fetch product", err)
@@ -184,7 +164,7 @@ export default function MedicineDetailPage({
     <div className="flex min-h-screen flex-1 flex-col bg-gray-50">
       <MDWHeader />
 
-      <main className="w-full flex-1 px-4 py-6">
+      <main className="mx-auto max-w-7xl flex-1 px-4 py-6">
         {/* Breadcrumb */}
         <nav className="mb-6 flex items-center gap-1.5 text-xs text-gray-500">
           {["Medicines", med.name].map((crumb, i, arr) => (
@@ -285,9 +265,9 @@ export default function MedicineDetailPage({
                   </div>
 
                   {/* Highlights & Substitutes Split Container */}
-                  <div className="border-gray-150/60 mt-3 flex justify-between">
+                  <div className="border-gray-150/60 mt-3 flex flex-col justify-between gap-2 min-[400px]:flex-row min-[400px]:gap-0">
                     {/* Product Highlights */}
-                    <div className="w-[40%]">
+                    <div className="w-full min-[400px]:w-[40%]">
                       <p className="mb-2 text-sm font-semibold text-gray-900">
                         Product Highlights
                       </p>
@@ -310,7 +290,7 @@ export default function MedicineDetailPage({
                       </ul>
                     </div>
                     {/* Inline Substitutes */}
-                    <div className="w-[60%]">
+                    <div className="w-full min-[400px]:w-[60%]">
                       <InlineSubstitutes
                         substitutes={med.resolvedSubstitutes || []}
                       />
@@ -320,126 +300,25 @@ export default function MedicineDetailPage({
               </div>
             </div>
 
+            <div className="block space-y-4 lg:hidden">
+              <CartActions
+                product={{ _id: med._id, name: med.name }}
+                price={price}
+                inStock={inStock}
+              />
+            </div>
+
             {/* Product Details Scrolling Sections */}
             <ProductInfoDetails med={med} />
           </div>
 
           {/* Right: Delivery + Cart */}
-          <div className="space-y-4">
-            {/* Delivery card */}
-            <div className="space-y-4 rounded-xl border border-gray-100 bg-white p-4 shadow-sm">
-              {/* <h3 className="text-sm font-semibold text-gray-900">
-                Delivery Details
-              </h3>
-              <div className="flex items-start gap-2">
-                <MapPin className="mt-0.5 h-4 w-4 flex-shrink-0 text-green-600" />
-                <div className="text-sm">
-                  <p className="text-xs text-gray-500">Deliver to</p>
-                  <p className="font-medium text-gray-800">
-                    New Town, Kolkata - 700156
-                  </p>
-                  <button className="text-xs text-green-600 hover:text-green-700">
-                    Change
-                  </button>
-                </div>
-              </div>
-              <div className="flex items-start gap-2">
-                <Truck className="mt-0.5 h-4 w-4 flex-shrink-0 text-green-600" />
-                <div className="text-sm">
-                  <p className="text-xs text-gray-500">Delivery by</p>
-                  <p className="font-semibold text-green-600">
-                    Tomorrow, 21 May
-                  </p>
-                  <p className="text-[10px] text-gray-500">
-                    Free Delivery above ₹199
-                  </p>
-                </div>
-              </div> */}
-
-              <div className="">
-                {!isAddedToCart && (
-                  <div className="mb-3 flex items-center justify-between">
-                    <span className="text-sm font-medium text-gray-700">
-                      Quantity
-                    </span>
-                    <div className="flex items-center gap-3 rounded-lg border border-gray-200 px-2 py-1">
-                      <button
-                        onClick={() => setQty(Math.max(1, qty - 1))}
-                        className="flex h-5 w-5 items-center justify-center text-gray-500 hover:text-green-600"
-                      >
-                        <Minus className="h-3.5 w-3.5" />
-                      </button>
-                      <span className="w-5 text-center text-sm font-semibold text-gray-600">
-                        {qty}
-                      </span>
-                      <button
-                        onClick={() => setQty(qty + 1)}
-                        className="flex h-5 w-5 items-center justify-center text-gray-500 hover:text-green-600"
-                      >
-                        <Plus className="h-3.5 w-3.5" />
-                      </button>
-                    </div>
-                  </div>
-                )}
-
-                {!isAddedToCart ? (
-                  <Button
-                    disabled={!inStock}
-                    onClick={() =>
-                      addToCart.mutate({
-                        productId: med._id,
-                        quantity: qty,
-                        productName: med.name,
-                        amount: price,
-                        unitPrice: price,
-                      })
-                    }
-                    className="h-10 w-full gap-2 rounded-md bg-[#F4568B] font-semibold text-white hover:bg-[#F4568B]/90"
-                  >
-                    <ShoppingCart className="h-4 w-4" />
-                    {addToCart.status === "pending"
-                      ? "Adding..."
-                      : "Add to Cart"}
-                  </Button>
-                ) : (
-                  <Button
-                    onClick={() => removeFromCart.mutate(med._id)}
-                    className="h-10 w-full gap-2 rounded-md bg-red-300 font-semibold text-black hover:bg-red-500 hover:text-white"
-                  >
-                    <ShoppingCart className="h-4 w-4" />
-                    {removeFromCart.status === "pending"
-                      ? "Removing..."
-                      : "Remove from Cart"}
-                  </Button>
-                )}
-              </div>
-
-              {/* Trust badges */}
-              <div className="space-y-2 border-t border-gray-100 pt-3">
-                {[
-                  {
-                    icon: <Shield className="h-4 w-4 text-[#F4568B]" />,
-                    label: "100% Genuine Medicines",
-                  },
-                  {
-                    icon: <Shield className="h-4 w-4 text-[#F4568B]" />,
-                    label: "Secure Payments",
-                  },
-                  {
-                    icon: <Truck className="h-4 w-4 text-[#F4568B]" />,
-                    label: "Easy 20 Min Delivery",
-                  },
-                ].map((item) => (
-                  <div
-                    key={item.label}
-                    className="flex items-center gap-2 text-xs text-gray-600"
-                  >
-                    {item.icon}
-                    {item.label}
-                  </div>
-                ))}
-              </div>
-            </div>
+          <div className="hidden space-y-4 lg:block">
+            <CartActions
+              product={{ _id: med._id, name: med.name }}
+              price={price}
+              inStock={inStock}
+            />
             {/* Substitute Medicines Card (Commented out as requested) */}
             {/* <SubstituteMedicinesCard substitutes={med.resolvedSubstitutes || []} /> */}
           </div>
