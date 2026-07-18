@@ -164,7 +164,7 @@ export default function MedicineDetailPage({
     <div className="flex min-h-screen flex-1 flex-col bg-gray-50">
       <MDWHeader />
 
-      <main className="mx-auto max-w-7xl flex-1 px-4 py-6">
+      <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-6">
         {/* Breadcrumb */}
         <nav className="mb-6 flex items-center gap-1.5 text-xs text-gray-500">
           {["Medicines", med.name].map((crumb, i, arr) => (
