@@ -222,15 +222,10 @@ export function MDWHeader() {
 
                   <DropdownMenuContent className="bg-white text-black border border-gray-200 rounded-md text-xs rounded-sm w-full" align="end">
                     {NAV_USER_DROPDOWN_ITEMS.map((item) => (
-                      // <DropdownMenuItem onClick={() => {
-                      //   router.push(item.href)
-                      // }} key={item.label} className="text-gray-600 text-xs">
-                      //   {item.label}
-                      // </DropdownMenuItem>
                       <Link
                         key={item.label}
                         href={item.href}
-                        className="block px-4 py-2 text-gray-600 text-xs hover:bg-gray-50"
+                        className="block px-4 py-2 text-gray-600 text-xs hover:bg-gray-500 hover:text-white rounded-sm"
                       >
                         {item.label}
                       </Link>
@@ -438,7 +433,7 @@ export function MDWFooterBar() {
       <div className="flex flex-wrap items-center justify-center gap-8">
         {items.map((item) => (
           <div key={item.label} className="flex items-center gap-1.5 text-sm">
-            <span>{item.icon}</span>
+            {/* <span>{item.icon}</span> */}
             <span>{item.label}</span>
           </div>
         ))}
@@ -543,7 +538,7 @@ export function MedicineSearchInput() {
           className="flex-1 px-3 py-3 text-xs text-black outline-none"
         />
 
-        <button className="bg-[#F4568B] p-3 text-white">
+        <button className="bg-[#F4568B] p-3 text-white hover:bg-gray-500">
           <Search size={18} />
         </button>
       </div>

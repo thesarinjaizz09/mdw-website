@@ -92,7 +92,7 @@ export default function AddressPage() {
                                                         <p className="text-sm text-slate-500">Primary delivery spot</p>
                                                     </div>
                                                 </div>
-                                                <span className="rounded-full border border-[#F4568B]/20 bg-[#F4568B]/10 px-2.5 py-1 text-xs font-medium text-[#F4568B]">Default</span>
+                                                {/* <span className="rounded-full border border-[#F4568B]/20 bg-[#F4568B]/10 px-2.5 py-1 text-xs font-medium text-[#F4568B]">Default</span> */}
                                             </div>
 
                                             <div className="mt-4 flex items-start gap-2 text-sm text-slate-600">

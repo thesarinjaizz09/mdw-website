@@ -29,15 +29,15 @@ const NAV_ITEMS = [
   // { id: "payment", label: "Payment Methods", icon: <CreditCard className="w-4 h-4" /> },
   // { id: "wallet", label: "My Wallet", icon: <Wallet className="w-4 h-4" /> },
   // { id: "notifications", label: "Notifications", icon: <Bell className="w-4 h-4" /> },
-  { id: "refer", label: "Refer & Earn", icon: <Gift className="w-4 h-4" /> },
-  { id: "help", label: "Help & Support", icon: <HelpCircle className="w-4 h-4" /> },
+  // { id: "refer", label: "Refer & Earn", icon: <Gift className="w-4 h-4" /> },
+  // { id: "help", label: "Help & Support", icon: <HelpCircle className="w-4 h-4" /> },
 ];
 
 const QUICK_ACTIONS = [
   { id: "prescriptions", label: "My\nOrders", icon: <Box className="w-5 h-5 text-[#F4568B]" />, href: "/orders" },
   { id: "addresses", label: "My\nAddresses", icon: <MapPin className="w-5 h-5 text-[#F4568B]" />, href: "/address" },
-  { id: "payment", label: "Help\nCenter", icon: <HelpCircle className="w-5 h-5 text-[#F4568B]" />, href: "/help" },
-  { id: "refer", label: "Refer &\nEarn", icon: <Gift className="w-5 h-5 text-[#F4568B]" />, href: "/refer" },
+  // { id: "payment", label: "Help\nCenter", icon: <HelpCircle className="w-5 h-5 text-[#F4568B]" />, href: "/help" },
+  // { id: "refer", label: "Refer &\nEarn", icon: <Gift className="w-5 h-5 text-[#F4568B]" />, href: "/refer" },
 ];
 
 const USER = {
@@ -50,7 +50,7 @@ const USER = {
 
 export default function ProfilePage() {
   const { user } = useAuth();
-  // console.log({ user })
+  console.log({ user })
   const router = useRouter();
 
   return (
@@ -121,7 +121,7 @@ export default function ProfilePage() {
             </div> */}
 
             {/* More Actions */}
-            <div className="bg-white rounded-lg border border-gray-100 shadow-sm p-5">
+            {/* <div className="bg-white rounded-lg border border-gray-100 shadow-sm p-5">
               <h3 className="font-semibold text-gray-900 mb-4">More Actions</h3>
               <div className="grid grid-cols-4 gap-3">
                 {QUICK_ACTIONS.map((action) => (
@@ -139,7 +139,7 @@ export default function ProfilePage() {
                   </button>
                 ))}
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </main>
@@ -151,6 +151,7 @@ export default function ProfilePage() {
 
 export function UserSidebar() {
   const pathname = usePathname();
+  const router = useRouter()
 
   const activeSection = pathname === "/orders"
     ? "orders"
@@ -200,10 +201,10 @@ export function UserSidebar() {
           ))}
 
           {/* Logout */}
-          {/* <button className="w-full flex items-center gap-3 px-4 py-3 text-sm text-red-500 hover:bg-red-50 transition-colors text-left">
-                  <LogOut className="w-4 h-4 flex-shrink-0" />
-                  Logout
-                </button> */}
+          <button className="w-full flex items-center gap-3 px-4 py-3 text-sm text-red-500 hover:bg-red-50 transition-colors text-left" onClick={() => router.push("/logout")}>
+            <LogOut className="w-4 h-4 flex-shrink-0" />
+            Logout
+          </button>
         </nav>
       </div>
     </div>

@@ -1,5 +1,5 @@
 export { Landing } from "./landing"
-export { MedicinesPage } from "./medicine"
+export { MedicinesPage, IndividualPage } from "./medicine"
 export { CartPage } from "./cart"
 export { default as CheckoutPage } from "./checkout/checkout"
 export { default as ProfilePage } from "./profile/profile"

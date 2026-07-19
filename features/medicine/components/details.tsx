@@ -140,6 +140,7 @@ export default function MedicineDetailPage({
     fetchProduct()
   }, [slug])
 
+
   if (loading || !med) {
     return (
       <div className="flex min-h-screen flex-1 flex-col bg-gray-50">

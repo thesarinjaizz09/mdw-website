@@ -54,7 +54,7 @@ export default function CartPage() {
     <div className="min-h-screen bg-gray-50 flex-1 flex flex-col justify-between">
       <MDWHeader />
 
-      <main className="max-w-7xl mx-auto px-4 py-6">
+      <main className="w-full mx-auto px-4 py-6">
         <h1 className="text-xl font-bold text-gray-900 mb-1">My Cart</h1>
         <p className="text-sm text-gray-500 mb-4">({itemCount} Items)</p>
 
