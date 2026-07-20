@@ -65,12 +65,12 @@ export default function ProfilePage() {
       <main className="px-4 py-6">
         <h1 className="text-xl font-bold text-gray-900 mb-6">My Profile</h1>
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-5">
+        <div className="grid grid-cols-3 gap-5">
           {/* Sidebar nav */}
           <UserSidebar />
 
           {/* Main content */}
-          <div className="lg:col-span-3 space-y-4">
+          <div className="lg:col-span-2 space-y-4">
             {/* Profile card */}
             <div className="bg-white rounded-lg border border-gray-100 shadow-sm p-5">
               <div className="flex items-start justify-between mb-5">
