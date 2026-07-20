@@ -1,7 +1,7 @@
-import { Landing } from "@/features"
+import { MedicinesPage } from "@/features"
 
 export default function Page() {
   return (
-    <Landing />
+    <MedicinesPage />
   )
 }

@@ -35,6 +35,7 @@ interface OrderItem {
     price?: number;
     discount?: number;
     productId?: string;
+    mrp?: number;
 }
 
 interface OrderRecord {
@@ -184,7 +185,7 @@ export default function OrdersPage() {
                                                     {(order.items || []).slice(0, 3).map((item, index) => (
                                                         <div key={`${item.productId || index}-${index}`} className="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2 text-sm text-slate-600">
                                                             <span>{item.name || "Medicine"}</span>
-                                                            <span className="font-medium text-slate-900">{item.qty || 0} × {formatCurrency(item.price)}</span>
+                                                            <span className="font-medium text-slate-900">{item.qty || 0} × {formatCurrency(item.mrp)}</span>
                                                         </div>
                                                     ))}
                                                 </div>
