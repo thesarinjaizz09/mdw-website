@@ -3,7 +3,6 @@
 import { useRouter } from "next/navigation"
 import {
   Search,
-  Upload,
   ChevronRight,
   RefreshCw,
   ShoppingCart,
@@ -17,7 +16,6 @@ import {
   PackageCheck,
   Popcorn,
   HeartPulse,
-  UploadIcon,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
@@ -51,9 +49,10 @@ import { useEffect, useState } from "react"
 import axios from "axios"
 import {
   HowItWorksSection,
-  WellnessBannerSection,
+  BrandCarousel,
 } from "@/features/landing/components"
 import { useCartActions } from "@/hooks/use-cart"
+import PrescriptionUpload from "@/components/prescription-upload"
 import { toast } from "sonner"
 
 const CATEGORIES = [
@@ -257,46 +256,9 @@ export default function MedicinesPage() {
           </div>
         </section>
 
-        <div className="flex items-center justify-center grid grid-cols-1 md:grid-cols-2 gap-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
           <HowItWorksSection theme={1} />
-          <div className="h-full w-full rounded-lg border border-gray-100 bg-white p-5 py-7 shadow-sm">
-            <div className="flex items-center gap-4">
-              <div className="flex-1">
-                <div className="mb-1 flex items-center gap-2">
-                  <h2 className="text-base font-bold text-gray-900">
-                    Upload Prescription
-                  </h2>
-                </div>
-                <p className="mb-4 text-xs text-gray-500">
-                  Upload prescription and we will add all medicines for you
-                </p>
-                <div className="relative mb-1">
-                  <div className="flex items-center overflow-hidden rounded-md border border-gray-200">
-                    <button className="flex-1 px-3 py-3 text-xs text-black outline-none">
-                      Upload Prescription
-                    </button>
-
-                    <button className="bg-[#F4568B] p-3 text-white hover:bg-gray-500">
-                      <UploadIcon size={18} />
-                    </button>
-                  </div>
-                </div>
-                <div className="mt-2.5 flex flex-wrap items-center gap-2">
-                  <span className="text-xs text-gray-500">
-                    Formats Supported:
-                  </span>
-                  {["JPEG", "PNG", "PDF", "JPG"].map((s) => (
-                    <button
-                      key={s}
-                      className="rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-700 transition-colors hover:bg-green-100 hover:text-green-700"
-                    >
-                      {s}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
+          <PrescriptionUpload />
         </div>
 
         {/* Health Categories */}
@@ -382,7 +344,7 @@ export default function MedicinesPage() {
           </div>
         </section>
 
-        <WellnessBannerSection theme={1} />
+        <BrandCarousel />
 
         {categoryGroups
           .filter((group) => group.medicines && group.medicines.length > 0)
@@ -437,12 +399,12 @@ export default function MedicinesPage() {
         </section>
 
         {/* Need Help */}
-        <section className="mx-auto flex max-w-3xl flex-col items-start justify-between gap-6 rounded-xl bg-[#F4568B]/80 p-5 md:flex-row">
+        <section className="mx-auto flex max-w-2xl flex-col items-start justify-between gap-6 rounded-xl bg-[#F4568B] p-8 md:flex-row">
           {/* Doctor avatar placeholder */}
           <section className="flex items-start justify-between gap-6">
-            <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#F4568B]/90">
+            {/* <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#F4568B]/90">
               <span className="text-3xl">👨‍⚕️</span>
-            </div>
+            </div> */}
             <div className="flex-1">
               <h2 className="text-md mb-0.5 font-bold text-white min-[500px]:text-lg">
                 Need Help Finding Medicines?

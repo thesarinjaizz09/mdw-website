@@ -184,8 +184,8 @@ export default function CartPage() {
                   Proceed to Checkout
                 </Button>
                 <Button
-                  variant="outline"
-                  className="w-full mt-2 border-[#F4568B] text-[#F4568B] hover:bg-[#F4568B]/10 h-11 rounded-lg font-semibold text-sm"
+                  // variant="outline"
+                  className="bg-white w-full mt-2 text-[#F4568B] hover:bg-[#F4568B]/50 h-11 rounded-lg font-semibold text-sm hover:text-white shadow-xs"
                   onClick={() => router.push("/medicine")}
                 >
                   Continue Shopping

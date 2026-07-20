@@ -20,6 +20,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { MDWHeader, MDWFooterBar } from "@/components/shared";
 import { useAuth } from "@/providers/auth-provider";
+import { useEffect } from "react";
 
 const NAV_ITEMS = [
   { id: "profile", label: "My Profile", icon: <User className="w-4 h-4" />, href: "/account" },
@@ -49,12 +50,16 @@ const USER = {
 };
 
 export default function ProfilePage() {
-  const { user } = useAuth();
-  console.log({ user })
+  const { user, refreshUser } = useAuth();
+
+  useEffect(() => {
+    refreshUser();
+  }, [])
+
   const router = useRouter();
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-between">
+    <div className="min-h-screen bg-gray-50 flex flex-col justify-between min-w-screen">
       <MDWHeader />
 
       <main className="px-4 py-6">

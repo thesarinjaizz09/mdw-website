@@ -39,10 +39,12 @@ export function AuthProvider({
         return;
       }
 
-      const data = await res.json();
-      // console.log("User data fetched:", data);
+      const raw = await res.json();
+      // console.log("User data fetched:", raw);
 
-      setUser(data);
+      // Backend may wrap user inside `data.user` or `raw.data.user`
+      const userData = raw?.user ?? raw?.data?.user ?? raw;
+      setUser(userData);
     } finally {
       setLoading(false);
     }

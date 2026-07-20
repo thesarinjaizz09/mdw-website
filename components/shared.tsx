@@ -51,7 +51,7 @@ export function MDWLogo({ size = "md" }: { size?: "sm" | "md" | "lg" }) {
   const sizes = { sm: "w-6 h-6", md: "w-8 h-8", lg: "w-10 h-10" }
   const textSizes = { sm: "text-sm", md: "text-base", lg: "text-xl" }
   return (
-    <Link href="/" className="flex flex-shrink-0 items-center gap-2">
+    <Link href="/medicine" className="flex flex-shrink-0 items-center gap-2">
       <div className={`${sizes[size]} relative`}>
         <svg
           viewBox="0 0 40 40"
@@ -424,16 +424,16 @@ export function MDWHeader() {
 // ─── Footer Trust Bar ─────────────────────────────────────────────────────────
 export function MDWFooterBar() {
   const items = [
-    { icon: "🛡️", label: "Drug License Approved" },
-    { icon: "🔒", label: "Secure Payments" },
-    { icon: "🔐", label: "100% Privacy" },
+    { icon: "/images/license-approved.png", label: "Drug License Approved" },
+    { icon: "/images/secure-payments.png", label: "Secure Payments" },
+    { icon: "/images/privacy.png", label: "100% Privacy" },
   ]
   return (
-    <div className="flex h-fit items-center justify-center bg-gray-900 py-3 text-gray-300">
+    <div className="flex h-fit items-center justify-center bg-gray-900 py-2.5 text-gray-300">
       <div className="flex flex-wrap items-center justify-center gap-8">
         {items.map((item) => (
-          <div key={item.label} className="flex items-center gap-1.5 text-sm">
-            {/* <span>{item.icon}</span> */}
+          <div key={item.label} className="flex items-center gap-2 text-sm">
+            <img src={item.icon} alt={item.label} className="size-3.5" />
             <span>{item.label}</span>
           </div>
         ))}

@@ -5,10 +5,12 @@ import { CheckCircle, Plus, MessageCircle, Phone, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { MDWHeader, MDWFooterBar } from "@/components/shared";
 import { useCart } from "@/hooks/use-cart";
+import { useQueryClient } from "@tanstack/react-query";
 import { useAddress } from "@/hooks/use-address";
 import AddressDialog from "@/components/address-dialog";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { Spinner } from "@/components/ui/spinner";
 
 const PAYMENT_OPTIONS = [
   // { id: "upi", label: "UPI", icon: "📱" },
@@ -18,6 +20,7 @@ const PAYMENT_OPTIONS = [
 ];
 
 export default function CheckoutPage() {
+  const [loading, setLoading] = useState(false);
   const { itemCount, totalAmount, cart } = useCart();
   const { addresses, selectedAddress: hookSelected, saveAddress, fetchCurrentLocation } = useAddress();
   const [selectedAddress, setSelectedAddress] = useState<string | null>(hookSelected?.id || (addresses[0]?.id ?? null));
@@ -27,6 +30,7 @@ export default function CheckoutPage() {
   const [scheduledDate, setScheduledDate] = useState<string>("");
   const [scheduledSlot, setScheduledSlot] = useState<string>("Morning");
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   // keep local selection in sync with hook and address list changes
   useEffect(() => {
@@ -58,7 +62,6 @@ export default function CheckoutPage() {
                     </span>
                     <h2 className="font-semibold text-gray-900">Delivery Address</h2>
                   </div>
-                  <button className="text-[#F4568B] text-sm font-medium hover:text-[#F4568B]/90">Change</button>
                 </div>
 
                 <div className="p-4 space-y-3">
@@ -102,7 +105,7 @@ export default function CheckoutPage() {
                   ))}
 
                   <div className="flex items-center gap-3">
-                    <button onClick={() => setDialogOpen(true)} className="flex items-center gap-2 text-sm text-[#F4568B] font-medium hover:text-[#F4568B]/90 mt-1 transition-colors">
+                    <button onClick={() => setDialogOpen(true)} className="flex items-center gap-2 text-sm text-[#F4568B] font-medium hover:text-[#F4568B]/90 transition-colors">
                       <Plus className="w-4 h-4" />
                       Add New Address
                     </button>
@@ -284,6 +287,7 @@ export default function CheckoutPage() {
 
                 <Button
                   className="w-full mt-4 bg-[#F4568B] hover:bg-[#F4568B]/90 text-white h-11 rounded-lg font-semibold"
+                  disabled={loading}
                   onClick={async () => {
                     try {
                       const cartId = cart?.id || (cart as any)?._id || null;
@@ -298,6 +302,7 @@ export default function CheckoutPage() {
                       }
 
                       const modeOfPayment = selectedPayment === 'cod' ? 'COD' : 'PAY_NOW';
+                      setLoading(true);
 
                       // Map datetime to a simple slot
                       let scheduleDeliveryDate = undefined;
@@ -369,14 +374,23 @@ export default function CheckoutPage() {
                       const orderId = result?.order?.userOrderId || result?.orderId || 'N/A';
 
                       toast.success('Order placed successfully! Order ID: ' + orderId);
+                      queryClient.invalidateQueries({ queryKey: ["cart"] });
+                      queryClient.invalidateQueries({ queryKey: ["cart", "guest"] });
                       router.push(`/orders`);
+                      setLoading(false)
                     } catch (err) {
+                      setLoading(false)
                       console.error(err);
                       toast.error('Order failed. Check console for details.');
                     }
                   }}
                 >
-                  Place Order
+                  {
+                    loading ? <Spinner className="size-4" /> : ""
+                  }
+                  {
+                    loading ? "Placing Order..." : "Place Order"
+                  }
                 </Button>
 
                 <div className="flex items-center justify-center gap-1.5 mt-2.5 text-xs text-gray-500">

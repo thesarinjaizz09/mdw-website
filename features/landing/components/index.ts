@@ -7,3 +7,4 @@ export { default as WhyChooseSection } from "./sections/whyChoose";
 export { default as HowItWorksSection } from "./sections/howItWorks";
 export { default as NewsletterSection } from "./sections/newsLetter";
 export { default as WellnessBannerSection } from "./sections/wellnessBanner";
+export { default as BrandCarousel } from "./sections/brandCarousel";

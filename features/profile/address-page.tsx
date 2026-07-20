@@ -47,10 +47,10 @@ export default function AddressPage() {
     }, []);
 
     return (
-        <div className="min-h-screen bg-gray-50 flex flex-col justify-between">
+        <div className="min-h-screen bg-gray-50 flex flex-col justify-between min-w-screen">
             <MDWHeader />
 
-            <main className="mx-auto flex w-full max-w-7xl flex-col gap-5 px-4 py-5 sm:px-6 lg:px-8">
+            <main className=" flex w-full flex-col gap-5 px-4 py-5 sm:px-6 lg:px-8">
                 <h1 className="text-xl font-bold text-gray-900 mb-6">My Addresses</h1>
 
                 <div className="grid grid-cols-3 gap-5">
