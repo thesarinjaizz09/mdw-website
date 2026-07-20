@@ -36,7 +36,7 @@ export default function PrescriptionUpload() {
         setUploadedFiles((prev) => [...prev, ...mapped]);
         setFiles([]);
         setStatus("success");
-        toast.success(`${res.length} file(s) uploaded successfully!`);
+        toast.success(`Thank You for sharing your prescription. Our Pharmacist will contact you shortly.`);
       }
     },
     onUploadError: (error: Error) => {
