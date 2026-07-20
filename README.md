@@ -2,7 +2,7 @@
 
 This is a Next.js template with shadcn/ui.
 
-# Adding components
+## Adding components
 
 To add components to your app, run the following command:
 
