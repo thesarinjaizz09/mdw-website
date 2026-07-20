@@ -14,7 +14,6 @@ export default function CartPage() {
   const { cart, guestItems, isGuest, itemCount, totalAmount, isLoading } = useCart();
   const { updateCart, removeFromCart, clearCartItems } = useCartActions();
   const [coupon, setCoupon] = useState("");
-
   const cartItems: CartItemData[] = isGuest ? guestItems : (cart?.items ?? []);
 
   const updateQty = (productId: string, delta: number) => {
@@ -180,7 +179,7 @@ export default function CartPage() {
                   </div>
                 </div>
 
-                <Button onClick={() => router.push("/checkout") } className="w-full mt-4 bg-[#F4568B] hover:bg-[#F4568B]/90 text-white h-11 rounded-lg font-semibold text-sm">
+                <Button onClick={() => router.push("/checkout")} className="w-full mt-4 bg-[#F4568B] hover:bg-[#F4568B]/90 text-white h-11 rounded-lg font-semibold text-sm">
                   Proceed to Checkout
                 </Button>
                 <Button

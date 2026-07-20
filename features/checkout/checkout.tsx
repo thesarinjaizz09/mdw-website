@@ -273,16 +273,16 @@ export default function CheckoutPage() {
                   </div>
                   <div className="flex justify-between text-gray-700">
                     <span>Packaging Charges</span>
-                    <span className="font-medium">-₹8.00</span>
+                    <span className="font-medium">₹9.50</span>
                   </div>
                   <div className="flex justify-between text-[#F4568B]">
                     <span>Delivery Charges</span>
                     <span className="font-semibold">FREE</span>
                   </div>
 
-                  <div className="bg-[#F4568B]/10 text-[#F4568B] text-xs font-medium py-1.5 px-2 rounded-lg text-center">
+                  {/* <div className="bg-[#F4568B]/10 text-[#F4568B] text-xs font-medium py-1.5 px-2 rounded-lg text-center">
                     You saved ₹8.00
-                  </div>
+                  </div> */}
                 </div>
 
                 <Button
