@@ -416,12 +416,12 @@ export default function MedicinesPage() {
                 <Button
                   size="sm"
                   className="w-fulls h-12 gap-1.5 rounded-md bg-[#F4568B] px-5 text-xs text-white hover:bg-gray-500 sm:w-fit border border-white/20"
-                  onClick={() => window.open("https://wa.me/919874567890", "_blank")}
+                  onClick={() => window.open("https://wa.me/919230189091", "_blank")}
                 >
                   <FaWhatsapp className="h-3.5 w-3.5" />
                   Chat on WhatsApp
                 </Button>
-                <Button className="h-12 w-[10.2rem] gap-1.5 rounded-md border border-[#F4568B] bg-white px-5 text-xs text-[#F4568B] hover:bg-[#F4568B]/10 min-[468px]:w-fit hover:text-white" onClick={() => window.open("tel:+919874567890", "_blank")}>
+                <Button className="h-12 w-[10.2rem] gap-1.5 rounded-md border border-[#F4568B] bg-white px-5 text-xs text-[#F4568B] hover:bg-[#F4568B]/10 min-[468px]:w-fit hover:text-white" onClick={() => window.open("tel:+919230189091", "_blank")}>
                   <Phone className="h-3.5 w-3.5" />
                   Call Us Now
                 </Button>

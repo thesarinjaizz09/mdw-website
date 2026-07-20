@@ -402,11 +402,11 @@ export default function CheckoutPage() {
                 <div className="border-t border-gray-100 mt-4 pt-4">
                   <h4 className="text-xs font-semibold text-gray-700 mb-2.5">Need Help?</h4>
                   <div className="space-y-2">
-                    <button className="flex items-center gap-2 text-xs text-gray-600 hover:text-[#F4568B] transition-colors" onClick={() => window.open("https://wa.me/919874567890", "_blank")}>
+                    <button className="flex items-center gap-2 text-xs text-gray-600 hover:text-[#F4568B] transition-colors" onClick={() => window.open("https://wa.me/919230189091", "_blank")}>
                       <MessageCircle className="w-4 h-4 text-[#F4568B]" />
                       Chat on WhatsApp
                     </button>
-                    <button className="flex items-center gap-2 text-xs text-gray-600 hover:text-[#F4568B] transition-colors" onClick={() => window.open("tel:+919874567890", "_blank")}>
+                    <button className="flex items-center gap-2 text-xs text-gray-600 hover:text-[#F4568B] transition-colors" onClick={() => window.open("tel:+919230189091", "_blank")}>
                       <Phone className="w-4 h-4 text-[#F4568B]" />
                       +91 98745 67890
                     </button>
