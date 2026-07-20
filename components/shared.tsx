@@ -45,44 +45,20 @@ import { useMedicineSearchStore } from "@/stores/use-medicine-search"
 import { useMedicineSearch } from "@/hooks/use-medicine-search"
 import { Spinner } from "./ui/spinner"
 import { NAV_USER_DROPDOWN_ITEMS } from "@/contants"
+import Image from "next/image"
 
 // ─── MDW Logo ────────────────────────────────────────────────────────────────
-export function MDWLogo({ size = "md" }: { size?: "sm" | "md" | "lg" }) {
-  const sizes = { sm: "w-6 h-6", md: "w-8 h-8", lg: "w-10 h-10" }
-  const textSizes = { sm: "text-sm", md: "text-base", lg: "text-xl" }
+export function MDWLogo({ size = "lg" }: { size?: "sm" | "md" | "lg" }) {
+  const sizes = { sm: "w-7.5 h-3.5", md: "w-15 h-7.5", lg: "w-20 h-10" }
   return (
     <Link href="/medicine" className="flex flex-shrink-0 items-center gap-2">
       <div className={`${sizes[size]} relative`}>
-        <svg
-          viewBox="0 0 40 40"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-full w-full"
-        >
-          <rect width="40" height="40" rx="6" fill="#F4568B" />
-          <path
-            d="M8 20 L16 10 L20 16 L24 10 L32 20"
-            stroke="white"
-            strokeWidth="3"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            fill="none"
-          />
-          <path
-            d="M14 28 L20 20 L26 28"
-            stroke="white"
-            strokeWidth="2.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            fill="none"
-          />
-        </svg>
-      </div>
-      <div className="leading-tight">
-        <div className={`font-bold text-[#F4568B] ${textSizes[size]}`}>MDW</div>
-        <div className="-mt-0.5 text-[9px] tracking-wide text-gray-500 uppercase">
-          My Dawaiwala
-        </div>
+        <Image
+          src="/images/logo.png"
+          alt="MDW Logo"
+          fill
+          className="object-contain"
+        />
       </div>
     </Link>
   )
