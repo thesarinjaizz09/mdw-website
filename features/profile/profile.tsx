@@ -16,11 +16,14 @@ import {
   Plus,
   Pencil,
   Box,
+  User2Icon,
+  UserIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { MDWHeader, MDWFooterBar } from "@/components/shared";
 import { useAuth } from "@/providers/auth-provider";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import EditProfileDialog from "@/components/edit-profile-dialog";
 
 const NAV_ITEMS = [
   { id: "profile", label: "My Profile", icon: <User className="w-4 h-4" />, href: "/account" },
@@ -51,6 +54,7 @@ const USER = {
 
 export default function ProfilePage() {
   const { user, refreshUser } = useAuth();
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
 
   useEffect(() => {
     refreshUser();
@@ -76,8 +80,8 @@ export default function ProfilePage() {
               <div className="flex items-start justify-between mb-5">
                 <div className="flex items-center gap-4">
                   {/* Avatar */}
-                  <div className="w-16 h-16 rounded-full bg-[#F4568B]/50  flex items-center justify-center text-2xl border-2 border-[#F4568B] overflow-hidden">
-                    👨‍💼
+                  <div className="w-16 h-16 rounded-full bg-[#F4568B]/40  flex items-center justify-center text-2xl border-2 border-[#ff6f9f] overflow-hidden">
+                    <UserIcon className="text-black"/>
                   </div>
                   <div>
                     <h2 className="text-lg font-bold text-gray-900">{`${user?.userfName} ${user?.userlName}`}</h2>
@@ -85,10 +89,10 @@ export default function ProfilePage() {
                     <p className="text-sm text-gray-500">{user?.userPhone}</p>
                   </div>
                 </div>
-                {/* <button className="flex items-center gap-1.5 text-[#F4568B] text-sm font-medium hover:text-[#F4568B]/90 transition-colors">
+                <button onClick={() => setEditDialogOpen(true)} className="flex items-center gap-1.5 text-[#F4568B] text-sm font-medium hover:text-[#F4568B]/90 transition-colors">
                   <Pencil className="w-3.5 h-3.5" />
                   Edit Profile
-                </button> */}
+                </button>
               </div>
 
               {/* Account Details */}
@@ -148,6 +152,8 @@ export default function ProfilePage() {
           </div>
         </div>
       </main>
+
+      <EditProfileDialog open={editDialogOpen} onOpenChange={setEditDialogOpen} />
 
       <MDWFooterBar />
     </div>

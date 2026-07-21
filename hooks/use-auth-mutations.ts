@@ -10,6 +10,7 @@ import {
     type RegisterInput,
     type ForgotPasswordInput,
     type ResetPasswordInput,
+    type UpdateProfileInput,
 } from "@/lib/apu/auth";
 import { useAuth } from "@/providers/auth-provider";
 import { type User } from "@/types";
@@ -100,3 +101,19 @@ export function useResetPassword() {
         },
     });
 }
+
+export function useUpdateProfile() {
+    const { refreshUser } = useAuth();
+
+    return useMutation({
+        mutationFn: (input: UpdateProfileInput) =>
+            authApi.updateProfile(input),
+        onSuccess: async () => {
+            await refreshUser();
+        },
+        onError: (err) => {
+            toast.error(errorMessage(err));
+        },
+    });
+}
+

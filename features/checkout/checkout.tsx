@@ -408,7 +408,7 @@ export default function CheckoutPage() {
                     </button>
                     <button className="flex items-center gap-2 text-xs text-gray-600 hover:text-[#F4568B] transition-colors" onClick={() => window.open("tel:+919230189091", "_blank")}>
                       <Phone className="w-4 h-4 text-[#F4568B]" />
-                      +91 98745 67890
+                      +91 92301 89091
                     </button>
                   </div>
                 </div>
