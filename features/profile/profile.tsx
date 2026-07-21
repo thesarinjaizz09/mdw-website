@@ -59,18 +59,18 @@ export default function ProfilePage() {
   const router = useRouter();
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-between min-w-screen">
+    <div className="min-h-screen bg-gray-50 flex flex-col justify-between flex-1">
       <MDWHeader />
 
-      <main className="px-4 py-6">
+      <main className="px-4 py-6 w-full max-w-7xl mx-auto flex-1">
         <h1 className="text-xl font-bold text-gray-900 mb-6">My Profile</h1>
 
-        <div className="grid grid-cols-3 gap-5">
+        <div className="flex gap-5 md:flex-row flex-col">
           {/* Sidebar nav */}
           <UserSidebar />
 
           {/* Main content */}
-          <div className="lg:col-span-2 space-y-4">
+          <div className=" space-y-4 w-full md:w-[70%]">
             {/* Profile card */}
             <div className="bg-white rounded-lg border border-gray-100 shadow-sm p-5">
               <div className="flex items-start justify-between mb-5">
@@ -101,9 +101,9 @@ export default function ProfilePage() {
                     { label: "Mobile Number", value: user?.userPhone },
                     // { label: "Date of Birth", value: user?.dob },
                   ].map((row) => (
-                    <div key={row.label} className="flex items-center py-2.5">
-                      <span className="w-36 text-sm text-gray-500 flex-shrink-0">{row.label}</span>
-                      <span className="text-sm font-medium text-gray-900">{row.value}</span>
+                    <div key={row.label} className="flex items-center py-2.5 max-[400px]:flex-col max-[400px]:items-start max-[400px]:gap-1">
+                      <span className="w-36 text-sm text-gray-500 flex-shrink-0 max-[400px]:w-full max-[400px]:font-medium">{row.label}</span>
+                      <span className="text-sm font-medium text-gray-900 max-[400px]:w-full">{row.value}</span>
                     </div>
                   ))}
                 </div>
@@ -165,7 +165,7 @@ export function UserSidebar() {
       : "profile";
 
   return (
-    <div className="lg:col-span-1">
+    <div className="md:w-[30%]">
       <div className="bg-white rounded-lg border border-gray-100 shadow-sm overflow-hidden">
         <nav className="divide-y divide-gray-50">
           {NAV_ITEMS.map((item) => (
