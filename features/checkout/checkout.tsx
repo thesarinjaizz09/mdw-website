@@ -46,7 +46,7 @@ export default function CheckoutPage() {
     <div className="min-h-screen bg-gray-50 flex-1 flex flex-col justify-between">
       <MDWHeader />
 
-      <main className="w-full mx-auto px-4 py-6">
+      <main className="w-full mx-auto max-w-7xl px-4 py-6 flex-1">
         <div className="w-full">
           <h1 className="text-xl font-bold text-gray-900 mb-6">Checkout</h1>
 
