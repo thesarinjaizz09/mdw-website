@@ -31,6 +31,29 @@ async function postJson<T>(
     return data as T;
 }
 
+async function putJson<T>(
+    url: string,
+    body: unknown
+): Promise<T> {
+    const res = await fetch(url, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+        credentials: "include",
+    });
+
+    const data = await res.json().catch(() => ({}));
+
+    if (!res.ok) {
+        throw new AuthApiError(
+            data.message || "Something went wrong. Please try again.",
+            res.status
+        );
+    }
+
+    return data as T;
+}
+
 export interface LoginInput {
     userEmailOrPhone: string;
     userPassword: string;
@@ -52,6 +75,13 @@ export interface ForgotPasswordInput {
 export interface ResetPasswordInput {
     token: string;
     password: string;
+}
+
+export interface UpdateProfileInput {
+    userfName: string;
+    userlName: string;
+    userEmail: string;
+    userPhone: string;
 }
 
 export interface AuthResponse {
@@ -82,4 +112,8 @@ export const authApi = {
             "/api/auth/reset-password",
             input
         ),
+
+    updateProfile: (input: UpdateProfileInput) =>
+        putJson<AuthResponse>("/api/auth/update-profile", input),
 };
+
