@@ -217,7 +217,7 @@ export default function IndividualPage({ category }: { category?: string }) {
         <div className="min-h-screen bg-gray-50 flex flex-col justify-between">
             <MDWHeader />
 
-            <main className="max-w-7xl space-y-8 px-4 py-6">
+            <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-6">
                 {/* Hero Banner */}
                 <section className="to-teal-50s relative flex min-h-[220px] flex-row justify-between rounded-lg bg-gradient-to-r from-[#F4568B]-200 via-[#F4568B]-500 to-[#F4568B] px-4 py-5 max-[700px]:flex-col min-[700px]:items-center bg-[#F4568B]">
                     {/* Content */}
