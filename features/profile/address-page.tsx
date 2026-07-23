@@ -4,8 +4,7 @@ import { useEffect, useState } from "react"
 import Link from "next/link"
 import AddressDialog from "@/components/address-dialog"
 import { ArrowLeft, MapPin, Plus, Phone, Home, Building2 } from "lucide-react"
-import { MDWHeader, MDWFooterBar } from "@/components/shared"
-import { UserSidebar } from "./profile"
+import { MDWHeader, MDWFooterBar, UserSidebar } from "@/components/shared"
 
 interface AddressRecord {
   _id?: string

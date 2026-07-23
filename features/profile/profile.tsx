@@ -20,37 +20,10 @@ import {
   UserIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { MDWHeader, MDWFooterBar } from "@/components/shared";
+import { MDWHeader, MDWFooterBar, UserSidebar } from "@/components/shared";
 import { useAuth } from "@/providers/auth-provider";
 import { useEffect, useState } from "react";
 import EditProfileDialog from "@/components/edit-profile-dialog";
-
-const NAV_ITEMS = [
-  { id: "profile", label: "My Profile", icon: <User className="w-4 h-4" />, href: "/account" },
-  { id: "orders", label: "My Orders", icon: <ShoppingBag className="w-4 h-4" />, href: "/orders" },
-  // { id: "prescriptions", label: "My Prescriptions", icon: <FileText className="w-4 h-4" /> },
-  { id: "addresses", label: "Addresses", icon: <MapPin className="w-4 h-4" />, href: "/address" },
-  // { id: "payment", label: "Payment Methods", icon: <CreditCard className="w-4 h-4" /> },
-  // { id: "wallet", label: "My Wallet", icon: <Wallet className="w-4 h-4" /> },
-  // { id: "notifications", label: "Notifications", icon: <Bell className="w-4 h-4" /> },
-  // { id: "refer", label: "Refer & Earn", icon: <Gift className="w-4 h-4" /> },
-  // { id: "help", label: "Help & Support", icon: <HelpCircle className="w-4 h-4" /> },
-];
-
-const QUICK_ACTIONS = [
-  { id: "prescriptions", label: "My\nOrders", icon: <Box className="w-5 h-5 text-[#F4568B]" />, href: "/orders" },
-  { id: "addresses", label: "My\nAddresses", icon: <MapPin className="w-5 h-5 text-[#F4568B]" />, href: "/address" },
-  // { id: "payment", label: "Help\nCenter", icon: <HelpCircle className="w-5 h-5 text-[#F4568B]" />, href: "/help" },
-  // { id: "refer", label: "Refer &\nEarn", icon: <Gift className="w-5 h-5 text-[#F4568B]" />, href: "/refer" },
-];
-
-const USER = {
-  name: "Rahul Kumar",
-  email: "rahul.kumar@email.com",
-  phone: "98745 67890",
-  dob: "12 May 1990",
-  walletBalance: 0.00,
-};
 
 export default function ProfilePage() {
   const { user, refreshUser } = useAuth();
@@ -158,66 +131,4 @@ export default function ProfilePage() {
       <MDWFooterBar />
     </div>
   );
-}
-
-export function UserSidebar() {
-  const pathname = usePathname();
-  const router = useRouter()
-
-  const activeSection = pathname === "/orders"
-    ? "orders"
-    : pathname === "/address"
-      ? "addresses"
-      : "profile";
-
-  return (
-    <div className="md:w-[30%]">
-      <div className="bg-white rounded-lg border border-gray-100 shadow-sm overflow-hidden">
-        <nav className="divide-y divide-gray-50">
-          {NAV_ITEMS.map((item) => (
-            item.href ? (
-              <Link
-                key={item.id}
-                href={item.href}
-                className={`w-full flex items-center gap-3 px-4 py-3 text-sm transition-all text-left ${activeSection === item.id
-                  ? "bg-[#F4568B]/10 text-[#F4568B] font-semibold border border-[#F4568B]/20"
-                  : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
-                  }`}
-              >
-                <span
-                  className={`flex-shrink-0 ${activeSection === item.id ? "text-[#F4568B]" : "text-gray-400"
-                    }`}
-                >
-                  {item.icon}
-                </span>
-                {item.label}
-              </Link>
-            ) : (
-              <button
-                key={item.id}
-                className={`w-full flex items-center gap-3 px-4 py-3 text-sm transition-all text-left ${activeSection === item.id
-                  ? "bg-[#F4568B]/10 text-[#F4568B] font-semibold border border-[#F4568B]/20"
-                  : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
-                  }`}
-              >
-                <span
-                  className={`flex-shrink-0 ${activeSection === item.id ? "text-[#F4568B]" : "text-gray-400"
-                    }`}
-                >
-                  {item.icon}
-                </span>
-                {item.label}
-              </button>
-            )
-          ))}
-
-          {/* Logout */}
-          <button className="w-full flex items-center gap-3 px-4 py-3 text-sm text-red-500 hover:bg-red-50 transition-colors text-left" onClick={() => router.push("/logout")}>
-            <LogOut className="w-4 h-4 flex-shrink-0" />
-            Logout
-          </button>
-        </nav>
-      </div>
-    </div>
-  )
 }

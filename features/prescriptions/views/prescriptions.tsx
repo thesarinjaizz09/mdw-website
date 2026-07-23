@@ -64,6 +64,28 @@ interface OrderRecord {
     };
 }
 
+interface PrescriptionPagination {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+    hasNextPage: boolean;
+    hasPreviousPage: boolean;
+}
+
+interface Prescription {
+    _id: string;
+    status: "PENDING" | "APPROVED" | "REJECTED" | "FULFILLED";
+    notes: string;
+    rejectionReason?: string;
+    images: {
+        url: string;
+        publicId: string;
+    }[];
+    createdAt: string;
+    reviewedAt?: string;
+}
+
 const statusClasses: Record<string, string> = {
     PENDING: "bg-amber-50 text-amber-700 border-amber-200",
     CONFIRMED: "bg-blue-50 text-blue-700 border-blue-200",
@@ -74,16 +96,64 @@ const statusClasses: Record<string, string> = {
     EXPIRED: "bg-slate-50 text-slate-700 border-slate-200",
 };
 
+const presStatusClasses = {
+    PENDING:
+        "bg-yellow-50 text-yellow-700 border-yellow-200",
+
+    APPROVED:
+        "bg-green-50 text-green-700 border-green-200",
+
+    REJECTED:
+        "bg-red-50 text-red-700 border-red-200",
+
+    FULFILLED:
+        "bg-blue-50 text-blue-700 border-blue-200",
+};
+
 const formatCurrency = (value?: number) =>
     `₹${Number(value || 0).toLocaleString("en-IN")}`;
 
 const formatStatus = (status?: string) =>
     (status || "PENDING").replace(/_/g, " ").toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase());
 
-export default function OrdersPage() {
+export default function PrescriptionsPage() {
     const [orders, setOrders] = useState<OrderRecord[]>([]);
+    const [prescriptions, setPrescriptions] = useState<Prescription[]>([]);
+
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+
+    const [page, setPage] = useState(1);
+    const [pagination, setPagination] = useState<PrescriptionPagination | null>(null);
+
+    const loadPrescriptions = async (currentPage = 1) => {
+        try {
+            setLoading(true);
+
+            const response = await fetch(
+                `/prescriptions/?page=${currentPage}&limit=5`,
+                {
+                    credentials: "include",
+                }
+            );
+
+            const data = await response.json();
+
+            console.log("Prescriptions data:", data);
+
+            if (data.status === "success") {
+                setPrescriptions(data.data);
+                setPagination(data.pagination);
+            } else {
+                setError(data.message);
+            }
+        } catch (error) {
+            console.log({ error })
+            setError("Failed to load prescriptions.");
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
         const loadOrders = async () => {
@@ -106,6 +176,28 @@ export default function OrdersPage() {
         loadOrders();
     }, []);
 
+    useEffect(() => {
+        loadPrescriptions(page);
+    }, [page]);
+
+    const metrics = useMemo(() => {
+        return {
+            total: pagination?.total ?? 0,
+
+            pending: prescriptions.filter(
+                x => x.status === "PENDING"
+            ).length,
+
+            approved: prescriptions.filter(
+                x => x.status === "APPROVED"
+            ).length,
+
+            fulfilled: prescriptions.filter(
+                x => x.status === "FULFILLED"
+            ).length,
+        };
+    }, [prescriptions, pagination]);
+
     const summary = useMemo(() => {
         const totalSpent = orders.reduce((sum, order) => sum + Number(order.grandTotal || 0), 0);
         return {
@@ -120,36 +212,40 @@ export default function OrdersPage() {
             <MDWHeader />
 
             <main className="flex w-full max-w-7xl mx-auto flex-col px-4 py-6 flex-1">
-                <h1 className="text-xl font-bold text-gray-900 mb-6">My Orders</h1>
+                <h1 className="text-xl font-bold text-gray-900 mb-6">My Prescriptions</h1>
 
                 <div className="flex gap-5 md:flex-row flex-col">
                     {/* Sidebar nav */}
                     <UserSidebar />
                     <div className="w-full md:w-[70%]">
 
-                        <section className="grid gap-4 rounded-md border border-slate-200 bg-white p-4 shadow-sm md:grid-cols-3 mb-4">
+                        <section className="grid gap-4 rounded-md border border-slate-200 bg-white p-4 shadow-sm md:grid-cols-4 mb-4">
                             <div className="rounded-xl bg-[#F4568B]/10 p-4">
-                                <p className="text-sm text-[#F4568B]">Total orders</p>
-                                <p className="mt-2 text-md sm:text-2xl font-semibold text-slate-900">{summary.totalOrders}</p>
+                                <p className="text-sm text-[#F4568B]">Total prescriptions</p>
+                                <p className="mt-2 text-md sm:text-2xl font-semibold text-slate-900">{metrics.total}</p>
                             </div>
                             <div className="rounded-xl bg-slate-50 p-4">
-                                <p className="text-sm text-slate-600">Total spent</p>
-                                <p className="mt-2 text-md sm:text-2xl font-semibold text-slate-900">{formatCurrency(summary.totalSpent)}</p>
+                                <p className="text-sm text-slate-600">Pending review</p>
+                                <p className="mt-2 text-md sm:text-2xl font-semibold text-slate-900">{metrics.pending}</p>
                             </div>
                             <div className="rounded-xl bg-slate-50 p-4">
-                                <p className="text-sm text-slate-600">Active orders</p>
-                                <p className="mt-2 text-md sm:text-2xl font-semibold text-slate-900">{summary.activeOrders}</p>
+                                <p className="text-sm text-slate-600">Approved</p>
+                                <p className="mt-2 text-md sm:text-2xl font-semibold text-slate-900">{metrics.approved}</p>
+                            </div>
+                            <div className="rounded-xl bg-slate-50 p-4">
+                                <p className="text-sm text-slate-600">Fulfilled</p>
+                                <p className="mt-2 text-md sm:text-2xl font-semibold text-slate-900">{metrics.fulfilled}</p>
                             </div>
                         </section>
 
                         <section className="space-y-4">
                             {loading ? (
-                                <div className="rounded-md border border-slate-200 bg-white p-6 text-sm text-slate-500 shadow-sm">Loading your orders…</div>
+                                <div className="rounded-md border border-slate-200 bg-white p-6 text-sm text-slate-500 shadow-sm">Loading your prescriptions</div>
                             ) : error ? (
                                 <div className="rounded-md border border-rose-200 bg-rose-50 p-6 text-sm text-rose-700 shadow-sm">{error}</div>
                             ) : orders.length === 0 ? (
                                 <div className="rounded-md border border-dashed border-slate-300 bg-white p-8 text-center text-sm text-slate-500 shadow-sm">
-                                    You have not placed any order yet.
+                                    You have not uploaded any prescription yet.
                                 </div>
                             ) : (
                                 orders.map((order) => (
@@ -168,17 +264,17 @@ export default function OrdersPage() {
                                                     <span className="flex items-center gap-1.5"><CreditCard className="h-4 w-4" />{order.modeOfPayment || "—"}</span>
                                                 </div>
                                             </div>
-                                            <div className="text-left sm:text-right">
+                                            {/* <div className="text-left sm:text-right">
                                                 <p className="text-sm text-slate-500">Total amount</p>
                                                 <p className="text-lg font-semibold text-slate-900">{formatCurrency(order.grandTotal)}</p>
-                                            </div>
+                                            </div> */}
                                         </div>
 
                                         <div className="grid gap-4 p-4 lg:grid-cols-[1.3fr_0.7fr]">
                                             <div className="space-y-3">
                                                 <div className="flex items-center gap-2 text-sm font-medium text-slate-700">
                                                     <ShoppingBag className="h-4 w-4 text-[#F4568B]" />
-                                                    {order.items?.length ? `${order.items.length} item${order.items.length > 1 ? "s" : ""}` : "Items"}
+                                                    Prescription
                                                 </div>
                                                 <div className="space-y-2">
                                                     {(order.items || []).slice(0, 3).map((item, index) => (
@@ -190,7 +286,7 @@ export default function OrdersPage() {
                                                 </div>
                                             </div>
 
-                                            <div className="rounded-xl bg-slate-50 p-3 text-sm text-slate-600">
+                                            {/* <div className="rounded-xl bg-slate-50 p-3 text-sm text-slate-600">
                                                 <div className="flex items-start gap-2">
                                                     <MapPin className="mt-0.5 h-4 w-4 text-[#F4568B]" />
                                                     <div>
@@ -206,7 +302,7 @@ export default function OrdersPage() {
                                                         <span>Scheduled for {order.deliveryInfo.scheduledDate || "—"} • {order.deliveryInfo.scheduledTime || "—"}</span>
                                                     </div>
                                                 ) : null}
-                                            </div>
+                                            </div> */}
                                         </div>
                                     </article>
                                 ))

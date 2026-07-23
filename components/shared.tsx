@@ -12,9 +12,10 @@ import {
   Minus,
   Trash2,
   ArrowRight,
+  LogOut,
 } from "lucide-react"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import { useSession } from "@/hooks/use-session"
 import { useCart, useCartActions } from "@/hooks/use-cart"
 import LoginDialog from "@/components/login-dialog"
@@ -46,6 +47,7 @@ import { useMedicineSearch } from "@/hooks/use-medicine-search"
 import { Spinner } from "./ui/spinner"
 import { NAV_USER_DROPDOWN_ITEMS } from "@/contants"
 import Image from "next/image"
+import { NAV_ITEMS } from "@/lib/constants"
 
 // ─── MDW Logo ────────────────────────────────────────────────────────────────
 export function MDWLogo({ size = "lg" }: { size?: "sm" | "md" | "lg" }) {
@@ -196,30 +198,30 @@ export function MDWHeader() {
                   </button>
                 </DropdownMenuTrigger>
 
-                  <DropdownMenuContent className="bg-white text-black border border-gray-200 rounded-md text-xs rounded-sm w-full" align="end">
-                    {NAV_USER_DROPDOWN_ITEMS.map((item) => (
-                      <Link
-                        key={item.label}
-                        href={item.href}
-                        className="block px-4 py-2 text-gray-600 text-xs hover:bg-gray-500 hover:text-white rounded-sm"
-                      >
-                        {item.label}
-                      </Link>
-                    ))}
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              ) : (
-                <button
-                  onClick={() =>
-                    setShowLogin(true)
-                  }
-                  className="p-2.5 text-gray-500 hover:text-[#F4568B] hover:bg-[#F4568B]/10 rounded-full transition-colors"
-                >
-                  <User size={21} />
-                </button>
-              )) : (
-                <Spinner className="size-5 text-gray-500" />
-              )
+                <DropdownMenuContent className="bg-white text-black border border-gray-200 rounded-md text-xs rounded-sm w-full" align="end">
+                  {NAV_USER_DROPDOWN_ITEMS.map((item) => (
+                    <Link
+                      key={item.label}
+                      href={item.href}
+                      className="block px-4 py-2 text-gray-600 text-xs hover:bg-gray-500 hover:text-white rounded-sm"
+                    >
+                      {item.label}
+                    </Link>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <button
+                onClick={() =>
+                  setShowLogin(true)
+                }
+                className="p-2.5 text-gray-500 hover:text-[#F4568B] hover:bg-[#F4568B]/10 rounded-full transition-colors"
+              >
+                <User size={21} />
+              </button>
+            )) : (
+            <Spinner className="size-5 text-gray-500" />
+          )
           }
           <Sheet open={isCartOpen} onOpenChange={setIsCartOpen}>
             <SheetTrigger asChild>
@@ -541,6 +543,68 @@ export function MedicineSearchInput() {
           ))}
         </div>
       )}
+    </div>
+  )
+}
+
+export function UserSidebar() {
+  const pathname = usePathname();
+  const router = useRouter()
+
+  const activeSection = pathname === "/orders"
+    ? "orders"
+    : pathname === "/address"
+      ? "addresses"
+      : "profile";
+
+  return (
+    <div className="md:w-[30%]">
+      <div className="bg-white rounded-lg border border-gray-100 shadow-sm overflow-hidden">
+        <nav className="divide-y divide-gray-50">
+          {NAV_ITEMS.map((item) => (
+            item.href ? (
+              <Link
+                key={item.id}
+                href={item.href}
+                className={`w-full flex items-center gap-3 px-4 py-3 text-sm transition-all text-left ${activeSection === item.id
+                  ? "bg-[#F4568B]/10 text-[#F4568B] font-semibold border border-[#F4568B]/20"
+                  : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                  }`}
+              >
+                <span
+                  className={`flex-shrink-0 ${activeSection === item.id ? "text-[#F4568B]" : "text-gray-400"
+                    }`}
+                >
+                  {item.icon}
+                </span>
+                {item.label}
+              </Link>
+            ) : (
+              <button
+                key={item.id}
+                className={`w-full flex items-center gap-3 px-4 py-3 text-sm transition-all text-left ${activeSection === item.id
+                  ? "bg-[#F4568B]/10 text-[#F4568B] font-semibold border border-[#F4568B]/20"
+                  : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                  }`}
+              >
+                <span
+                  className={`flex-shrink-0 ${activeSection === item.id ? "text-[#F4568B]" : "text-gray-400"
+                    }`}
+                >
+                  {item.icon}
+                </span>
+                {item.label}
+              </button>
+            )
+          ))}
+
+          {/* Logout */}
+          <button className="w-full flex items-center gap-3 px-4 py-3 text-sm text-red-500 hover:bg-red-50 transition-colors text-left" onClick={() => router.push("/logout")}>
+            <LogOut className="w-4 h-4 flex-shrink-0" />
+            Logout
+          </button>
+        </nav>
+      </div>
     </div>
   )
 }
