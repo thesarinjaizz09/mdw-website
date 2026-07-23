@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, Package, CalendarDays, MapPin, CreditCard, Clock3, ShoppingBag } from "lucide-react";
+import { ArrowLeft, Package, CalendarDays, MapPin, CreditCard, Clock3, ShoppingBag, FileText } from "lucide-react";
 import { MDWHeader, MDWFooterBar, UserSidebar } from "@/components/shared";
 
 interface OrderSummary {
@@ -84,6 +84,7 @@ interface Prescription {
     }[];
     createdAt: string;
     reviewedAt?: string;
+    prescriptionNumber?: string;
 }
 
 const statusClasses: Record<string, string> = {
@@ -228,15 +229,19 @@ export default function PrescriptionsPage() {
                                         <div className="flex flex-col gap-4 p-4 sm:flex-row sm:items-center sm:justify-between">
                                             <div>
                                                 <div className="flex flex-wrap items-center gap-2">
-                                                    <p className="text-sm font-semibold text-slate-900">{order._id}</p>
+                                                    <p className="text-sm font-semibold text-slate-900">{order.prescriptionNumber || order._id}</p>
                                                     <span className={`rounded-full border px-2.5 py-1 text-xs font-medium ${statusClasses[order.status || "PENDING"] || presStatusClasses.PENDING}`}>
                                                         {formatStatus(order.status)}
                                                     </span>
                                                 </div>
                                                 <div className="mt-2 flex flex-wrap items-center gap-4 text-sm text-slate-500">
-                                                    <span className="flex items-center gap-1.5"><CalendarDays className="h-4 w-4" />{order.createdAt || "—"}</span>
-                                                    {/* <span className="flex items-center gap-1.5"><Clock3 className="h-4 w-4" />{order.formattedDates?.orderedTime || "—"}</span>
-                                                    <span className="flex items-center gap-1.5"><CreditCard className="h-4 w-4" />{order.modeOfPayment || "—"}</span> */}
+                                                    <span className="flex items-center gap-1.5"><CalendarDays className="h-4 w-4" />{(new Date(order.createdAt)).toLocaleDateString("en-GB") || "—"}</span>
+                                                    <span className="flex items-center gap-1.5"><Clock3 className="h-4 w-4" />{(new Date(order.createdAt)).toLocaleTimeString("en-IN", {
+                                                        hour: "2-digit",
+                                                        minute: "2-digit",
+                                                        hour12: true,
+                                                    }) || "—"}</span>
+                                                    {/* <span className="flex items-center gap-1.5"><CreditCard className="h-4 w-4" />{order.modeOfPayment || "—"}</span> */}
                                                 </div>
                                             </div>
                                             <div className="text-left sm:text-right h-full flex items-start justify-start">
@@ -254,7 +259,7 @@ export default function PrescriptionsPage() {
                                         <div className="grid gap-4 p-4 lg:grid-cols-[1.3fr_0.7fr]">
                                             <div className="space-y-3">
                                                 <div className="flex items-center gap-2 text-sm font-medium text-slate-700">
-                                                    <ShoppingBag className="h-4 w-4 text-[#F4568B]" />
+                                                    <FileText className="h-4 w-4 text-[#F4568B]" />
                                                     Prescription
                                                 </div>
                                                 <div className="space-y-2">
