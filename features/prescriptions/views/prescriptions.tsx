@@ -131,15 +131,16 @@ export default function PrescriptionsPage() {
             setLoading(true);
 
             const response = await fetch(
-                `/prescriptions/?page=${currentPage}&limit=5`,
+                `/api/prescriptions`,
                 {
-                    credentials: "include",
+                    headers: {
+                        "Content-Type": "application/json",
+                        page: String(currentPage),
+                    }
                 }
             );
 
             const data = await response.json();
-
-            console.log("Prescriptions data:", data);
 
             if (data.status === "success") {
                 setPrescriptions(data.data);
@@ -156,24 +157,7 @@ export default function PrescriptionsPage() {
     };
 
     useEffect(() => {
-        const loadOrders = async () => {
-            try {
-                const response = await fetch("/api/order/get", { credentials: "include" });
-                const data = await response.json();
-
-                if (data?.success) {
-                    setOrders(data.orders || []);
-                } else {
-                    setError(data?.message || "Unable to load your orders right now.");
-                }
-            } catch {
-                setError("Unable to load your orders right now.");
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        loadOrders();
+        loadPrescriptions()
     }, []);
 
     useEffect(() => {
@@ -197,15 +181,6 @@ export default function PrescriptionsPage() {
             ).length,
         };
     }, [prescriptions, pagination]);
-
-    const summary = useMemo(() => {
-        const totalSpent = orders.reduce((sum, order) => sum + Number(order.grandTotal || 0), 0);
-        return {
-            totalOrders: orders.length,
-            totalSpent,
-            activeOrders: orders.filter((order) => ["PENDING", "CONFIRMED", "PACKED", "OUT_FOR_DELIVERY"].includes(order.orderStatus || "")).length,
-        };
-    }, [orders]);
 
     return (
         <div className="bg-gray-50 flex flex-col justify-between flex-1 min-h-screen">
@@ -243,31 +218,37 @@ export default function PrescriptionsPage() {
                                 <div className="rounded-md border border-slate-200 bg-white p-6 text-sm text-slate-500 shadow-sm">Loading your prescriptions</div>
                             ) : error ? (
                                 <div className="rounded-md border border-rose-200 bg-rose-50 p-6 text-sm text-rose-700 shadow-sm">{error}</div>
-                            ) : orders.length === 0 ? (
+                            ) : prescriptions.length === 0 ? (
                                 <div className="rounded-md border border-dashed border-slate-300 bg-white p-8 text-center text-sm text-slate-500 shadow-sm">
                                     You have not uploaded any prescription yet.
                                 </div>
                             ) : (
-                                orders.map((order) => (
+                                prescriptions.map((order) => (
                                     <article key={order._id} className="overflow-hidden rounded-md border border-slate-200 bg-white shadow-sm">
-                                        <div className="flex flex-col gap-4 border-b border-slate-100 p-4 sm:flex-row sm:items-center sm:justify-between">
+                                        <div className="flex flex-col gap-4 p-4 sm:flex-row sm:items-center sm:justify-between">
                                             <div>
                                                 <div className="flex flex-wrap items-center gap-2">
-                                                    <p className="text-sm font-semibold text-slate-900">{order.userOrderId || order._id}</p>
-                                                    <span className={`rounded-full border px-2.5 py-1 text-xs font-medium ${statusClasses[order.orderStatus || "PENDING"] || statusClasses.PENDING}`}>
-                                                        {formatStatus(order.orderStatus)}
+                                                    <p className="text-sm font-semibold text-slate-900">{order._id}</p>
+                                                    <span className={`rounded-full border px-2.5 py-1 text-xs font-medium ${statusClasses[order.status || "PENDING"] || presStatusClasses.PENDING}`}>
+                                                        {formatStatus(order.status)}
                                                     </span>
                                                 </div>
                                                 <div className="mt-2 flex flex-wrap items-center gap-4 text-sm text-slate-500">
-                                                    <span className="flex items-center gap-1.5"><CalendarDays className="h-4 w-4" />{order.formattedDates?.orderedDate || "—"}</span>
-                                                    <span className="flex items-center gap-1.5"><Clock3 className="h-4 w-4" />{order.formattedDates?.orderedTime || "—"}</span>
-                                                    <span className="flex items-center gap-1.5"><CreditCard className="h-4 w-4" />{order.modeOfPayment || "—"}</span>
+                                                    <span className="flex items-center gap-1.5"><CalendarDays className="h-4 w-4" />{order.createdAt || "—"}</span>
+                                                    {/* <span className="flex items-center gap-1.5"><Clock3 className="h-4 w-4" />{order.formattedDates?.orderedTime || "—"}</span>
+                                                    <span className="flex items-center gap-1.5"><CreditCard className="h-4 w-4" />{order.modeOfPayment || "—"}</span> */}
                                                 </div>
                                             </div>
-                                            {/* <div className="text-left sm:text-right">
-                                                <p className="text-sm text-slate-500">Total amount</p>
-                                                <p className="text-lg font-semibold text-slate-900">{formatCurrency(order.grandTotal)}</p>
-                                            </div> */}
+                                            <div className="text-left sm:text-right h-full flex items-start justify-start">
+                                                <a
+                                                    href={order.images[0].url}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="flex-shrink-0 rounded-xs bg-green-100 px-2 py-0.5 text-[11px] font-medium text-green-700 transition-colors hover:bg-green-200"
+                                                >
+                                                    View
+                                                </a>
+                                            </div>
                                         </div>
 
                                         <div className="grid gap-4 p-4 lg:grid-cols-[1.3fr_0.7fr]">
@@ -277,10 +258,9 @@ export default function PrescriptionsPage() {
                                                     Prescription
                                                 </div>
                                                 <div className="space-y-2">
-                                                    {(order.items || []).slice(0, 3).map((item, index) => (
-                                                        <div key={`${item.productId || index}-${index}`} className="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2 text-sm text-slate-600">
-                                                            <span>{item.name || "Medicine"}</span>
-                                                            <span className="font-medium text-slate-900">{item.qty || 0} × {formatCurrency(item.mrp)}</span>
+                                                    {(order.images || []).slice(0, 3).map((item, index) => (
+                                                        <div key={`${item || index}-${index}`} className="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2 text-sm text-slate-600">
+                                                            <span>{item.url}</span>
                                                         </div>
                                                     ))}
                                                 </div>

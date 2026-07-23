@@ -555,7 +555,7 @@ export function UserSidebar() {
     ? "orders"
     : pathname === "/address"
       ? "addresses"
-      : "profile";
+      : pathname === "/prescriptions" ? "prescriptions" : "profile";
 
   return (
     <div className="md:w-[30%]">
