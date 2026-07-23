@@ -41,9 +41,11 @@ async function createPrescription(images: PrescriptionImage[]): Promise<void> {
 
   const data = await res.json().catch(() => null);
 
-  if (!res.ok || data?.status !== "success") {
+  if (!res.ok || data?.success !== true) {
     throw new Error(data?.message || "Failed to save prescription details");
   }
+
+  return
 }
 // --------------------------------------------------------------------------
 
