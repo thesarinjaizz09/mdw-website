@@ -46,21 +46,21 @@ export default function LoginDialog({
 
         <div className="grid grid-cols-2 gap-1 mt-4 text-xs">
           <Button
-          className="rounded-sm text-sm bg-green-700 text-white hover:bg-green-600"
+          className="rounded-sm text-sm bg-[#F4568B] text-white hover:bg-gray-500"
             onClick={() =>
               router.push("/auth")
             }
           >
-            Login
+            Sign In
           </Button>
 
           <Button
-          className="rounded-sm text-sm border border-gray-200"
+          className="rounded-sm text-sm border border-gray-200 bg-gray-500 hover:bg-[#F4568B] text-white"
             onClick={() =>
               router.push("/create")
             }
           >
-            Create Account
+            Sign Up
           </Button>
         </div>
       </DialogContent>

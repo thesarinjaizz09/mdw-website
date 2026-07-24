@@ -45,44 +45,20 @@ import { useMedicineSearchStore } from "@/stores/use-medicine-search"
 import { useMedicineSearch } from "@/hooks/use-medicine-search"
 import { Spinner } from "./ui/spinner"
 import { NAV_USER_DROPDOWN_ITEMS } from "@/contants"
+import Image from "next/image"
 
 // ─── MDW Logo ────────────────────────────────────────────────────────────────
-export function MDWLogo({ size = "md" }: { size?: "sm" | "md" | "lg" }) {
-  const sizes = { sm: "w-6 h-6", md: "w-8 h-8", lg: "w-10 h-10" }
-  const textSizes = { sm: "text-sm", md: "text-base", lg: "text-xl" }
+export function MDWLogo({ size = "lg" }: { size?: "sm" | "md" | "lg" }) {
+  const sizes = { sm: "w-7.5 h-3.5", md: "w-15 h-7.5", lg: "w-20 h-10" }
   return (
-    <Link href="/" className="flex flex-shrink-0 items-center gap-2">
+    <Link href="/medicine" className="flex flex-shrink-0 items-center gap-2">
       <div className={`${sizes[size]} relative`}>
-        <svg
-          viewBox="0 0 40 40"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-full w-full"
-        >
-          <rect width="40" height="40" rx="6" fill="#F4568B" />
-          <path
-            d="M8 20 L16 10 L20 16 L24 10 L32 20"
-            stroke="white"
-            strokeWidth="3"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            fill="none"
-          />
-          <path
-            d="M14 28 L20 20 L26 28"
-            stroke="white"
-            strokeWidth="2.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            fill="none"
-          />
-        </svg>
-      </div>
-      <div className="leading-tight">
-        <div className={`font-bold text-[#F4568B] ${textSizes[size]}`}>MDW</div>
-        <div className="-mt-0.5 text-[9px] tracking-wide text-gray-500 uppercase">
-          My Dawaiwala
-        </div>
+        <Image
+          src="/images/logo.png"
+          alt="MDW Logo"
+          fill
+          className="object-contain"
+        />
       </div>
     </Link>
   )
@@ -222,15 +198,10 @@ export function MDWHeader() {
 
                   <DropdownMenuContent className="bg-white text-black border border-gray-200 rounded-md text-xs rounded-sm w-full" align="end">
                     {NAV_USER_DROPDOWN_ITEMS.map((item) => (
-                      // <DropdownMenuItem onClick={() => {
-                      //   router.push(item.href)
-                      // }} key={item.label} className="text-gray-600 text-xs">
-                      //   {item.label}
-                      // </DropdownMenuItem>
                       <Link
                         key={item.label}
                         href={item.href}
-                        className="block px-4 py-2 text-gray-600 text-xs hover:bg-gray-50"
+                        className="block px-4 py-2 text-gray-600 text-xs hover:bg-gray-500 hover:text-white rounded-sm"
                       >
                         {item.label}
                       </Link>
@@ -429,16 +400,16 @@ export function MDWHeader() {
 // ─── Footer Trust Bar ─────────────────────────────────────────────────────────
 export function MDWFooterBar() {
   const items = [
-    { icon: "🛡️", label: "Drug License Approved" },
-    { icon: "🔒", label: "Secure Payments" },
-    { icon: "🔐", label: "100% Privacy" },
+    { icon: "/images/license-approved.png", label: "Drug License Approved" },
+    { icon: "/images/secure-payments.png", label: "Secure Payments" },
+    { icon: "/images/privacy.png", label: "100% Privacy" },
   ]
   return (
-    <div className="flex h-fit items-center justify-center bg-gray-900 py-3 text-gray-300">
+    <div className="flex h-fit items-center justify-center bg-gray-900 py-2.5 text-gray-300">
       <div className="flex flex-wrap items-center justify-center gap-8">
         {items.map((item) => (
-          <div key={item.label} className="flex items-center gap-1.5 text-sm">
-            <span>{item.icon}</span>
+          <div key={item.label} className="flex items-center gap-2 text-sm">
+            <img src={item.icon} alt={item.label} className="size-3.5" />
             <span>{item.label}</span>
           </div>
         ))}
@@ -543,7 +514,7 @@ export function MedicineSearchInput() {
           className="flex-1 px-3 py-3 text-xs text-black outline-none"
         />
 
-        <button className="bg-[#F4568B] p-3 text-white">
+        <button className="bg-[#F4568B] p-3 text-white hover:bg-gray-500">
           <Search size={18} />
         </button>
       </div>

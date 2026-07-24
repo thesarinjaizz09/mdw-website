@@ -14,7 +14,6 @@ export default function CartPage() {
   const { cart, guestItems, isGuest, itemCount, totalAmount, isLoading } = useCart();
   const { updateCart, removeFromCart, clearCartItems } = useCartActions();
   const [coupon, setCoupon] = useState("");
-
   const cartItems: CartItemData[] = isGuest ? guestItems : (cart?.items ?? []);
 
   const updateQty = (productId: string, delta: number) => {
@@ -51,10 +50,10 @@ export default function CartPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex-1 flex flex-col justify-between">
+    <div className=" bg-gray-50 flex-1 flex flex-col justify-between min-h-screen">
       <MDWHeader />
 
-      <main className="max-w-7xl mx-auto px-4 py-6">
+      <main className="w-full mx-auto max-w-7xl px-4 py-6 flex-1 flex flex-col">
         <h1 className="text-xl font-bold text-gray-900 mb-1">My Cart</h1>
         <p className="text-sm text-gray-500 mb-4">({itemCount} Items)</p>
 
@@ -180,12 +179,12 @@ export default function CartPage() {
                   </div>
                 </div>
 
-                <Button onClick={() => router.push("/checkout") } className="w-full mt-4 bg-[#F4568B] hover:bg-[#F4568B]/90 text-white h-11 rounded-lg font-semibold text-sm">
+                <Button onClick={() => router.push("/checkout")} className="w-full mt-4 bg-[#F4568B] hover:bg-[#F4568B]/90 text-white h-11 rounded-lg font-semibold text-sm">
                   Proceed to Checkout
                 </Button>
                 <Button
-                  variant="outline"
-                  className="w-full mt-2 border-[#F4568B] text-[#F4568B] hover:bg-[#F4568B]/10 h-11 rounded-lg font-semibold text-sm"
+                  // variant="outline"
+                  className="bg-white w-full mt-2 text-[#F4568B] hover:bg-[#F4568B]/50 h-11 rounded-lg font-semibold text-sm hover:text-white shadow-xs"
                   onClick={() => router.push("/medicine")}
                 >
                   Continue Shopping

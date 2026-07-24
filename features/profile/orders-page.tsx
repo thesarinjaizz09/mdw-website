@@ -35,6 +35,7 @@ interface OrderItem {
     price?: number;
     discount?: number;
     productId?: string;
+    mrp?: number;
 }
 
 interface OrderRecord {
@@ -116,29 +117,29 @@ export default function OrdersPage() {
     }, [orders]);
 
     return (
-        <div className="min-h-screen bg-gray-50 flex flex-col justify-between">
+        <div className="bg-gray-50 flex flex-col justify-between flex-1 min-h-screen">
             <MDWHeader />
 
-            <main className="mx-auto flex w-full max-w-7xl flex-col gap-5 px-4 py-5 sm:px-6 lg:px-8">
+            <main className="flex w-full max-w-7xl mx-auto flex-col px-4 py-6 flex-1">
                 <h1 className="text-xl font-bold text-gray-900 mb-6">My Orders</h1>
 
-                <div className="grid grid-cols-3 gap-5">
+                <div className="flex gap-5 md:flex-row flex-col">
                     {/* Sidebar nav */}
                     <UserSidebar />
-                    <div className="col-span-2">
+                    <div className="w-full md:w-[70%]">
 
                         <section className="grid gap-4 rounded-md border border-slate-200 bg-white p-4 shadow-sm md:grid-cols-3 mb-4">
                             <div className="rounded-xl bg-[#F4568B]/10 p-4">
                                 <p className="text-sm text-[#F4568B]">Total orders</p>
-                                <p className="mt-2 text-2xl font-semibold text-slate-900">{summary.totalOrders}</p>
+                                <p className="mt-2 text-md sm:text-2xl font-semibold text-slate-900">{summary.totalOrders}</p>
                             </div>
                             <div className="rounded-xl bg-slate-50 p-4">
                                 <p className="text-sm text-slate-600">Total spent</p>
-                                <p className="mt-2 text-2xl font-semibold text-slate-900">{formatCurrency(summary.totalSpent)}</p>
+                                <p className="mt-2 text-md sm:text-2xl font-semibold text-slate-900">{formatCurrency(summary.totalSpent)}</p>
                             </div>
                             <div className="rounded-xl bg-slate-50 p-4">
                                 <p className="text-sm text-slate-600">Active orders</p>
-                                <p className="mt-2 text-2xl font-semibold text-slate-900">{summary.activeOrders}</p>
+                                <p className="mt-2 text-md sm:text-2xl font-semibold text-slate-900">{summary.activeOrders}</p>
                             </div>
                         </section>
 
@@ -184,7 +185,7 @@ export default function OrdersPage() {
                                                     {(order.items || []).slice(0, 3).map((item, index) => (
                                                         <div key={`${item.productId || index}-${index}`} className="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2 text-sm text-slate-600">
                                                             <span>{item.name || "Medicine"}</span>
-                                                            <span className="font-medium text-slate-900">{item.qty || 0} × {formatCurrency(item.price)}</span>
+                                                            <span className="font-medium text-slate-900">{item.qty || 0} × {formatCurrency(item.mrp)}</span>
                                                         </div>
                                                     ))}
                                                 </div>

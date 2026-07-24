@@ -16,10 +16,14 @@ import {
   Plus,
   Pencil,
   Box,
+  User2Icon,
+  UserIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { MDWHeader, MDWFooterBar } from "@/components/shared";
 import { useAuth } from "@/providers/auth-provider";
+import { useEffect, useState } from "react";
+import EditProfileDialog from "@/components/edit-profile-dialog";
 
 const NAV_ITEMS = [
   { id: "profile", label: "My Profile", icon: <User className="w-4 h-4" />, href: "/account" },
@@ -29,15 +33,15 @@ const NAV_ITEMS = [
   // { id: "payment", label: "Payment Methods", icon: <CreditCard className="w-4 h-4" /> },
   // { id: "wallet", label: "My Wallet", icon: <Wallet className="w-4 h-4" /> },
   // { id: "notifications", label: "Notifications", icon: <Bell className="w-4 h-4" /> },
-  { id: "refer", label: "Refer & Earn", icon: <Gift className="w-4 h-4" /> },
-  { id: "help", label: "Help & Support", icon: <HelpCircle className="w-4 h-4" /> },
+  // { id: "refer", label: "Refer & Earn", icon: <Gift className="w-4 h-4" /> },
+  // { id: "help", label: "Help & Support", icon: <HelpCircle className="w-4 h-4" /> },
 ];
 
 const QUICK_ACTIONS = [
   { id: "prescriptions", label: "My\nOrders", icon: <Box className="w-5 h-5 text-[#F4568B]" />, href: "/orders" },
   { id: "addresses", label: "My\nAddresses", icon: <MapPin className="w-5 h-5 text-[#F4568B]" />, href: "/address" },
-  { id: "payment", label: "Help\nCenter", icon: <HelpCircle className="w-5 h-5 text-[#F4568B]" />, href: "/help" },
-  { id: "refer", label: "Refer &\nEarn", icon: <Gift className="w-5 h-5 text-[#F4568B]" />, href: "/refer" },
+  // { id: "payment", label: "Help\nCenter", icon: <HelpCircle className="w-5 h-5 text-[#F4568B]" />, href: "/help" },
+  // { id: "refer", label: "Refer &\nEarn", icon: <Gift className="w-5 h-5 text-[#F4568B]" />, href: "/refer" },
 ];
 
 const USER = {
@@ -49,30 +53,35 @@ const USER = {
 };
 
 export default function ProfilePage() {
-  const { user } = useAuth();
-  // console.log({ user })
+  const { user, refreshUser } = useAuth();
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+
+  useEffect(() => {
+    refreshUser();
+  }, [])
+
   const router = useRouter();
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-between">
+    <div className="min-h-screen bg-gray-50 flex flex-col justify-between flex-1">
       <MDWHeader />
 
-      <main className="px-4 py-6">
+      <main className="px-4 py-6 w-full max-w-7xl mx-auto flex-1">
         <h1 className="text-xl font-bold text-gray-900 mb-6">My Profile</h1>
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-5">
+        <div className="flex gap-5 md:flex-row flex-col">
           {/* Sidebar nav */}
           <UserSidebar />
 
           {/* Main content */}
-          <div className="lg:col-span-3 space-y-4">
+          <div className=" space-y-4 w-full md:w-[70%]">
             {/* Profile card */}
             <div className="bg-white rounded-lg border border-gray-100 shadow-sm p-5">
               <div className="flex items-start justify-between mb-5">
                 <div className="flex items-center gap-4">
                   {/* Avatar */}
-                  <div className="w-16 h-16 rounded-full bg-[#F4568B]/50  flex items-center justify-center text-2xl border-2 border-[#F4568B] overflow-hidden">
-                    👨‍💼
+                  <div className="w-16 h-16 rounded-full bg-[#F4568B]/40  flex items-center justify-center text-2xl border-2 border-[#ff6f9f] overflow-hidden">
+                    <UserIcon className="text-black"/>
                   </div>
                   <div>
                     <h2 className="text-lg font-bold text-gray-900">{`${user?.userfName} ${user?.userlName}`}</h2>
@@ -80,10 +89,10 @@ export default function ProfilePage() {
                     <p className="text-sm text-gray-500">{user?.userPhone}</p>
                   </div>
                 </div>
-                {/* <button className="flex items-center gap-1.5 text-[#F4568B] text-sm font-medium hover:text-[#F4568B]/90 transition-colors">
+                <button onClick={() => setEditDialogOpen(true)} className="flex items-center gap-1.5 text-[#F4568B] text-sm font-medium hover:text-[#F4568B]/90 transition-colors">
                   <Pencil className="w-3.5 h-3.5" />
                   Edit Profile
-                </button> */}
+                </button>
               </div>
 
               {/* Account Details */}
@@ -96,9 +105,9 @@ export default function ProfilePage() {
                     { label: "Mobile Number", value: user?.userPhone },
                     // { label: "Date of Birth", value: user?.dob },
                   ].map((row) => (
-                    <div key={row.label} className="flex items-center py-2.5">
-                      <span className="w-36 text-sm text-gray-500 flex-shrink-0">{row.label}</span>
-                      <span className="text-sm font-medium text-gray-900">{row.value}</span>
+                    <div key={row.label} className="flex items-center py-2.5 max-[400px]:flex-col max-[400px]:items-start max-[400px]:gap-1">
+                      <span className="w-36 text-sm text-gray-500 flex-shrink-0 max-[400px]:w-full max-[400px]:font-medium">{row.label}</span>
+                      <span className="text-sm font-medium text-gray-900 max-[400px]:w-full">{row.value}</span>
                     </div>
                   ))}
                 </div>
@@ -121,7 +130,7 @@ export default function ProfilePage() {
             </div> */}
 
             {/* More Actions */}
-            <div className="bg-white rounded-lg border border-gray-100 shadow-sm p-5">
+            {/* <div className="bg-white rounded-lg border border-gray-100 shadow-sm p-5">
               <h3 className="font-semibold text-gray-900 mb-4">More Actions</h3>
               <div className="grid grid-cols-4 gap-3">
                 {QUICK_ACTIONS.map((action) => (
@@ -139,10 +148,12 @@ export default function ProfilePage() {
                   </button>
                 ))}
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </main>
+
+      <EditProfileDialog open={editDialogOpen} onOpenChange={setEditDialogOpen} />
 
       <MDWFooterBar />
     </div>
@@ -151,6 +162,7 @@ export default function ProfilePage() {
 
 export function UserSidebar() {
   const pathname = usePathname();
+  const router = useRouter()
 
   const activeSection = pathname === "/orders"
     ? "orders"
@@ -159,7 +171,7 @@ export function UserSidebar() {
       : "profile";
 
   return (
-    <div className="lg:col-span-1">
+    <div className="md:w-[30%]">
       <div className="bg-white rounded-lg border border-gray-100 shadow-sm overflow-hidden">
         <nav className="divide-y divide-gray-50">
           {NAV_ITEMS.map((item) => (
@@ -200,10 +212,10 @@ export function UserSidebar() {
           ))}
 
           {/* Logout */}
-          {/* <button className="w-full flex items-center gap-3 px-4 py-3 text-sm text-red-500 hover:bg-red-50 transition-colors text-left">
-                  <LogOut className="w-4 h-4 flex-shrink-0" />
-                  Logout
-                </button> */}
+          <button className="w-full flex items-center gap-3 px-4 py-3 text-sm text-red-500 hover:bg-red-50 transition-colors text-left" onClick={() => router.push("/logout")}>
+            <LogOut className="w-4 h-4 flex-shrink-0" />
+            Logout
+          </button>
         </nav>
       </div>
     </div>

@@ -1,8 +1,8 @@
 "use client"
 
+import { useRouter } from "next/navigation"
 import {
   Search,
-  Upload,
   ChevronRight,
   RefreshCw,
   ShoppingCart,
@@ -16,7 +16,6 @@ import {
   PackageCheck,
   Popcorn,
   HeartPulse,
-  UploadIcon,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
@@ -50,9 +49,10 @@ import { useEffect, useState } from "react"
 import axios from "axios"
 import {
   HowItWorksSection,
-  WellnessBannerSection,
+  BrandCarousel,
 } from "@/features/landing/components"
 import { useCartActions } from "@/hooks/use-cart"
+import PrescriptionUpload from "@/components/prescription-upload"
 import { toast } from "sonner"
 
 const CATEGORIES = [
@@ -161,6 +161,7 @@ function toMedicine(product: ProductData): Medicine {
 }
 
 export default function MedicinesPage() {
+  const router = useRouter()
   const { addToCart } = useCartActions()
   const [featuredProducts, setFeaturedProducts] =
     useState<Medicine[]>(MEDICINES)
@@ -189,6 +190,7 @@ export default function MedicinesPage() {
 
     fetchCategoryProducts()
   }, [])
+
 
   const addToCartFunction = (medicine: Medicine) => {
     if (!medicine._id) {
@@ -254,8 +256,9 @@ export default function MedicinesPage() {
           </div>
         </section>
 
-        <div className="flex items-center justify-center">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
           <HowItWorksSection theme={1} />
+          <PrescriptionUpload />
         </div>
 
         {/* Health Categories */}
@@ -264,18 +267,21 @@ export default function MedicinesPage() {
             <h2 className="text-md ml-2 font-bold text-gray-900 min-[500px]:text-xl">
               Shop by Health Categories
             </h2>
-            <button className="flex items-center gap-0.5 text-xs font-medium text-[#F4568B] hover:text-[#F4568B]/80 min-[500px]:text-sm">
+            {/* <button className="flex items-center gap-0.5 text-xs font-medium text-[#F4568B] hover:text-[#F4568B]/80 min-[500px]:text-sm">
               View All Categories <ChevronRight className="h-4 w-4" />
-            </button>
+            </button> */}
           </div>
           <div className="grid grid-cols-2 gap-3 min-[450px]:grid-cols-3 min-[650px]:grid-cols-4 min-[800px]:grid-cols-6">
             {CATEGORIES.map((cat) => (
               <button
                 key={cat.label}
-                className={`${cat.color} flex flex-row items-center justify-start gap-3 rounded-lg border border-gray-200 p-3 text-black transition-all hover:scale-105 hover:border-gray-100 hover:shadow-sm`}
+                className={`bg-[#F4568B] flex flex-row items-center justify-start gap-3 rounded-lg border border-gray-200 p-3 text-black transition-all hover:scale-105 hover:border-gray-100 hover:shadow-sm hover:bg-gray-500`}
+                onClick={() => {
+                  router.push(`/medicines/${cat.label}`)
+                }}
               >
-                <span>{cat.icon}</span>
-                <span className="text-center text-xs leading-tight font-medium whitespace-pre-line text-gray-700">
+                <span className="">{cat.icon}</span>
+                <span className="text-center text-xs leading-tight font-medium whitespace-pre-line text-white">
                   {cat.label}
                 </span>
               </button>
@@ -316,54 +322,13 @@ export default function MedicinesPage() {
           </div>
         </section> */}
 
-        <section className="relative flex items-center justify-center overflow-hidden rounded-xl p-2">
-          <div className="h-full w-xl max-w-2xl rounded-lg border border-gray-100 bg-white p-5 py-7 shadow-sm">
-            <div className="flex items-center gap-4">
-              <div className="flex-1">
-                <div className="mb-1 flex items-center gap-2">
-                  <h2 className="text-base font-bold text-gray-900">
-                    Upload Prescription
-                  </h2>
-                </div>
-                <p className="mb-4 text-xs text-gray-500">
-                  Upload prescription and we will add all medicines for you
-                </p>
-                <div className="relative mb-1">
-                  <div className="flex items-center overflow-hidden rounded-md border border-gray-200">
-                    <button className="flex-1 px-3 py-3 text-xs text-black outline-none">
-                      Upload Prescription
-                    </button>
-
-                    <button className="bg-[#F4568B] p-3 text-white">
-                      <UploadIcon size={18} />
-                    </button>
-                  </div>
-                </div>
-                <div className="mt-2.5 flex flex-wrap items-center gap-2">
-                  <span className="text-xs text-gray-500">
-                    Formats Supported:
-                  </span>
-                  {["JPEG", "PNG", "PDF", "JPG"].map((s) => (
-                    <button
-                      key={s}
-                      className="rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-700 transition-colors hover:bg-green-100 hover:text-green-700"
-                    >
-                      {s}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
         {/* Popular Medicines */}
         <section>
           <div className="mb-4 flex items-center justify-between">
             <h2 className="text-md ml-2 font-bold text-gray-900 min-[500px]:text-xl">
               Popular Medicines
             </h2>
-            <button className="flex items-center gap-0.5 text-xs font-medium text-[#F4568B] hover:text-[#F4568B]/80 min-[500px]:text-sm">
+            <button className="flex items-center gap-0.5 text-xs font-medium text-[#F4568B] hover:text-[#F4568B]/80 min-[500px]:text-sm" onClick={() => router.push("/medicines")}>
               View All Medicines <ChevronRight className="h-4 w-4" />
             </button>
           </div>
@@ -379,7 +344,7 @@ export default function MedicinesPage() {
           </div>
         </section>
 
-        <WellnessBannerSection theme={1} />
+        <BrandCarousel />
 
         {categoryGroups
           .filter((group) => group.medicines && group.medicines.length > 0)
@@ -389,7 +354,7 @@ export default function MedicinesPage() {
                 <h2 className="text-md ml-2 font-bold text-gray-900 min-[500px]:text-xl">
                   {group.category}
                 </h2>
-                <button className="flex items-center gap-0.5 text-xs font-medium text-[#F4568B] hover:text-[#F4568B]/80 min-[500px]:text-sm">
+                <button className="flex items-center gap-0.5 text-xs font-medium text-[#F4568B] hover:text-[#F4568B]/80 min-[500px]:text-sm" onClick={() => router.push(`/medicines/${group.category}`)}>
                   View All <ChevronRight className="h-4 w-4" />
                 </button>
               </div>
@@ -434,12 +399,12 @@ export default function MedicinesPage() {
         </section>
 
         {/* Need Help */}
-        <section className="mx-auto flex min-h-[200px] max-w-3xl flex-col items-start justify-between gap-6 rounded-xl bg-[#F4568B]/80 p-5 md:flex-row">
+        <section className="mx-auto flex max-w-2xl flex-col items-start justify-between gap-6 rounded-xl bg-[#F4568B] p-8 md:flex-row">
           {/* Doctor avatar placeholder */}
           <section className="flex items-start justify-between gap-6">
-            <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#F4568B]/90">
+            {/* <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#F4568B]/90">
               <span className="text-3xl">👨‍⚕️</span>
-            </div>
+            </div> */}
             <div className="flex-1">
               <h2 className="text-md mb-0.5 font-bold text-white min-[500px]:text-lg">
                 Need Help Finding Medicines?
@@ -450,12 +415,13 @@ export default function MedicinesPage() {
               <div className="flex flex-wrap gap-3 sm:flex-nowrap">
                 <Button
                   size="sm"
-                  className="w-fulls h-12 gap-1.5 rounded-md bg-[#F4568B] px-5 text-xs text-white hover:bg-[#F4568B]/80 sm:w-fit border border-white/20"
+                  className="w-fulls h-12 gap-1.5 rounded-md bg-[#F4568B] px-5 text-xs text-white hover:bg-gray-500 sm:w-fit border border-white/20"
+                  onClick={() => window.open("https://wa.me/919230189091", "_blank")}
                 >
                   <FaWhatsapp className="h-3.5 w-3.5" />
                   Chat on WhatsApp
                 </Button>
-                <Button className="h-12 w-[10.2rem] gap-1.5 rounded-md border border-[#F4568B] bg-white px-5 text-xs text-[#F4568B] hover:bg-[#F4568B]/10 min-[468px]:w-fit">
+                <Button className="h-12 w-[10.2rem] gap-1.5 rounded-md border border-[#F4568B] bg-white px-5 text-xs text-[#F4568B] hover:bg-[#F4568B]/10 min-[468px]:w-fit hover:text-white" onClick={() => window.open("tel:+919230189091", "_blank")}>
                   <Phone className="h-3.5 w-3.5" />
                   Call Us Now
                 </Button>
@@ -463,7 +429,7 @@ export default function MedicinesPage() {
             </div>
           </section>
 
-          <div className="flex h-[150px] w-full flex-col justify-center rounded-md md:items-end">
+          <div className="flex w-full flex-col justify-center rounded-md md:items-end">
             <div className="grid grid-cols-3 gap-2">
               {[
                 {

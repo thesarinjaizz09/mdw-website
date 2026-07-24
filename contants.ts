@@ -8,10 +8,6 @@ export const NAV_USER_DROPDOWN_ITEMS = [
         href: "/orders",
     },
     {
-        label: "Prescriptions",
-        href: "/prescriptions",
-    },
-    {
         label: "Logout",
         href: "/logout",
     }

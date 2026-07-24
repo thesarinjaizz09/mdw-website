@@ -5,10 +5,12 @@ import { CheckCircle, Plus, MessageCircle, Phone, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { MDWHeader, MDWFooterBar } from "@/components/shared";
 import { useCart } from "@/hooks/use-cart";
+import { useQueryClient } from "@tanstack/react-query";
 import { useAddress } from "@/hooks/use-address";
 import AddressDialog from "@/components/address-dialog";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { Spinner } from "@/components/ui/spinner";
 
 const PAYMENT_OPTIONS = [
   // { id: "upi", label: "UPI", icon: "📱" },
@@ -18,6 +20,7 @@ const PAYMENT_OPTIONS = [
 ];
 
 export default function CheckoutPage() {
+  const [loading, setLoading] = useState(false);
   const { itemCount, totalAmount, cart } = useCart();
   const { addresses, selectedAddress: hookSelected, saveAddress, fetchCurrentLocation } = useAddress();
   const [selectedAddress, setSelectedAddress] = useState<string | null>(hookSelected?.id || (addresses[0]?.id ?? null));
@@ -27,6 +30,7 @@ export default function CheckoutPage() {
   const [scheduledDate, setScheduledDate] = useState<string>("");
   const [scheduledSlot, setScheduledSlot] = useState<string>("Morning");
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   // keep local selection in sync with hook and address list changes
   useEffect(() => {
@@ -42,7 +46,7 @@ export default function CheckoutPage() {
     <div className="min-h-screen bg-gray-50 flex-1 flex flex-col justify-between">
       <MDWHeader />
 
-      <main className="w-full mx-auto px-4 py-6">
+      <main className="w-full mx-auto max-w-7xl px-4 py-6 flex-1">
         <div className="w-full">
           <h1 className="text-xl font-bold text-gray-900 mb-6">Checkout</h1>
 
@@ -58,7 +62,6 @@ export default function CheckoutPage() {
                     </span>
                     <h2 className="font-semibold text-gray-900">Delivery Address</h2>
                   </div>
-                  <button className="text-[#F4568B] text-sm font-medium hover:text-[#F4568B]/90">Change</button>
                 </div>
 
                 <div className="p-4 space-y-3">
@@ -102,7 +105,7 @@ export default function CheckoutPage() {
                   ))}
 
                   <div className="flex items-center gap-3">
-                    <button onClick={() => setDialogOpen(true)} className="flex items-center gap-2 text-sm text-[#F4568B] font-medium hover:text-[#F4568B]/90 mt-1 transition-colors">
+                    <button onClick={() => setDialogOpen(true)} className="flex items-center gap-2 text-sm text-[#F4568B] font-medium hover:text-[#F4568B]/90 transition-colors">
                       <Plus className="w-4 h-4" />
                       Add New Address
                     </button>
@@ -270,20 +273,21 @@ export default function CheckoutPage() {
                   </div>
                   <div className="flex justify-between text-gray-700">
                     <span>Packaging Charges</span>
-                    <span className="font-medium">-₹8.00</span>
+                    <span className="font-medium">₹9.50</span>
                   </div>
                   <div className="flex justify-between text-[#F4568B]">
                     <span>Delivery Charges</span>
                     <span className="font-semibold">FREE</span>
                   </div>
 
-                  <div className="bg-[#F4568B]/10 text-[#F4568B] text-xs font-medium py-1.5 px-2 rounded-lg text-center">
+                  {/* <div className="bg-[#F4568B]/10 text-[#F4568B] text-xs font-medium py-1.5 px-2 rounded-lg text-center">
                     You saved ₹8.00
-                  </div>
+                  </div> */}
                 </div>
 
                 <Button
                   className="w-full mt-4 bg-[#F4568B] hover:bg-[#F4568B]/90 text-white h-11 rounded-lg font-semibold"
+                  disabled={loading}
                   onClick={async () => {
                     try {
                       const cartId = cart?.id || (cart as any)?._id || null;
@@ -298,6 +302,7 @@ export default function CheckoutPage() {
                       }
 
                       const modeOfPayment = selectedPayment === 'cod' ? 'COD' : 'PAY_NOW';
+                      setLoading(true);
 
                       // Map datetime to a simple slot
                       let scheduleDeliveryDate = undefined;
@@ -369,14 +374,23 @@ export default function CheckoutPage() {
                       const orderId = result?.order?.userOrderId || result?.orderId || 'N/A';
 
                       toast.success('Order placed successfully! Order ID: ' + orderId);
+                      queryClient.invalidateQueries({ queryKey: ["cart"] });
+                      queryClient.invalidateQueries({ queryKey: ["cart", "guest"] });
                       router.push(`/orders`);
+                      setLoading(false)
                     } catch (err) {
+                      setLoading(false)
                       console.error(err);
                       toast.error('Order failed. Check console for details.');
                     }
                   }}
                 >
-                  Place Order
+                  {
+                    loading ? <Spinner className="size-4" /> : ""
+                  }
+                  {
+                    loading ? "Placing Order..." : "Place Order"
+                  }
                 </Button>
 
                 <div className="flex items-center justify-center gap-1.5 mt-2.5 text-xs text-gray-500">
@@ -388,13 +402,13 @@ export default function CheckoutPage() {
                 <div className="border-t border-gray-100 mt-4 pt-4">
                   <h4 className="text-xs font-semibold text-gray-700 mb-2.5">Need Help?</h4>
                   <div className="space-y-2">
-                    <button className="flex items-center gap-2 text-xs text-gray-600 hover:text-[#F4568B] transition-colors" onClick={() => window.open("https://wa.me/919874567890", "_blank")}>
+                    <button className="flex items-center gap-2 text-xs text-gray-600 hover:text-[#F4568B] transition-colors" onClick={() => window.open("https://wa.me/919230189091", "_blank")}>
                       <MessageCircle className="w-4 h-4 text-[#F4568B]" />
                       Chat on WhatsApp
                     </button>
-                    <button className="flex items-center gap-2 text-xs text-gray-600 hover:text-[#F4568B] transition-colors" onClick={() => window.open("tel:+919874567890", "_blank")}>
+                    <button className="flex items-center gap-2 text-xs text-gray-600 hover:text-[#F4568B] transition-colors" onClick={() => window.open("tel:+919230189091", "_blank")}>
                       <Phone className="w-4 h-4 text-[#F4568B]" />
-                      +91 98745 67890
+                      +91 92301 89091
                     </button>
                   </div>
                 </div>

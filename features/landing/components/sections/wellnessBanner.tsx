@@ -76,7 +76,7 @@ export default function WellnessBannerSection({
                     Physiotherapy, Pain Relief Therapy, Nutrition, Fitness,
                     Stress Management & more.
                   </p>
-                  <button className="rounded-md bg-[#F4568B]/80 px-6 py-3 text-sm font-semibold text-white shadow-md transition-all duration-200 hover:bg-[#F4568B] hover:shadow-lg active:scale-[0.98] border border-white/20">
+                  <button className="rounded-md bg-[#F4568B]/80 px-6 py-3 text-sm font-semibold text-white shadow-md transition-all duration-200 hover:bg-gray-500 hover:shadow-lg active:scale-[0.98] border border-white/20">
                     Explore Wellness Services
                   </button>
                 </div>
