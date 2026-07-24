@@ -4,39 +4,93 @@ import { useState, useCallback } from "react";
 import { UploadIcon, FileText, Image, X, CheckCircle, AlertCircle } from "lucide-react";
 import type { ClientUploadedFileData } from "uploadthing/types";
 import { useDropzone } from "@uploadthing/react";
-import { generateClientDropzoneAccept } from "uploadthing/client";
 import { useUploadThing } from "@/hooks/use-uploadthing";
 import { toast } from "sonner";
 import { Spinner } from "@/components/ui/spinner";
+import { useSession } from "@/hooks/use-session";
+import { useMutation } from "@tanstack/react-query";
 
-type UploadStatus = "idle" | "uploading" | "success" | "error";
+type UploadStatus = "idle" | "uploading" | "creating" | "success" | "error";
 
 interface UploadedFile {
   name: string;
   size: number;
   type: string;
   url: string;
+  // UploadThing's per-file key, used server-side to delete the remote
+  // asset later. Stored in the Prescription model's `images[].publicId`.
+  key: string;
 }
 
+interface PrescriptionImage {
+  url: string;
+  publicId: string;
+}
+
+// --- Assumption: adjust to match how your app talks to the backend ------
+// Cookie-based JWT auth is assumed here (credentials: "include"). If your
+// backend expects an Authorization: Bearer <token> header instead, swap
+// that in `createPrescription` below.
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "";
+
+async function createPrescription(images: PrescriptionImage[]): Promise<void> {
+  const res = await fetch(`/api/upload`, {
+    method: "POST",
+    body: JSON.stringify({ images }),
+  });
+
+  const data = await res.json().catch(() => null);
+
+  if (!res.ok || data?.success !== true) {
+    throw new Error(data?.message || "Failed to save prescription details");
+  }
+
+  return
+}
+// --------------------------------------------------------------------------
+
 export default function PrescriptionUpload() {
+  const { user, loading } = useSession()
   const [files, setFiles] = useState<File[]>([]);
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
   const [status, setStatus] = useState<UploadStatus>("idle");
   const [showAllUploaded, setShowAllUploaded] = useState(false);
 
+  const createPrescriptionMutation = useMutation({
+    mutationFn: createPrescription,
+    onSuccess: () => {
+      setStatus("success");
+      toast.success(
+        "Thank You for sharing your prescription. Our Pharmacist will contact you shortly."
+      );
+    },
+    onError: (error: Error) => {
+      console.log({error})
+      setStatus("error");
+      toast.error(error.message || "Failed to save your prescription. Please try again.");
+    },
+  });
+
   const { startUpload, isUploading } = useUploadThing("prescriptionUploader", {
     onClientUploadComplete: (res: ClientUploadedFileData<{ uploadedBy: string }>[]) => {
       if (res && res.length > 0) {
-        const mapped = res.map((f) => ({
+        const mapped: UploadedFile[] = res.map((f) => ({
           name: f.name,
           size: f.size,
           type: f.type,
           url: f.url,
+          key: f.key,
         }));
         setUploadedFiles((prev) => [...prev, ...mapped]);
         setFiles([]);
-        setStatus("success");
-        toast.success(`Thank You for sharing your prescription. Our Pharmacist will contact you shortly.`);
+        setStatus("creating");
+
+        const images: PrescriptionImage[] = mapped.map((f) => ({
+          url: f.url,
+          publicId: f.key,
+        }));
+
+        createPrescriptionMutation.mutate(images);
       }
     },
     onUploadError: (error: Error) => {
@@ -68,6 +122,11 @@ export default function PrescriptionUpload() {
   });
 
   const handleUpload = () => {
+    if (!user) {
+      toast.error("You must be logged in to upload a prescription.");
+      return;
+    }
+
     if (files.length === 0) return;
     startUpload(files);
   };
@@ -87,6 +146,8 @@ export default function PrescriptionUpload() {
   };
 
   const isPdf = (name: string) => name.toLowerCase().endsWith(".pdf");
+
+  const isSavingPrescription = status === "creating" || createPrescriptionMutation.isPending;
 
   const visibleUploaded = showAllUploaded ? uploadedFiles : uploadedFiles.slice(0, 2);
 
@@ -161,13 +222,18 @@ export default function PrescriptionUpload() {
               ))}
               <button
                 onClick={handleUpload}
-                disabled={isUploading}
+                disabled={isUploading || isSavingPrescription}
                 className="flex w-full items-center justify-center gap-1.5 rounded-md bg-[#F4568B] px-3 py-2 text-xs font-semibold text-white transition-colors hover:bg-[#F4568B]/80 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {isUploading ? (
                   <>
                     <Spinner className="h-3.5 w-3.5" />
                     Uploading...
+                  </>
+                ) : isSavingPrescription ? (
+                  <>
+                    <Spinner className="h-3.5 w-3.5" />
+                    Saving...
                   </>
                 ) : (
                   <>
@@ -230,7 +296,9 @@ export default function PrescriptionUpload() {
         {status === "error" && (
           <div className="flex flex-shrink-0 items-center gap-1.5 text-xs text-red-600">
             <AlertCircle className="h-3.5 w-3.5" />
-            Upload failed. Please try again.
+            {createPrescriptionMutation.isError
+              ? "Files uploaded, but we couldn't save your prescription. Please try again."
+              : "Upload failed. Please try again."}
           </div>
         )}
       </div>

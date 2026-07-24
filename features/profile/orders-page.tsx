@@ -3,8 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, Package, CalendarDays, MapPin, CreditCard, Clock3, ShoppingBag } from "lucide-react";
-import { MDWHeader, MDWFooterBar } from "@/components/shared";
-import { UserSidebar } from "./profile";
+import { MDWHeader, MDWFooterBar, UserSidebar } from "@/components/shared";
 
 interface OrderSummary {
     totalItems: number;

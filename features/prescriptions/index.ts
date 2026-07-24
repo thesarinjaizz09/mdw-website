@@ -1,0 +1,1 @@
+export {default as PrescriptionsPage} from "./views/prescriptions"
