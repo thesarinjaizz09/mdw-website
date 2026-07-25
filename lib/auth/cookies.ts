@@ -8,7 +8,7 @@ export async function setAccessToken(token: string) {
         secure: process.env.NODE_ENV === "production",
         sameSite: "strict",
         path: "/",
-        maxAge: 15 * 60,
+        maxAge: 7 * 24 * 60 * 60,
         priority: "high",
     });
 }
@@ -21,7 +21,7 @@ export async function setRefreshToken(token: string) {
         secure: process.env.NODE_ENV === "production",
         sameSite: "strict",
         path: "/",
-        maxAge: 30 * 24 * 60 * 60,
+        maxAge: 7 * 24 * 60 * 60,
         priority: "high",
     });
 }

@@ -3,7 +3,7 @@ import { backendFetch } from "@/lib/server/backend";
 export async function GET(req: Request) {
   try {
     const page = req.headers.get("page") || 1;
-    const response = await backendFetch(`/prescriptions?page=${page}&limit=5`, {
+    const response = await backendFetch(`/prescriptions?page=${page}&limit=30`, {
       credentials: "include",
     });
 
