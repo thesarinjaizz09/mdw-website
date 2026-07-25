@@ -157,13 +157,13 @@ export default function EditProfileDialog({ open, onOpenChange }: Props) {
         </div>
 
         <DialogFooter className="mt-6 flex justify-end gap-2">
-          <Button variant="outline" onClick={() => onOpenChange(false)} className="h-10 text-sm font-semibold border-gray-200 text-gray-700 hover:bg-gray-50">
+          <Button variant="outline" onClick={() => onOpenChange(false)} className="h-10 text-sm font-semibold border-none hover:text-gray-700 text-gray-700 hover:bg-zinc-100! bg-zinc-50! cursor-pointer shadow-sm">
             Cancel
           </Button>
           <Button
             onClick={handleSave}
             disabled={loading}
-            className="h-10 px-5 text-sm font-semibold text-white bg-[#F4568B] hover:bg-[#F4568B]/90 focus:ring-[#F4568B] rounded-md transition-all shadow-md shadow-[#F4568B]/20"
+            className="h-10 px-5 text-sm border-none font-semibold text-white bg-[#F4568B] hover:bg-[#F4568B]/80 focus:ring-[#F4568B] rounded-md transition-all shadow-md! cursor-pointer"
           >
             {loading ? "Saving..." : "Save Changes"}
           </Button>
