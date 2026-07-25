@@ -255,40 +255,6 @@ export default function PrescriptionsPage() {
                                                 </a>
                                             </div>
                                         </div>
-
-                                        <div className="grid gap-4 p-4 lg:grid-cols-[1.3fr_0.7fr]">
-                                            <div className="space-y-3">
-                                                <div className="flex items-center gap-2 text-sm font-medium text-slate-700">
-                                                    <FileText className="h-4 w-4 text-[#F4568B]" />
-                                                    Prescription
-                                                </div>
-                                                <div className="space-y-2">
-                                                    {(order.images || []).slice(0, 3).map((item, index) => (
-                                                        <div key={`${item || index}-${index}`} className="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2 text-sm text-slate-600">
-                                                            <span>{item.url}</span>
-                                                        </div>
-                                                    ))}
-                                                </div>
-                                            </div>
-
-                                            {/* <div className="rounded-xl bg-slate-50 p-3 text-sm text-slate-600">
-                                                <div className="flex items-start gap-2">
-                                                    <MapPin className="mt-0.5 h-4 w-4 text-[#F4568B]" />
-                                                    <div>
-                                                        <p className="font-medium text-slate-900">Delivery address</p>
-                                                        <p>{order.addressId?.address || "Address pending"}</p>
-                                                        <p>{[order.addressId?.city, order.addressId?.state, order.addressId?.zipCode].filter(Boolean).join(", ")}</p>
-                                                        {order.addressId?.nearByLandmark ? <p className="text-xs text-slate-500">Landmark: {order.addressId.nearByLandmark}</p> : null}
-                                                    </div>
-                                                </div>
-                                                {order.deliveryInfo?.isScheduled ? (
-                                                    <div className="mt-3 flex items-center gap-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-amber-700">
-                                                        <Package className="h-4 w-4" />
-                                                        <span>Scheduled for {order.deliveryInfo.scheduledDate || "—"} • {order.deliveryInfo.scheduledTime || "—"}</span>
-                                                    </div>
-                                                ) : null}
-                                            </div> */}
-                                        </div>
                                     </article>
                                 ))
                             )}
