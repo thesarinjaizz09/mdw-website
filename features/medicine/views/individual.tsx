@@ -263,7 +263,7 @@ export default function IndividualPage({ category }: { category?: string }) {
 
                 {/* Health Categories */}
                 <section className="z-1">
-                    <div className="mb-4 flex items-center justify-between">
+                    <div className="my-4 flex items-center justify-between">
                         <h2 className="text-md ml-2 font-bold text-gray-900 min-[500px]:text-xl">
                             More Categories
                         </h2>
@@ -289,7 +289,7 @@ export default function IndividualPage({ category }: { category?: string }) {
 
                 {/* Medicines */}
                 <section>
-                    <div className="mb-4 flex items-center justify-between">
+                    <div className="my-4 flex items-center justify-between">
                         <h2 className="text-md ml-2 font-bold text-gray-900 min-[500px]:text-xl">
                             Medicines
                         </h2>
