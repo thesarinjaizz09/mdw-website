@@ -51,7 +51,7 @@ import {
   HowItWorksSection,
   BrandCarousel,
 } from "@/features/landing/components"
-import { useCartActions } from "@/hooks/use-cart"
+import { useCartActions } from "@/features/cart/hooks/use-cart"
 import PrescriptionUpload from "@/components/prescription-upload"
 import { toast } from "sonner"
 

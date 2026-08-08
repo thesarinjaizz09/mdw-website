@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { useCart, useCartActions } from "@/hooks/use-cart"
 import { PriceDisplay } from "@/components/shared"
 import type { SubstituteProduct } from "@/types"
+import { useCart, useCartActions } from "@/features/cart/hooks/use-cart"
 
 interface SubstituteMedicinesCardProps {
   substitutes: SubstituteProduct[]

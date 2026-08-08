@@ -17,7 +17,7 @@ import {
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { useSession } from "@/hooks/use-session"
-import { useCart, useCartActions } from "@/hooks/use-cart"
+import { useCart, useCartActions } from "@/features/cart/hooks/use-cart"
 import LoginDialog from "@/components/login-dialog"
 
 import {

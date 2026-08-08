@@ -1,20 +1,126 @@
 "use client";
 
-import { useState } from "react";
-import { Trash2, Plus, Minus, ShoppingBag, Tag } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Trash2, Plus, Minus, ShoppingBag, Tag, TicketPercent, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Spinner } from "@/components/ui/spinner";
 import { MDWHeader, MDWFooterBar, MedicineImagePlaceholder, PriceDisplay } from "@/components/shared";
-import { useCart, useCartActions } from "@/hooks/use-cart";
+import { useCart, useCartActions } from "@/features/cart/hooks/use-cart";
+import {
+  useAppliedCoupon,
+  useAvailableCoupons,
+  useValidateCoupon,
+  useRemoveCoupon,
+} from "@/features/coupon/hooks/use-coupon";
+import { APPLIED_COUPON_QUERY_KEY } from "@/features/coupon/hooks/use-coupon";
+import CouponListDialog from "@/components/coupon-list-dialog";
 import type { CartItemData } from "@/types";
 import { useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 export default function CartPage() {
   const router = useRouter();
-  const { cart, guestItems, isGuest, itemCount, totalAmount, isLoading } = useCart();
+  const queryClient = useQueryClient();
+  const [couponInput, setCouponInput] = useState("");
+  const [couponDialogOpen, setCouponDialogOpen] = useState(false);
+
   const { updateCart, removeFromCart, clearCartItems } = useCartActions();
-  const [coupon, setCoupon] = useState("");
+  const { cart, guestItems, isGuest, itemCount, totalAmount, isLoading } = useCart();
+  const { data: appliedCoupon } = useAppliedCoupon();
+  const { data: availableCoupons, isLoading: couponsLoading } = useAvailableCoupons();
+  console.log("Available Coupons:", availableCoupons);
+  const validateCoupon = useValidateCoupon();
+  const removeCoupon = useRemoveCoupon();
+
   const cartItems: CartItemData[] = isGuest ? guestItems : (cart?.items ?? []);
+
+  // Revalidate the applied coupon whenever the cart's priced contents change,
+  // so no stale discount is ever shown. The backend is the source of truth.
+  useEffect(() => {
+    if (!appliedCoupon?.code || isGuest || !cart?.id) {
+      return;
+    }
+    validateCoupon.mutate(
+      { code: appliedCoupon.code, cartId: cart.id },
+      {
+        onSuccess: (updated) => {
+          if (updated) {
+            queryClient.setQueryData(APPLIED_COUPON_QUERY_KEY, updated);
+          }
+        },
+        onError: (err) => {
+          queryClient.setQueryData(APPLIED_COUPON_QUERY_KEY, null);
+          toast.error(err.message || "Coupon is no longer valid for your cart");
+        },
+      }
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cart?.id, totalAmount]);
+
+  const handleApplyCoupon = () => {
+    const code = couponInput.trim().toUpperCase();
+    if (!code) return;
+
+    if (isGuest) {
+      toast.error("Please sign in to apply coupons");
+      router.push("/auth");
+      return;
+    }
+
+    if (!cart?.id) {
+      toast.error("Cart not ready yet. Please try again.");
+      return;
+    }
+
+    validateCoupon.mutate(
+      { code, cartId: cart.id },
+      {
+        onSuccess: (applied) => {
+          if (applied) {
+            queryClient.setQueryData(APPLIED_COUPON_QUERY_KEY, applied);
+            toast.success(`Coupon "${applied.code}" applied — you saved ₹${applied.discountAmount.toFixed(2)}`);
+          }
+        },
+        onError: (err) => {
+          toast.error(err.message || "Failed to validate coupon");
+        },
+      }
+    );
+  };
+
+  const handleSelectCoupon = (code: string) => {
+    if (isGuest) {
+      toast.error("Please sign in to apply coupons");
+      router.push("/auth");
+      return;
+    }
+
+    if (!cart?.id) {
+      toast.error("Cart not ready yet. Please try again.");
+      return;
+    }
+
+    validateCoupon.mutate(
+      { code, cartId: cart.id },
+      {
+        onSuccess: (applied) => {
+          if (applied) {
+            queryClient.setQueryData(APPLIED_COUPON_QUERY_KEY, applied);
+            toast.success(`Coupon "${applied.code}" applied — you saved ₹${applied.discountAmount.toFixed(2)}`);
+          }
+        },
+        onError: (err) => {
+          toast.error(err.message || "Failed to validate coupon");
+        },
+      }
+    );
+  };
+
+  const handleRemoveCoupon = () => {
+    removeCoupon.mutate();
+  };
 
   const updateQty = (productId: string, delta: number) => {
     const nextItems = cartItems
@@ -55,6 +161,10 @@ export default function CartPage() {
   const handlingCharges = Math.max(0, totalAmount - itemTotal);
   const deliveryCharges: number = 0;
   const totalPayable = totalAmount ?? itemTotal + handlingCharges + deliveryCharges;
+  const couponDiscount = appliedCoupon?.discountAmount ?? 0;
+  const finalPayable = Math.max(0, totalPayable - couponDiscount);
+  const mrpTotal = itemTotal;
+  const discount = 0;
 
   const CARD_COLORS = ["blue", "green", "orange", "purple", "teal"] as const;
   const medicineColorMap: Record<string, typeof CARD_COLORS[number]> = {
@@ -161,6 +271,85 @@ export default function CartPage() {
                   <ShoppingBag className="w-4 h-4" />
                   Add more items
                 </button>
+
+                <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-4">
+                  <h3 className="text-sm font-semibold text-gray-800 mb-3 flex items-center gap-1.5">
+                    <Tag className="w-4 h-4 text-[#F4568B]" />
+                    Apply Coupon
+                  </h3>
+
+                  {appliedCoupon ? (
+                    <div className="border border-green-200 bg-green-50/60 rounded-xl p-4">
+                      <div className="flex items-center gap-2 text-green-700 font-semibold text-sm">
+                        <CheckCircle2 className="w-4 h-4" />
+                        {appliedCoupon.code}
+                      </div>
+                      <p className="text-xs text-gray-600 mt-1.5">
+                        {appliedCoupon.discountType === "percentage"
+                          ? `${appliedCoupon.discountValue}% discount applied`
+                          : `₹${appliedCoupon.discountValue} discount applied`}
+                      </p>
+                      <p className="text-xs text-green-700 font-medium mt-0.5">
+                        You saved ₹{appliedCoupon.discountAmount.toFixed(2)}
+                      </p>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="mt-2 text-red-500 font-semibold h-8 hover:bg-red-50"
+                        disabled={removeCoupon.isPending}
+                        onClick={handleRemoveCoupon}
+                      >
+                        {removeCoupon.isPending ? "Removing..." : "Remove"}
+                      </Button>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="flex gap-2">
+                        <Input
+                          value={couponInput}
+                          onChange={(e) => setCouponInput(e.target.value)}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") handleApplyCoupon();
+                          }}
+                          placeholder="Enter coupon code"
+                          disabled={isGuest || validateCoupon.isPending}
+                          className="flex-1 h-9 uppercase text-black"
+                        />
+                        <Button
+                          size="sm"
+                          className="bg-[#F4568B] hover:bg-[#F4568B]/90 text-white font-semibold h-9 rounded-md"
+                          disabled={isGuest || validateCoupon.isPending || !couponInput.trim()}
+                          onClick={handleApplyCoupon}
+                        >
+                          {validateCoupon.isPending ? (
+                            <span className="flex items-center gap-1.5">
+                              <Spinner className="size-3" />
+                              <span>Applying...</span>
+                            </span>
+                          ) : (
+                            "Apply"
+                          )}
+                        </Button>
+                      </div>
+
+                      <button
+                        onClick={() => setCouponDialogOpen(true)}
+                        className="mt-2.5 flex items-center gap-1.5 text-xs text-[#F4568B] font-medium hover:text-[#F4568B]/80 transition-colors"
+                      >
+                        <TicketPercent className="w-3.5 h-3.5" />
+                        View Available Coupons
+                      </button>
+                    </>
+                  )}
+                </div>
+
+                <CouponListDialog
+                  open={couponDialogOpen}
+                  onOpenChange={setCouponDialogOpen}
+                  coupons={availableCoupons ?? []}
+                  isLoading={couponsLoading}
+                  onApply={handleSelectCoupon}
+                />
               </div>
 
               <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5 max-h-[380px]">
@@ -190,9 +379,15 @@ export default function CartPage() {
                     <span>Delivery Charges</span>
                     <span className="font-medium text-gray-900">{deliveryCharges === 0 ? "FREE" : `₹${deliveryCharges.toFixed(2)}`}</span>
                   </div>
+                  {couponDiscount > 0 && (
+                    <div className="flex justify-between text-green-600">
+                      <span>Coupon Discount</span>
+                      <span className="font-medium">−₹{couponDiscount.toFixed(2)}</span>
+                    </div>
+                  )}
                   <div className="border-t border-gray-100 pt-3 flex justify-between font-bold text-gray-900 text-base">
                     <span>Total</span>
-                    <span>₹{totalPayable.toFixed(2)}</span>
+                    <span>₹{finalPayable.toFixed(2)}</span>
                   </div>
                 </div>
 

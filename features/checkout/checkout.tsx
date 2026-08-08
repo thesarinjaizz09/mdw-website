@@ -4,7 +4,11 @@ import { useState, useEffect } from "react";
 import { CheckCircle, Plus, MessageCircle, Phone, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { MDWHeader, MDWFooterBar } from "@/components/shared";
-import { useCart } from "@/hooks/use-cart";
+import { useCart } from "@/features/cart/hooks/use-cart";
+import {
+  useAppliedCoupon,
+  APPLIED_COUPON_QUERY_KEY,
+} from "@/features/coupon/hooks/use-coupon";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAddress } from "@/hooks/use-address";
 import AddressDialog from "@/components/address-dialog";
@@ -38,6 +42,8 @@ export default function CheckoutPage() {
   const [scheduledSlot, setScheduledSlot] = useState<string>("Morning");
   const router = useRouter();
   const queryClient = useQueryClient();
+  const { data: appliedCoupon } = useAppliedCoupon();
+  const couponDiscount = appliedCoupon?.discountAmount ?? 0;
 
   // keep local selection in sync with hook and address list changes
   useEffect(() => {
@@ -304,6 +310,17 @@ export default function CheckoutPage() {
                       You saved ₹{totalDiscount.toFixed(2)} on this order!
                     </div>
                   )}
+                  {couponDiscount > 0 && appliedCoupon && (
+                    <div className="flex justify-between text-green-600">
+                      <span>Coupon ({appliedCoupon.code})</span>
+                      <span className="font-medium">−₹{couponDiscount.toFixed(2)}</span>
+                    </div>
+                  )}
+                  {couponDiscount > 0 && (
+                    <div className="bg-green-50 text-green-700 text-xs font-medium py-1.5 px-2 rounded-lg text-center">
+                      You saved ₹{couponDiscount.toFixed(2)} with {appliedCoupon?.code}
+                    </div>
+                  )}
                 </div>
 
                 <Button
@@ -356,6 +373,9 @@ export default function CheckoutPage() {
                         addressId,
                         modeOfPayment,
                         orderType: orderType,
+                        ...(appliedCoupon?.code
+                          ? { couponCode: appliedCoupon.code }
+                          : {}),
                       };
 
                       if (orderType === 'SCHEDULE') {
@@ -397,6 +417,9 @@ export default function CheckoutPage() {
                       toast.success('Order placed successfully! Order ID: ' + orderId);
                       queryClient.invalidateQueries({ queryKey: ["cart"] });
                       queryClient.invalidateQueries({ queryKey: ["cart", "guest"] });
+                      // Clear the applied coupon for the next order. Usage is only
+                      // marked by the backend at order creation — nothing here "consumes" it.
+                      queryClient.setQueryData(APPLIED_COUPON_QUERY_KEY, null);
                       router.push(`/orders`);
                       setLoading(false)
                     } catch (err) {

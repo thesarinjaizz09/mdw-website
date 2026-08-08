@@ -54,7 +54,7 @@ import {
     HowItWorksSection,
     WellnessBannerSection,
 } from "@/features/landing/components"
-import { useCartActions } from "@/hooks/use-cart"
+import { useCartActions } from "@/features/cart/hooks/use-cart"
 import { toast } from "sonner"
 
 const CATEGORIES = [
