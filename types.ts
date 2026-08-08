@@ -357,3 +357,88 @@ export interface AuthResponse {
   success: boolean;
   user: User;
 }
+
+// ─── Coupon Types (mirror backend /api/v2/coupons contract) ───
+
+export type CouponDiscountType = "percentage" | "fixed";
+
+export type CouponApplicableTo = "all" | "categories" | "products";
+
+export interface Coupon {
+  _id: string;
+  code: string;
+  name: string;
+  description: string;
+  discountType: CouponDiscountType;
+  discountValue: number;
+  maximumDiscountAmount: number | null;
+  minimumOrderAmount: number;
+  maximumOrderAmount: number | null;
+  usageLimit: number;
+  usageLimitPerUser: number;
+  usedCount: number;
+  validFrom: string;
+  validUntil: string;
+  isActive: boolean;
+  isDeleted?: boolean;
+  applicableTo: CouponApplicableTo;
+  applicableCategories?: string[];
+  applicableProducts?: string[];
+  excludedCategories?: string[];
+  excludedProducts?: string[];
+  createdAt?: string;
+  updatedAt?: string;
+  eligibleAmount?: number;
+  discountAmount?: number;
+  finalAmount?: number;
+}
+
+export interface CouponValidationRequest {
+  code: string;
+  cartId?: string;
+  cartTotal?: number;
+}
+
+export interface CouponValidationData {
+  couponCode: string;
+  name: string;
+  description: string;
+  discountType: CouponDiscountType;
+  discountValue: number;
+  maximumDiscountAmount: number | null;
+  minimumOrderAmount: number;
+  validUntil: string;
+  originalAmount: number;
+  discountAmount: number;
+  finalAmount: number;
+}
+
+export interface CouponValidationResponse {
+  success: boolean;
+  message?: string;
+  data: CouponValidationData;
+}
+
+export interface AppliedCoupon {
+  code: string;
+  name: string;
+  discountType: CouponDiscountType;
+  discountValue: number;
+  discountAmount: number;
+  originalAmount: number;
+  finalAmount: number;
+  validUntil: string;
+}
+
+export interface CouponUsage {
+  _id: string;
+  couponCode: string;
+  couponName: string;
+  discountType: CouponDiscountType;
+  discountValue: number;
+  discountAmount: number;
+  orderId: string;
+  orderNumber: string;
+  orderType: string;
+  usedAt: string;
+}
