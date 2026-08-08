@@ -21,7 +21,14 @@ const PAYMENT_OPTIONS = [
 
 export default function CheckoutPage() {
   const [loading, setLoading] = useState(false);
-  const { itemCount, totalAmount, cart } = useCart();
+  const { itemCount, totalAmount, cart, guestItems, isGuest } = useCart();
+  const cartItems = isGuest ? guestItems : (cart?.items ?? []);
+
+  const totalMRP = cartItems.reduce((sum, item) => {
+    const mrp = item.mrp || item.productDetails?.batches?.[0]?.mrp || (item.unitPrice ?? item.amount / Math.max(1, item.quantity));
+    return sum + mrp * item.quantity;
+  }, 0);
+  const totalDiscount = Math.max(0, totalMRP - totalAmount);
   const { addresses, selectedAddress: hookSelected, saveAddress, fetchCurrentLocation } = useAddress();
   const [selectedAddress, setSelectedAddress] = useState<string | null>(hookSelected?.id || (addresses[0]?.id ?? null));
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -263,26 +270,40 @@ export default function CheckoutPage() {
                 <h3 className="font-semibold text-gray-900 mb-4">Order Summary</h3>
 
                 <div className="space-y-2.5 text-sm">
+                  {totalDiscount > 0 && (
+                    <div className="flex justify-between text-gray-700">
+                      <span>Total MRP</span>
+                      <span className="font-medium">₹{totalMRP.toFixed(2)}</span>
+                    </div>
+                  )}
+                  {totalDiscount > 0 && (
+                    <div className="flex justify-between text-green-600 font-medium">
+                      <span>Discount</span>
+                      <span>-₹{totalDiscount.toFixed(2)}</span>
+                    </div>
+                  )}
                   <div className="flex justify-between text-gray-700">
-                    <span>{itemCount} Item{itemCount !== 1 ? "s" : ""}</span>
+                    <span>Subtotal ({itemCount} Item{itemCount !== 1 ? "s" : ""})</span>
                     <span className="font-medium">₹{totalAmount.toFixed(2)}</span>
-                  </div>
-                  <div className="flex justify-between text-[#F4568B]">
-                    <span>Delivery</span>
-                    <span className="font-semibold">FREE</span>
                   </div>
                   <div className="flex justify-between text-gray-700">
                     <span>Packaging Charges</span>
                     <span className="font-medium">₹9.50</span>
                   </div>
-                  <div className="flex justify-between text-[#F4568B]">
+                  <div className="flex justify-between text-green-600">
                     <span>Delivery Charges</span>
                     <span className="font-semibold">FREE</span>
                   </div>
+                  <div className="border-t border-gray-100 pt-2.5 flex justify-between font-bold text-gray-900 text-base">
+                    <span>Total Payable</span>
+                    <span>₹{(totalAmount + 9.5).toFixed(2)}</span>
+                  </div>
 
-                  {/* <div className="bg-[#F4568B]/10 text-[#F4568B] text-xs font-medium py-1.5 px-2 rounded-lg text-center">
-                    You saved ₹8.00
-                  </div> */}
+                  {totalDiscount > 0 && (
+                    <div className="bg-green-50 text-green-700 text-xs font-semibold py-2 px-3 rounded-lg text-center border border-green-100">
+                      You saved ₹{totalDiscount.toFixed(2)} on this order!
+                    </div>
+                  )}
                 </div>
 
                 <Button

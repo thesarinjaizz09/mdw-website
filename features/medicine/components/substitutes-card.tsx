@@ -5,13 +5,8 @@ import { ShoppingCart, Trash2, ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { useCart, useCartActions } from "@/hooks/use-cart"
-
-interface SubstituteProduct {
-  _id: string
-  productId: string
-  name: string
-  price: number
-}
+import { PriceDisplay } from "@/components/shared"
+import type { SubstituteProduct } from "@/types"
 
 interface SubstituteMedicinesCardProps {
   substitutes: SubstituteProduct[]
@@ -67,9 +62,12 @@ export default function SubstituteMedicinesCard({
                     </p>
                   </div>
                   <div className="flex-shrink-0 text-right">
-                    <p className="text-xs font-bold text-gray-900">
-                      ₹{sub.price.toFixed(2)}
-                    </p>
+                    <PriceDisplay
+                      price={sub.price}
+                      mrp={sub.mrp || sub.price}
+                      discountedAmount={sub.discountedAmount}
+                      size="sm"
+                    />
                     <p className="text-[8px] text-gray-400">Cheapest Price</p>
                   </div>
                 </div>

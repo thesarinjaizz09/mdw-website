@@ -61,7 +61,7 @@ export function MedicineCard({ medicine, index = 0, onAddToCart, variant = "defa
       <div className="flex-1 flex flex-col gap-1.5">
         <h3 className="font-semibold text-gray-900 text-sm leading-tight line-clamp-2">{medicine.name}</h3>
         <p className="text-xs text-gray-500">{medicine.saltName && `${medicine.saltName?.substring(0, 50)}${medicine.saltName.length > 50 ? "..." : ""}`}</p>
-        <PriceDisplay price={medicine.batches ? medicine.batches[0].mrp : medicine.mrp} mrp={medicine.batches ? medicine.batches[0].mrp : medicine.mrp} discount={medicine.batches ? medicine.batches[0].discount : medicine.discount} size="sm" />
+        <PriceDisplay price={medicine.batches && medicine.batches[0] ? (medicine.batches[0].discountedAmount && medicine.batches[0].discountedAmount > 0 ? medicine.batches[0].discountedAmount : medicine.batches[0].mrp) : (medicine.mrp || 0)} mrp={medicine.batches && medicine.batches[0] ? medicine.batches[0].mrp : (medicine.mrp || 0)} discountedAmount={medicine.batches && medicine.batches[0] ? medicine.batches[0].discountedAmount : undefined} discount={medicine.batches && medicine.batches[0] ? medicine.batches[0].discount : medicine.discount} size="sm" />
         <InStockBadge inStock={medicine.totalQuantity ? medicine.totalQuantity > 0 : medicine.inStock} />
       </div>
 
