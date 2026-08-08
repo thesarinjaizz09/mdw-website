@@ -4,7 +4,6 @@ import { useRouter } from "next/navigation"
 import { ShoppingCart, Trash2, ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { useCart, useCartActions } from "@/hooks/use-cart"
 import { PriceDisplay } from "@/components/shared"
 import type { SubstituteProduct } from "@/types"
 import { useCart, useCartActions } from "@/features/cart/hooks/use-cart"
@@ -36,7 +35,7 @@ export default function SubstituteMedicinesCard({
       <CardContent className="space-y-4 p-4">
         <div className="space-y-3">
           {substitutes.map((sub) => {
-            const isAdded = cartItems.some((item) => item.productId === sub._id)
+            const isAdded = cartItems.some((item: any) => item.productId === sub._id)
             const isAdding =
               addToCart.status === "pending" &&
               addToCart.variables?.productId === sub._id
