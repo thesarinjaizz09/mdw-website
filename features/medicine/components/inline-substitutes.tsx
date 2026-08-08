@@ -3,13 +3,8 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { ArrowRight, ChevronDown, ChevronUp } from "lucide-react"
-
-interface SubstituteProduct {
-  _id: string
-  productId: string
-  name: string
-  price: number
-}
+import { PriceDisplay } from "@/components/shared"
+import type { SubstituteProduct } from "@/types"
 
 interface InlineSubstitutesProps {
   substitutes: SubstituteProduct[]
@@ -48,9 +43,12 @@ export default function InlineSubstitutes({
             </h4>
           </div>
           <div className="flex-shrink-0 text-right">
-            <span className="text-xs font-semibold text-gray-900">
-              ₹{firstSub.price.toFixed(2)}
-            </span>
+            <PriceDisplay
+              price={firstSub.price}
+              mrp={firstSub.mrp || firstSub.price}
+              discountedAmount={firstSub.discountedAmount}
+              size="sm"
+            />
           </div>
         </div>
       </div>
@@ -94,9 +92,12 @@ export default function InlineSubstitutes({
                 </p>
               </div>
               <div className="flex flex-shrink-0 items-center gap-1.5 text-right">
-                <span className="text-xs font-semibold text-gray-900">
-                  ₹{sub.price.toFixed(2)}
-                </span>
+                <PriceDisplay
+                  price={sub.price}
+                  mrp={sub.mrp || sub.price}
+                  discountedAmount={sub.discountedAmount}
+                  size="sm"
+                />
                 <ArrowRight className="h-3 w-3 text-gray-400" />
               </div>
             </div>

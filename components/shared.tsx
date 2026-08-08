@@ -114,11 +114,13 @@ export function PriceDisplay({
   price,
   mrp,
   discount,
+  discountedAmount,
   size = "md",
 }: {
   price: number
   mrp: number
-  discount: number
+  discount?: number
+  discountedAmount?: number
   size?: "sm" | "md" | "lg"
 }) {
   const sizes = {
@@ -139,11 +141,27 @@ export function PriceDisplay({
     },
   }
   const s = sizes[size]
+  const effectivePrice = (discountedAmount && discountedAmount > 0 && discountedAmount < mrp)
+    ? discountedAmount
+    : price;
+  const hasDiscount = discountedAmount && discountedAmount > 0 && discountedAmount < mrp;
+  const calculatedDiscount = hasDiscount && mrp > 0
+    ? Math.round(((mrp - discountedAmount) / mrp) * 100)
+    : (discount || 0);
+
   return (
     <div className="flex flex-wrap items-center gap-2">
-      <span className={`text-gray-900 ${s.price}`}>₹{price.toFixed(2)}</span>
-      {/* <span className={`text-gray-400 line-through ${s.mrp}`}>₹{mrp.toFixed(2)}</span> */}
-      {/* <span className={`bg-green-100 text-green-700 font-semibold rounded ${s.badge}`}>{discount}% OFF</span> */}
+      <span className={`text-gray-900 ${s.price}`}>₹{effectivePrice.toFixed(2)}</span>
+      {hasDiscount && (
+        <>
+          <span className={`text-gray-400 line-through ${s.mrp}`}>₹{mrp.toFixed(2)}</span>
+          {calculatedDiscount > 0 && (
+            <span className={`bg-green-100 text-green-700 font-semibold rounded ${s.badge}`}>
+              {calculatedDiscount}% OFF
+            </span>
+          )}
+        </>
+      )}
     </div>
   )
 }
@@ -313,47 +331,55 @@ export function MDWHeader() {
                                 </button>
                               </div>
 
-                              <PriceDisplay
-                                price={
-                                  item.unitPrice ??
-                                  (item.quantity > 0
-                                    ? item.amount / item.quantity
-                                    : item.amount)
-                                }
-                                mrp={
-                                  item.unitPrice ??
-                                  (item.quantity > 0
-                                    ? item.amount / item.quantity
-                                    : item.amount)
-                                }
-                                discount={0}
-                                size="sm"
-                              />
+                              {(() => {
+                                const itemMRP = item.mrp || item.productDetails?.batches?.[0]?.mrp || (item.unitPrice ?? item.amount / Math.max(1, item.quantity));
+                                const itemDiscountedAmount = item.discountedAmount || item.productDetails?.batches?.[0]?.discountedAmount;
+                                const itemUnitPrice = item.unitPrice ?? (itemDiscountedAmount && itemDiscountedAmount > 0 ? itemDiscountedAmount : (item.quantity > 0 ? item.amount / item.quantity : item.amount));
+                                const hasDiscount = itemDiscountedAmount && itemDiscountedAmount > 0 && itemMRP > itemDiscountedAmount;
 
-                              <div className="mt-2 flex items-center justify-between gap-3">
-                                <div className="flex items-center overflow-hidden rounded-lg border border-gray-200">
-                                  <button
-                                    onClick={() =>
-                                      updateQty(item.productId, -1)
-                                    }
-                                    className="px-2 py-1.5 text-gray-500 transition-colors hover:bg-gray-50 hover:text-[#F4568B]"
-                                  >
-                                    <Minus className="h-3.5 w-3.5" />
-                                  </button>
-                                  <span className="border-x border-gray-200 px-3 py-1 text-sm font-semibold text-gray-900">
-                                    {item.quantity}
-                                  </span>
-                                  <button
-                                    onClick={() => updateQty(item.productId, 1)}
-                                    className="px-2 py-1.5 text-gray-500 transition-colors hover:bg-gray-50 hover:text-[#F4568B]"
-                                  >
-                                    <Plus className="h-3.5 w-3.5" />
-                                  </button>
-                                </div>
-                                <span className="text-sm font-semibold text-gray-900">
-                                  ₹{item.amount.toFixed(2)}
-                                </span>
-                              </div>
+                                return (
+                                  <>
+                                    <PriceDisplay
+                                      price={itemUnitPrice}
+                                      mrp={itemMRP}
+                                      discountedAmount={itemDiscountedAmount}
+                                      size="sm"
+                                    />
+
+                                    <div className="mt-2 flex items-center justify-between gap-3">
+                                      <div className="flex items-center overflow-hidden rounded-lg border border-gray-200">
+                                        <button
+                                          onClick={() =>
+                                            updateQty(item.productId, -1)
+                                          }
+                                          className="px-2 py-1.5 text-gray-500 transition-colors hover:bg-gray-50 hover:text-[#F4568B]"
+                                        >
+                                          <Minus className="h-3.5 w-3.5" />
+                                        </button>
+                                        <span className="border-x border-gray-200 px-3 py-1 text-sm font-semibold text-gray-900">
+                                          {item.quantity}
+                                        </span>
+                                        <button
+                                          onClick={() => updateQty(item.productId, 1)}
+                                          className="px-2 py-1.5 text-gray-500 transition-colors hover:bg-gray-50 hover:text-[#F4568B]"
+                                        >
+                                          <Plus className="h-3.5 w-3.5" />
+                                        </button>
+                                      </div>
+                                      <div className="flex items-center gap-1.5 text-right">
+                                        <span className="text-sm font-semibold text-gray-900">
+                                          ₹{item.amount.toFixed(2)}
+                                        </span>
+                                        {hasDiscount && (
+                                          <span className="text-xs text-gray-400 line-through">
+                                            ₹{(itemMRP * item.quantity).toFixed(2)}
+                                          </span>
+                                        )}
+                                      </div>
+                                    </div>
+                                  </>
+                                );
+                              })()}
                             </div>
                           </div>
                         </div>

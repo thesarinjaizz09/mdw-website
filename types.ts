@@ -31,6 +31,8 @@ export interface CartItemData {
   amount: number;
   productDetails?: ProductData | null;
   unitPrice?: number;
+  mrp?: number;
+  discountedAmount?: number;
 }
 
 export interface CartSummary {
@@ -270,6 +272,7 @@ export interface ProductBatch {
   taxRate: string;
   amount: number;
   mrp: number;
+  discountedAmount?: number;
   unitAmount: string;
   unit: string;
   expireAt: string;
@@ -291,6 +294,8 @@ export interface SubstituteProduct {
   productId: string;
   name: string;
   price: number;
+  mrp?: number;
+  discountedAmount?: number;
 }
 
 export interface ProductData {

@@ -138,11 +138,26 @@ export default function CartPage() {
     removeFromCart.mutate(productId);
   };
 
-  const lineTotal = (item: CartItemData) => item.amount;
-  const unitPrice = (item: CartItemData) =>
-    item.unitPrice ?? (item.quantity > 0 ? item.amount / item.quantity : item.amount);
+  const getItemMRP = (item: CartItemData) =>
+    item.mrp || item.productDetails?.batches?.[0]?.mrp || (item.unitPrice ?? item.amount / Math.max(1, item.quantity));
 
+  const getItemDiscountedAmount = (item: CartItemData) =>
+    item.discountedAmount || item.productDetails?.batches?.[0]?.discountedAmount;
+
+  const getItemUnitPrice = (item: CartItemData) => {
+    const d = getItemDiscountedAmount(item);
+    if (d && d > 0) return d;
+    return item.unitPrice ?? (item.quantity > 0 ? item.amount / item.quantity : item.amount);
+  };
+
+  const lineTotal = (item: CartItemData) => item.amount;
+
+  const totalMRP = cartItems.reduce(
+    (sum, item) => sum + getItemMRP(item) * item.quantity,
+    0
+  );
   const itemTotal = cartItems.reduce((sum, item) => sum + lineTotal(item), 0);
+  const totalDiscount = Math.max(0, totalMRP - itemTotal);
   const handlingCharges = Math.max(0, totalAmount - itemTotal);
   const deliveryCharges: number = 0;
   const totalPayable = totalAmount ?? itemTotal + handlingCharges + deliveryCharges;
@@ -179,61 +194,75 @@ export default function CartPage() {
           <div className="space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
               <div className="lg:col-span-2 space-y-3">
-                {cartItems.map((item) => (
-                  <div
-                    key={item.productId}
-                    className="bg-white rounded-xl border border-gray-100 shadow-sm p-4 flex gap-4"
-                  >
-                    <MedicineImagePlaceholder
-                      name={item.productName || item.productId}
-                      className="w-16 h-16 flex-shrink-0"
-                      color={medicineColorMap[item.productId] || "blue"}
-                    />
+                {cartItems.map((item) => {
+                  const itemMRP = getItemMRP(item);
+                  const itemDiscountedAmount = getItemDiscountedAmount(item);
+                  const unitP = getItemUnitPrice(item);
+                  const hasDiscount = itemDiscountedAmount && itemDiscountedAmount > 0 && itemMRP > itemDiscountedAmount;
 
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-start justify-between gap-2">
-                        <div>
-                          <h3 className="font-semibold text-gray-900 text-sm">{item.productName || item.productId}</h3>
-                          <p className="text-xs text-gray-500">{item.quantity} unit{item.quantity !== 1 ? "s" : ""}</p>
-                        </div>
-                        <button
-                          onClick={() => removeItem(item.productId)}
-                          className="text-gray-400 hover:text-red-500 transition-colors flex-shrink-0"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      </div>
-
-                      <PriceDisplay
-                        price={unitPrice(item)}
-                        mrp={unitPrice(item)}
-                        discount={0}
-                        size="sm"
+                  return (
+                    <div
+                      key={item.productId}
+                      className="bg-white rounded-xl border border-gray-100 shadow-sm p-4 flex gap-4"
+                    >
+                      <MedicineImagePlaceholder
+                        name={item.productName || item.productId}
+                        className="w-16 h-16 flex-shrink-0"
+                        color={medicineColorMap[item.productId] || "blue"}
                       />
 
-                      <div className="flex items-center gap-2 mt-2">
-                        <div className="flex items-center border border-gray-200 rounded-lg overflow-hidden">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-start justify-between gap-2">
+                          <div>
+                            <h3 className="font-semibold text-gray-900 text-sm">{item.productName || item.productId}</h3>
+                            <p className="text-xs text-gray-500">{item.quantity} unit{item.quantity !== 1 ? "s" : ""}</p>
+                          </div>
                           <button
-                            onClick={() => updateQty(item.productId, -1)}
-                            className="px-2.5 py-1 text-gray-500 hover:bg-gray-50 hover:text-green-600 transition-colors"
+                            onClick={() => removeItem(item.productId)}
+                            className="text-gray-400 hover:text-red-500 transition-colors flex-shrink-0"
                           >
-                            <Minus className="w-3.5 h-3.5" />
-                          </button>
-                          <span className="px-3 py-1 text-sm font-semibold text-gray-900 border-x border-gray-200">
-                            {item.quantity}
-                          </span>
-                          <button
-                            onClick={() => updateQty(item.productId, 1)}
-                            className="px-2.5 py-1 text-gray-500 hover:bg-gray-50 hover:text-green-600 transition-colors"
-                          >
-                            <Plus className="w-3.5 h-3.5" />
+                            <Trash2 className="w-4 h-4" />
                           </button>
                         </div>
-                        <span className="text-sm font-medium text-gray-700">₹{lineTotal(item).toFixed(2)}</span>
+
+                        <PriceDisplay
+                          price={unitP}
+                          mrp={itemMRP}
+                          discountedAmount={itemDiscountedAmount}
+                          size="sm"
+                        />
+
+                        <div className="flex items-center gap-2 mt-2">
+                          <div className="flex items-center border border-gray-200 rounded-lg overflow-hidden">
+                            <button
+                              onClick={() => updateQty(item.productId, -1)}
+                              className="px-2.5 py-1 text-gray-500 hover:bg-gray-50 hover:text-green-600 transition-colors"
+                            >
+                              <Minus className="w-3.5 h-3.5" />
+                            </button>
+                            <span className="px-3 py-1 text-sm font-semibold text-gray-900 border-x border-gray-200">
+                              {item.quantity}
+                            </span>
+                            <button
+                              onClick={() => updateQty(item.productId, 1)}
+                              className="px-2.5 py-1 text-gray-500 hover:bg-gray-50 hover:text-green-600 transition-colors"
+                            >
+                              <Plus className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-sm font-medium text-gray-700">₹{lineTotal(item).toFixed(2)}</span>
+                            {hasDiscount && (
+                              <span className="text-xs text-gray-400 line-through">
+                                ₹{(itemMRP * item.quantity).toFixed(2)}
+                              </span>
+                            )}
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
 
                 <button
                   onClick={() => router.push("/medicine")}
@@ -284,7 +313,7 @@ export default function CartPage() {
                           }}
                           placeholder="Enter coupon code"
                           disabled={isGuest || validateCoupon.isPending}
-                          className="flex-1 h-9 uppercase"
+                          className="flex-1 h-9 uppercase text-black"
                         />
                         <Button
                           size="sm"
@@ -323,9 +352,21 @@ export default function CartPage() {
                 />
               </div>
 
-              <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5 max-h-[350px]">
+              <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5 max-h-[380px]">
                 <h3 className="font-semibold text-gray-900 mb-4">Price Details</h3>
                 <div className="space-y-3 text-sm">
+                  {totalDiscount > 0 && (
+                    <div className="flex justify-between text-gray-700">
+                      <span>Total MRP</span>
+                      <span className="font-medium">₹{totalMRP.toFixed(2)}</span>
+                    </div>
+                  )}
+                  {totalDiscount > 0 && (
+                    <div className="flex justify-between text-green-600 font-medium">
+                      <span>Discount</span>
+                      <span>-₹{totalDiscount.toFixed(2)}</span>
+                    </div>
+                  )}
                   <div className="flex justify-between text-gray-700">
                     <span>Subtotal</span>
                     <span className="font-medium">₹{itemTotal.toFixed(2)}</span>

@@ -40,6 +40,7 @@ interface ProductBatch {
   taxRate: string
   amount: number
   mrp: number
+  discountedAmount?: number
   unitAmount: string
   unit: string
   expireAt: string
@@ -157,8 +158,9 @@ export default function MedicineDetailPage({
   // Pick the first (primary) batch for pricing/stock-derived info
   const primaryBatch: ProductBatch | undefined = med.batches?.[0]
   const inStock = med.status !== "Not Available" && med.totalQuantity > 0
-  const price = primaryBatch?.ptr ?? 0
   const mrp = primaryBatch?.mrp ?? 0
+  const discountedAmount = (primaryBatch?.discountedAmount && primaryBatch.discountedAmount > 0) ? primaryBatch.discountedAmount : undefined
+  const price = discountedAmount || mrp
   const discount = mrp > 0 ? Math.round(((mrp - price) / mrp) * 100) : 0
 
   return (
@@ -255,8 +257,9 @@ export default function MedicineDetailPage({
                   {/* Price */}
                   <div className="space-y-0.5">
                     <PriceDisplay
-                      price={mrp}
+                      price={price}
                       mrp={mrp}
+                      discountedAmount={discountedAmount}
                       discount={discount}
                       size="lg"
                     />
