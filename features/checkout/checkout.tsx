@@ -294,26 +294,26 @@ export default function CheckoutPage() {
                   </div>
                   <div className="flex justify-between text-gray-700">
                     <span>Packaging Charges</span>
-                    <span className="font-medium">₹9.50</span>
+                    <span className="font-medium">₹9.00</span>
                   </div>
                   <div className="flex justify-between text-green-600">
                     <span>Delivery Charges</span>
                     <span className="font-semibold">FREE</span>
                   </div>
+                  {couponDiscount > 0 && appliedCoupon && (
+                    <div className="flex justify-between text-green-600">
+                      <span>Coupon ({appliedCoupon.code})</span>
+                      <span className="font-medium">−₹{couponDiscount.toFixed(2)}</span>
+                    </div>
+                  )}
                   <div className="border-t border-gray-100 pt-2.5 flex justify-between font-bold text-gray-900 text-base">
                     <span>Total Payable</span>
-                    <span>₹{(totalAmount + 9.5).toFixed(2)}</span>
+                    <span>₹{Math.max(0, totalAmount + 9 - couponDiscount).toFixed(2)}</span>
                   </div>
 
                   {totalDiscount > 0 && (
                     <div className="bg-green-50 text-green-700 text-xs font-semibold py-2 px-3 rounded-lg text-center border border-green-100">
                       You saved ₹{totalDiscount.toFixed(2)} on this order!
-                    </div>
-                  )}
-                  {couponDiscount > 0 && appliedCoupon && (
-                    <div className="flex justify-between text-green-600">
-                      <span>Coupon ({appliedCoupon.code})</span>
-                      <span className="font-medium">−₹{couponDiscount.toFixed(2)}</span>
                     </div>
                   )}
                   {couponDiscount > 0 && (
