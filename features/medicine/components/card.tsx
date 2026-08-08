@@ -6,7 +6,7 @@ import { InStockBadge, MedicineImagePlaceholder, PriceDisplay } from "@/componen
 import type { CartItemData, Medicine } from "@/types";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { useCart, useCartActions } from "@/hooks/use-cart";
+import { useCart, useCartActions } from "@/features/cart/hooks/use-cart";
 
 const CARD_COLORS = ["blue", "green", "orange", "purple", "teal"] as const;
 

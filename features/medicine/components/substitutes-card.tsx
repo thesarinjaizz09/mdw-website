@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation"
 import { ShoppingCart, Trash2, ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { useCart, useCartActions } from "@/hooks/use-cart"
+import { useCart, useCartActions } from "@/features/cart/hooks/use-cart"
 
 interface SubstituteProduct {
   _id: string

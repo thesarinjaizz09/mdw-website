@@ -2,7 +2,7 @@
 
 import { Shield, ShoppingCart, Truck, Minus, Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { useCart, useCartActions } from "@/hooks/use-cart"
+import { useCart, useCartActions } from "@/features/cart/hooks/use-cart"
 import { useState } from "react"
 
 interface CartActionsProduct {

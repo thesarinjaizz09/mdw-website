@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { CheckCircle, Plus, MessageCircle, Phone, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { MDWHeader, MDWFooterBar } from "@/components/shared";
-import { useCart } from "@/hooks/use-cart";
+import { useCart } from "@/features/cart/hooks/use-cart";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAddress } from "@/hooks/use-address";
 import AddressDialog from "@/components/address-dialog";

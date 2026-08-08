@@ -5,15 +5,16 @@ import { Trash2, Plus, Minus, ShoppingBag, Tag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { MDWHeader, MDWFooterBar, MedicineImagePlaceholder, PriceDisplay } from "@/components/shared";
-import { useCart, useCartActions } from "@/hooks/use-cart";
+import { useCart, useCartActions } from "@/features/cart/hooks/use-cart";
 import type { CartItemData } from "@/types";
 import { useRouter } from "next/navigation";
 
 export default function CartPage() {
   const router = useRouter();
-  const { cart, guestItems, isGuest, itemCount, totalAmount, isLoading } = useCart();
-  const { updateCart, removeFromCart, clearCartItems } = useCartActions();
   const [coupon, setCoupon] = useState("");
+
+  const { updateCart, removeFromCart, clearCartItems } = useCartActions();
+  const { cart, guestItems, isGuest, itemCount, totalAmount, isLoading } = useCart();
   const cartItems: CartItemData[] = isGuest ? guestItems : (cart?.items ?? []);
 
   const updateQty = (productId: string, delta: number) => {
