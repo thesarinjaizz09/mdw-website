@@ -14,7 +14,7 @@ import {
   useRemoveCoupon,
 } from "@/features/coupon/hooks/use-coupon";
 import { APPLIED_COUPON_QUERY_KEY } from "@/features/coupon/hooks/use-coupon";
-import CouponListDialog from "@/components/coupon-list-dialog";
+import CouponListDialog from "@/features/coupon/components/coupon-list-dialog";
 import type { CartItemData } from "@/types";
 import { useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
@@ -176,6 +176,14 @@ export default function CartPage() {
     <div className=" bg-gray-50 flex-1 flex flex-col justify-between min-h-screen">
       <MDWHeader />
 
+      <CouponListDialog
+        open={couponDialogOpen}
+        onOpenChange={setCouponDialogOpen}
+        coupons={availableCoupons ?? []}
+        isLoading={couponsLoading}
+        onApply={handleSelectCoupon}
+      />
+
       <main className="w-full mx-auto max-w-7xl px-4 py-6 flex-1 flex flex-col">
         <h1 className="text-xl font-bold text-gray-900 mb-1">My Cart</h1>
         <p className="text-sm text-gray-500 mb-4">({itemCount} Items)</p>
@@ -271,7 +279,8 @@ export default function CartPage() {
                   <ShoppingBag className="w-4 h-4" />
                   Add more items
                 </button>
-
+              </div>
+              <div className="grid-cols-1 gap-3 flex flex-col">
                 <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-4">
                   <h3 className="text-sm font-semibold text-gray-800 mb-3 flex items-center gap-1.5">
                     <Tag className="w-4 h-4 text-[#F4568B]" />
@@ -294,8 +303,7 @@ export default function CartPage() {
                       </p>
                       <Button
                         size="sm"
-                        variant="ghost"
-                        className="mt-2 text-red-500 font-semibold h-8 hover:bg-red-50"
+                        className="mt-2 text-red-500 font-semibold h-9 hover:bg-red-50 w-full rounded-md text-sm bg-red-50/60 border border-red-200 hover:text-red-600 hover:border-red-300 "
                         disabled={removeCoupon.isPending}
                         onClick={handleRemoveCoupon}
                       >
@@ -343,68 +351,60 @@ export default function CartPage() {
                   )}
                 </div>
 
-                <CouponListDialog
-                  open={couponDialogOpen}
-                  onOpenChange={setCouponDialogOpen}
-                  coupons={availableCoupons ?? []}
-                  isLoading={couponsLoading}
-                  onApply={handleSelectCoupon}
-                />
-              </div>
-
-              <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5 max-h-[380px]">
-                <h3 className="font-semibold text-gray-900 mb-4">Price Details</h3>
-                <div className="space-y-3 text-sm">
-                  {totalDiscount > 0 && (
+                <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5 max-h-[380px]">
+                  <h3 className="font-semibold text-gray-900 mb-4">Price Details</h3>
+                  <div className="space-y-3 text-sm">
+                    {totalDiscount > 0 && (
+                      <div className="flex justify-between text-gray-700">
+                        <span>Total MRP</span>
+                        <span className="font-medium">₹{totalMRP.toFixed(2)}</span>
+                      </div>
+                    )}
+                    {totalDiscount > 0 && (
+                      <div className="flex justify-between text-green-600 font-medium">
+                        <span>Discount</span>
+                        <span>-₹{totalDiscount.toFixed(2)}</span>
+                      </div>
+                    )}
                     <div className="flex justify-between text-gray-700">
-                      <span>Total MRP</span>
-                      <span className="font-medium">₹{totalMRP.toFixed(2)}</span>
+                      <span>Subtotal</span>
+                      <span className="font-medium">₹{itemTotal.toFixed(2)}</span>
                     </div>
-                  )}
-                  {totalDiscount > 0 && (
-                    <div className="flex justify-between text-green-600 font-medium">
-                      <span>Discount</span>
-                      <span>-₹{totalDiscount.toFixed(2)}</span>
+                    <div className="flex justify-between text-gray-700">
+                      <span>Handling Charges</span>
+                      <span className="font-medium text-gray-900">₹{handlingCharges.toFixed(2)}</span>
                     </div>
-                  )}
-                  <div className="flex justify-between text-gray-700">
-                    <span>Subtotal</span>
-                    <span className="font-medium">₹{itemTotal.toFixed(2)}</span>
-                  </div>
-                  <div className="flex justify-between text-gray-700">
-                    <span>Handling Charges</span>
-                    <span className="font-medium text-gray-900">₹{handlingCharges.toFixed(2)}</span>
-                  </div>
-                  <div className="flex justify-between text-gray-700">
-                    <span>Delivery Charges</span>
-                    <span className="font-medium text-gray-900">{deliveryCharges === 0 ? "FREE" : `₹${deliveryCharges.toFixed(2)}`}</span>
-                  </div>
-                  {couponDiscount > 0 && (
-                    <div className="flex justify-between text-green-600">
-                      <span>Coupon Discount</span>
-                      <span className="font-medium">−₹{couponDiscount.toFixed(2)}</span>
+                    <div className="flex justify-between text-gray-700">
+                      <span>Delivery Charges</span>
+                      <span className="font-medium text-gray-900">{deliveryCharges === 0 ? "FREE" : `₹${deliveryCharges.toFixed(2)}`}</span>
                     </div>
-                  )}
-                  <div className="border-t border-gray-100 pt-3 flex justify-between font-bold text-gray-900 text-base">
-                    <span>Total</span>
-                    <span>₹{finalPayable.toFixed(2)}</span>
+                    {couponDiscount > 0 && (
+                      <div className="flex justify-between text-green-600">
+                        <span>Coupon Discount</span>
+                        <span className="font-medium">−₹{couponDiscount.toFixed(2)}</span>
+                      </div>
+                    )}
+                    <div className="border-t border-gray-100 pt-3 flex justify-between font-bold text-gray-900 text-base">
+                      <span>Total</span>
+                      <span>₹{finalPayable.toFixed(2)}</span>
+                    </div>
                   </div>
+
+                  <Button onClick={() => router.push("/checkout")} className="w-full mt-4 bg-[#F4568B] hover:bg-[#F4568B]/90 text-white h-11 rounded-lg font-semibold text-sm">
+                    Proceed to Checkout
+                  </Button>
+                  <Button
+                    // variant="outline"
+                    className="bg-white w-full mt-2 text-[#F4568B] hover:bg-[#F4568B]/50 h-11 rounded-lg font-semibold text-sm hover:text-white shadow-xs"
+                    onClick={() => router.push("/medicine")}
+                  >
+                    Continue Shopping
+                  </Button>
+
+                  <p className="text-center text-xs text-gray-500 mt-3">
+                    Prices include all applicable charges.
+                  </p>
                 </div>
-
-                <Button onClick={() => router.push("/checkout")} className="w-full mt-4 bg-[#F4568B] hover:bg-[#F4568B]/90 text-white h-11 rounded-lg font-semibold text-sm">
-                  Proceed to Checkout
-                </Button>
-                <Button
-                  // variant="outline"
-                  className="bg-white w-full mt-2 text-[#F4568B] hover:bg-[#F4568B]/50 h-11 rounded-lg font-semibold text-sm hover:text-white shadow-xs"
-                  onClick={() => router.push("/medicine")}
-                >
-                  Continue Shopping
-                </Button>
-
-                <p className="text-center text-xs text-gray-500 mt-3">
-                  Prices include all applicable charges.
-                </p>
               </div>
             </div>
           </div>
