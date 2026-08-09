@@ -43,7 +43,7 @@ export default function CouponListDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="bg-white max-w-2xl p-0 border-0">
+      <DialogContent className="bg-white max-w-2xl p-0 border-0 w-[350px] lg:w-lg">
         <DialogHeader className="p-6 pb-0">
           <DialogTitle className="text-lg font-semibold text-gray-900">
             Available Coupons
@@ -109,7 +109,7 @@ export default function CouponListDialog({
 
                   <Button
                     size="sm"
-                    className="mt-3 w-full bg-[#F4568B] hover:bg-[#F4568B]/90 text-white h-8 rounded-lg text-xs font-semibold"
+                    className="mt-3 w-full bg-[#F4568B] hover:bg-[#F4568B]/90 text-white h-6 rounded-lg text-sm font-semibold py-5"
                     onClick={(e) => {
                       e.stopPropagation();
                       onApply(coupon.code);
