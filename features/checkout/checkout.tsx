@@ -54,6 +54,108 @@ export default function CheckoutPage() {
     }
   }, [hookSelected, addresses]);
 
+  const handlePlaceOrder = async () => {
+    try {
+      const cartId = cart?.id || (cart as any)?._id || null;
+      const addressId = selectedAddress;
+      if (!cartId) {
+        toast.error("No cart found");
+        return;
+      }
+      if (!addressId) {
+        toast.error("Please select a delivery address");
+        return;
+      }
+
+      const modeOfPayment = selectedPayment === 'cod' ? 'COD' : 'PAY_NOW';
+      setLoading(true);
+
+      // Map datetime to a simple slot
+      let scheduleDeliveryDate = undefined;
+      let scheduleDeliveryTime = undefined;
+
+      if (orderType === 'SCHEDULE') {
+        // front-end validation
+        if (!scheduledDate) {
+          toast.error('Please select a delivery date');
+          return;
+        }
+        // enforce allowed slot for tomorrow
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const sel = new Date(scheduledDate);
+        sel.setHours(0, 0, 0, 0);
+        const tomorrow = new Date(today);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        if (sel.getTime() === tomorrow.getTime() && scheduledSlot !== '24H') {
+          alert('For next-day delivery only "Any Time (24H)" slot is available');
+          return;
+        }
+
+        scheduleDeliveryDate = scheduledDate;
+        scheduleDeliveryTime = scheduledSlot || '24H';
+      }
+
+      const payload: any = {
+        cartId,
+        addressId,
+        modeOfPayment,
+        orderType: orderType,
+        ...(appliedCoupon?.code
+          ? { couponCode: appliedCoupon.code }
+          : {}),
+      };
+
+      if (orderType === 'SCHEDULE') {
+        payload.scheduleDeliveryDate = scheduleDeliveryDate;
+        payload.scheduleDeliveryTime = scheduleDeliveryTime;
+      }
+
+      const res = await fetch(`/api/order/create`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
+
+      const data = await res.json().catch(() => ({}));
+
+      // Normalize payload: some Next API routes forward backend JSON
+      // directly, others wrap it under `data`. Support both shapes.
+      const result = data?.data ?? data;
+
+      if (!res.ok) {
+        if (data.errors.length > 0) {
+          data.errors.forEach((err: any) => toast.error(err));
+          return;
+        }
+        toast.error(result?.message || 'Failed to create order');
+        return;
+      }
+
+
+      if (result?.success !== true) {
+        toast.error(result?.message || 'Failed to create order');
+        return;
+      }
+
+      const orderId = result?.order?.userOrderId || result?.orderId || 'N/A';
+
+      toast.success('Order placed successfully! Order ID: ' + orderId);
+      queryClient.invalidateQueries({ queryKey: ["cart"] });
+      queryClient.invalidateQueries({ queryKey: ["cart", "guest"] });
+      // Clear the applied coupon for the next order. Usage is only
+      // marked by the backend at order creation — nothing here "consumes" it.
+      queryClient.setQueryData(APPLIED_COUPON_QUERY_KEY, null);
+      router.push(`/orders`);
+      setLoading(false)
+    } catch (err) {
+      setLoading(false)
+      console.error(err);
+      toast.error('Order failed. Check console for details.');
+    }
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 flex-1 flex flex-col justify-between">
@@ -317,7 +419,7 @@ export default function CheckoutPage() {
                     </div>
                   )}
                   {couponDiscount > 0 && (
-                    <div className="bg-green-50 text-green-700 text-xs font-medium py-1.5 px-2 rounded-lg text-center">
+                    <div className="bg-green-50 text-green-700 text-xs font-medium py-2 px-2 rounded-lg text-center">
                       You saved ₹{couponDiscount.toFixed(2)} with {appliedCoupon?.code}
                     </div>
                   )}
@@ -326,108 +428,7 @@ export default function CheckoutPage() {
                 <Button
                   className="w-full mt-4 bg-[#F4568B] hover:bg-[#F4568B]/90 text-white h-11 rounded-lg font-semibold"
                   disabled={loading}
-                  onClick={async () => {
-                    try {
-                      const cartId = cart?.id || (cart as any)?._id || null;
-                      const addressId = selectedAddress;
-                      if (!cartId) {
-                        toast.error("No cart found");
-                        return;
-                      }
-                      if (!addressId) {
-                        toast.error("Please select a delivery address");
-                        return;
-                      }
-
-                      const modeOfPayment = selectedPayment === 'cod' ? 'COD' : 'PAY_NOW';
-                      setLoading(true);
-
-                      // Map datetime to a simple slot
-                      let scheduleDeliveryDate = undefined;
-                      let scheduleDeliveryTime = undefined;
-
-                      if (orderType === 'SCHEDULE') {
-                        // front-end validation
-                        if (!scheduledDate) {
-                          toast.error('Please select a delivery date');
-                          return;
-                        }
-                        // enforce allowed slot for tomorrow
-                        const today = new Date();
-                        today.setHours(0, 0, 0, 0);
-                        const sel = new Date(scheduledDate);
-                        sel.setHours(0, 0, 0, 0);
-                        const tomorrow = new Date(today);
-                        tomorrow.setDate(tomorrow.getDate() + 1);
-                        if (sel.getTime() === tomorrow.getTime() && scheduledSlot !== '24H') {
-                          alert('For next-day delivery only "Any Time (24H)" slot is available');
-                          return;
-                        }
-
-                        scheduleDeliveryDate = scheduledDate;
-                        scheduleDeliveryTime = scheduledSlot || '24H';
-                      }
-
-                      const payload: any = {
-                        cartId,
-                        addressId,
-                        modeOfPayment,
-                        orderType: orderType,
-                        ...(appliedCoupon?.code
-                          ? { couponCode: appliedCoupon.code }
-                          : {}),
-                      };
-
-                      if (orderType === 'SCHEDULE') {
-                        payload.scheduleDeliveryDate = scheduleDeliveryDate;
-                        payload.scheduleDeliveryTime = scheduleDeliveryTime;
-                      }
-
-                      const res = await fetch(`/api/order/create`, {
-                        method: 'POST',
-                        credentials: 'include',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload),
-                      });
-
-
-                      const data = await res.json().catch(() => ({}));
-
-                      // Normalize payload: some Next API routes forward backend JSON
-                      // directly, others wrap it under `data`. Support both shapes.
-                      const result = data?.data ?? data;
-
-                      if (!res.ok) {
-                        if (data.errors.length > 0) {
-                          data.errors.forEach((err: any) => toast.error(err));
-                          return;
-                        }
-                        toast.error(result?.message || 'Failed to create order');
-                        return;
-                      }
-
-
-                      if (result?.success !== true) {
-                        toast.error(result?.message || 'Failed to create order');
-                        return;
-                      }
-
-                      const orderId = result?.order?.userOrderId || result?.orderId || 'N/A';
-
-                      toast.success('Order placed successfully! Order ID: ' + orderId);
-                      queryClient.invalidateQueries({ queryKey: ["cart"] });
-                      queryClient.invalidateQueries({ queryKey: ["cart", "guest"] });
-                      // Clear the applied coupon for the next order. Usage is only
-                      // marked by the backend at order creation — nothing here "consumes" it.
-                      queryClient.setQueryData(APPLIED_COUPON_QUERY_KEY, null);
-                      router.push(`/orders`);
-                      setLoading(false)
-                    } catch (err) {
-                      setLoading(false)
-                      console.error(err);
-                      toast.error('Order failed. Check console for details.');
-                    }
-                  }}
+                  onClick={handlePlaceOrder}
                 >
                   {
                     loading ? <Spinner className="size-4" /> : ""
