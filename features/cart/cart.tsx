@@ -313,7 +313,7 @@ export default function CartPage() {
                           }}
                           placeholder="Enter coupon code"
                           disabled={isGuest || validateCoupon.isPending}
-                          className="flex-1 h-9 uppercase text-black"
+                          className="flex-1 h-9 uppercase text-black border border-zinc-700/20  "
                         />
                         <Button
                           size="sm"
