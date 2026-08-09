@@ -39,6 +39,8 @@ interface OrderItem {
 
 interface OrderRecord {
     _id: string;
+    couponCode?: string;
+    couponDiscountAmount?: number;
     userOrderId?: string;
     orderStatus?: string;
     paymentStatus?: string;
@@ -80,6 +82,10 @@ const formatCurrency = (value?: number) =>
 const formatStatus = (status?: string) =>
     (status || "PENDING").replace(/_/g, " ").toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase());
 
+const formulateFinalTotal = (order: OrderRecord) => {
+    return (order.grandTotal || 0) - (order.couponDiscountAmount || 0);
+};
+
 export default function OrdersPage() {
     const [orders, setOrders] = useState<OrderRecord[]>([]);
     const [loading, setLoading] = useState(true);
@@ -90,6 +96,7 @@ export default function OrdersPage() {
             try {
                 const response = await fetch("/api/order/get", { credentials: "include" });
                 const data = await response.json();
+                console.log("Orders data:", data);
 
                 if (data?.success) {
                     setOrders(data.orders || []);
@@ -113,6 +120,10 @@ export default function OrdersPage() {
             totalSpent,
             activeOrders: orders.filter((order) => ["PENDING", "CONFIRMED", "PACKED", "OUT_FOR_DELIVERY"].includes(order.orderStatus || "")).length,
         };
+    }, [orders]);
+
+    useEffect(() => {
+        console.log("Orders updated:", orders);
     }, [orders]);
 
     return (
@@ -170,7 +181,7 @@ export default function OrdersPage() {
                                             </div>
                                             <div className="text-left sm:text-right">
                                                 <p className="text-sm text-slate-500">Total amount</p>
-                                                <p className="text-lg font-semibold text-slate-900">{formatCurrency(order.grandTotal)}</p>
+                                                <p className="text-lg font-semibold text-slate-900">{formatCurrency(formulateFinalTotal(order))}</p>
                                             </div>
                                         </div>
 
