@@ -1,4 +1,4 @@
-import OrdersPage from "@/features/profile/orders-page";
+import OrdersPage from "@/features/orders/orders-page";
 
 export default function Page() {
   return <OrdersPage />;

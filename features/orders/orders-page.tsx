@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, Package, CalendarDays, MapPin, CreditCard, Clock3, ShoppingBag } from "lucide-react";
+import { ArrowLeft, Package, CalendarDays, MapPin, CreditCard, Clock3, ShoppingBag, BadgeCheck, Tag } from "lucide-react";
 import { MDWHeader, MDWFooterBar, UserSidebar } from "@/components/shared";
 
 interface OrderSummary {
@@ -83,7 +83,7 @@ const formatStatus = (status?: string) =>
     (status || "PENDING").replace(/_/g, " ").toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase());
 
 const formulateFinalTotal = (order: OrderRecord) => {
-    return (order.grandTotal || 0) - (order.couponDiscountAmount || 0);
+    return (order.grandTotal || 0);
 };
 
 export default function OrdersPage() {
@@ -96,7 +96,6 @@ export default function OrdersPage() {
             try {
                 const response = await fetch("/api/order/get", { credentials: "include" });
                 const data = await response.json();
-                console.log("Orders data:", data);
 
                 if (data?.success) {
                     setOrders(data.orders || []);
@@ -120,10 +119,6 @@ export default function OrdersPage() {
             totalSpent,
             activeOrders: orders.filter((order) => ["PENDING", "CONFIRMED", "PACKED", "OUT_FOR_DELIVERY"].includes(order.orderStatus || "")).length,
         };
-    }, [orders]);
-
-    useEffect(() => {
-        console.log("Orders updated:", orders);
     }, [orders]);
 
     return (
@@ -172,6 +167,12 @@ export default function OrdersPage() {
                                                     <span className={`rounded-full border px-2.5 py-1 text-xs font-medium ${statusClasses[order.orderStatus || "PENDING"] || statusClasses.PENDING}`}>
                                                         {formatStatus(order.orderStatus)}
                                                     </span>
+                                                    {order.couponCode && (
+                                                        <span className={`rounded-full border px-2.5 py-1 text-xs font-medium ${statusClasses.DELIVERED} flex items-center gap-1`}>
+                                                            <Tag className="size-3" />
+                                                            {formatStatus(`${order.couponCode}`)}
+                                                        </span>
+                                                    )}
                                                 </div>
                                                 <div className="mt-2 flex flex-wrap items-center gap-4 text-sm text-slate-500">
                                                     <span className="flex items-center gap-1.5"><CalendarDays className="h-4 w-4" />{order.formattedDates?.orderedDate || "—"}</span>
