@@ -16,6 +16,7 @@ import {
   PackageCheck,
   Popcorn,
   HeartPulse,
+  Fingerprint,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
@@ -45,6 +46,8 @@ import {
   GiSpiderMask,
 } from "react-icons/gi"
 import { PiNuclearPlantFill } from "react-icons/pi"
+import { MdBloodtype } from "react-icons/md";
+import { FaTeethOpen } from "react-icons/fa6";
 import { useEffect, useState } from "react"
 import axios from "axios"
 import {
@@ -57,7 +60,7 @@ import { toast } from "sonner"
 
 const CATEGORIES = [
   {
-    icon: <Popcorn className="h-5 w-5" />,
+    icon: <MdBloodtype className="h-5 w-5" />,
     label: "Diabetes Care",
     color: "bg-blue-50",
   },
@@ -102,7 +105,7 @@ const CATEGORIES = [
     color: "bg-green-50",
   },
   {
-    icon: <GiFrontTeeth className="h-5 w-5" />,
+    icon: <FaTeethOpen className="h-5 w-5" />,
     label: "Oral Care",
     color: "bg-green-50",
   },
@@ -112,7 +115,7 @@ const CATEGORIES = [
     color: "bg-green-50",
   },
   {
-    icon: <GiSpiderMask className="h-5 w-5" />,
+    icon: <Fingerprint className="h-5 w-5" />,
     label: "Derma Care",
     color: "bg-green-50",
   },
