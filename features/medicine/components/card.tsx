@@ -72,7 +72,7 @@ export function MedicineCard({ medicine, index = 0, onAddToCart, variant = "defa
           e.stopPropagation();
           onAddToCart?.(medicine);
         }}
-        className="mt-3 w-full bg-white border border-[#F4568B] text-[#F4568B] hover:bg-gray-500 hover:text-white transition-colors h-8 text-xs font-medium rounded-md border border-gray-200 gap-1.5"
+        className="cursor-pointer mt-3 w-full bg-white border border-[#F4568B] text-[#F4568B] hover:bg-gray-500 hover:text-white transition-colors h-8 text-xs font-medium rounded-md border border-gray-200 gap-1.5"
       >
         <ShoppingCart className="w-3.5 h-3.5" />
         Add to Cart
@@ -82,7 +82,7 @@ export function MedicineCard({ medicine, index = 0, onAddToCart, variant = "defa
           e.stopPropagation();
           removeFromCart.mutate(medicine._id!);
         }}
-        className="mt-3 w-full bg-white border border-red-600 text-red-700 hover:bg-red-600 hover:text-white transition-colors h-8 text-xs font-medium rounded-md border border-red-200 gap-1.5"
+        className="mt-3 w-full cursor-pointer bg-white border border-red-600 text-red-700 hover:bg-red-600 hover:text-white transition-colors h-8 text-xs font-medium rounded-md border border-red-200 gap-1.5"
       >
         <ShoppingCart className="w-3.5 h-3.5" />
         Remove from Cart

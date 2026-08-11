@@ -275,12 +275,12 @@ export default function MedicinesPage() {
             {CATEGORIES.map((cat) => (
               <button
                 key={cat.label}
-                className={`bg-[#F4568B] flex flex-row items-center justify-start gap-3 rounded-lg border border-gray-200 p-3 text-black transition-all hover:scale-105 hover:border-gray-100 hover:shadow-sm hover:bg-gray-500`}
+                className={`bg-[#F4568B] cursor-pointer flex flex-row items-center justify-start gap-3 rounded-lg border border-gray-200 p-3 text-black transition-all hover:scale-105 hover:border-gray-100 hover:shadow-sm hover:bg-gray-500`}
                 onClick={() => {
                   router.push(`/medicines/${cat.label}`)
                 }}
               >
-                <span className="">{cat.icon}</span>
+                <span className="text-white">{cat.icon}</span>
                 <span className="text-center text-xs leading-tight font-medium whitespace-pre-line text-white">
                   {cat.label}
                 </span>
@@ -328,11 +328,11 @@ export default function MedicinesPage() {
             <h2 className="text-md ml-2 font-bold text-gray-900 min-[500px]:text-xl">
               Popular Medicines
             </h2>
-            <button className="flex items-center gap-0.5 text-xs font-medium text-[#F4568B] hover:text-[#F4568B]/80 min-[500px]:text-sm" onClick={() => router.push("/medicines")}>
+            <button className="cursor-pointer flex items-center gap-0.5 text-xs font-medium text-[#F4568B] hover:text-[#F4568B]/80 min-[500px]:text-sm" onClick={() => router.push("/medicines")}>
               View All Medicines <ChevronRight className="h-4 w-4" />
             </button>
           </div>
-          <div className="mx-auto grid max-w-[15rem] gap-2 min-[380px]:max-w-none min-[380px]:grid-cols-2 min-[400px]:gap-4 sm:grid-cols-3 lg:grid-cols-5">
+          <div className="mx-auto grid max-w-[15rem] gap-2 min-[380px]:max-w-none min-[380px]:grid-cols-2 min-[400px]:gap-4 sm:grid-cols-3 lg:grid-cols-5 cursor-pointer">
             {featuredProducts.map((med, i) => (
               <MedicineCard
                 key={i}
@@ -354,11 +354,11 @@ export default function MedicinesPage() {
                 <h2 className="text-md ml-2 font-bold text-gray-900 min-[500px]:text-xl">
                   {group.category}
                 </h2>
-                <button className="flex items-center gap-0.5 text-xs font-medium text-[#F4568B] hover:text-[#F4568B]/80 min-[500px]:text-sm" onClick={() => router.push(`/medicines/${group.category}`)}>
+                <button className="cursor-pointer flex items-center gap-0.5 text-xs font-medium text-[#F4568B] hover:text-[#F4568B]/80 min-[500px]:text-sm" onClick={() => router.push(`/medicines/${group.category}`)}>
                   View All <ChevronRight className="h-4 w-4" />
                 </button>
               </div>
-              <div className="mx-auto grid max-w-[15rem] gap-2 min-[380px]:max-w-none min-[380px]:grid-cols-2 min-[400px]:gap-4 sm:grid-cols-3 lg:grid-cols-5">
+              <div className="cursor-pointer mx-auto grid max-w-[15rem] gap-2 min-[380px]:max-w-none min-[380px]:grid-cols-2 min-[400px]:gap-4 sm:grid-cols-3 lg:grid-cols-5">
                 {group.medicines.slice(0, 5).map((product, i) => (
                   <MedicineCard
                     key={product._id ?? i}
@@ -421,7 +421,7 @@ export default function MedicinesPage() {
                   <FaWhatsapp className="h-3.5 w-3.5" />
                   Chat on WhatsApp
                 </Button>
-                <Button className="h-12 w-[10.2rem] gap-1.5 rounded-md border border-[#F4568B] bg-white px-5 text-xs text-[#F4568B] hover:bg-[#F4568B]/10 min-[468px]:w-fit hover:text-white" onClick={() => window.open("tel:+919230189091", "_blank")}>
+                <Button className="cursor-pointer h-12 w-[10.2rem] gap-1.5 rounded-md border border-[#F4568B] bg-white px-5 text-xs text-[#F4568B] hover:bg-[#F4568B]/10 min-[468px]:w-fit hover:text-white" onClick={() => window.open("tel:+919230189091", "_blank")}>
                   <Phone className="h-3.5 w-3.5" />
                   Call Us Now
                 </Button>
