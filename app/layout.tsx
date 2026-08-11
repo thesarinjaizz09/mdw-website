@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import { QueryProvider } from "@/providers/query-provider";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/sonner";
+import { WhatsAppFloater } from "@/components/whatsapp-floater";
 
 const ibmPlexSans = IBM_Plex_Sans({ subsets: ['latin'], variable: '--font-sans' })
 
@@ -38,6 +39,7 @@ export default function RootLayout({
          </TooltipProvider>
          {/* Toaster should be rendered without children */}
          <Toaster />
+         <WhatsAppFloater />
        </div>
       </body>
     </html>
