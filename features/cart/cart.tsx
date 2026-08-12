@@ -30,7 +30,6 @@ export default function CartPage() {
   const { cart, guestItems, isGuest, itemCount, totalAmount, isLoading } = useCart();
   const { data: appliedCoupon } = useAppliedCoupon();
   const { data: availableCoupons, isLoading: couponsLoading } = useAvailableCoupons();
-  console.log("Available Coupons:", availableCoupons);
   const validateCoupon = useValidateCoupon();
   const removeCoupon = useRemoveCoupon();
 

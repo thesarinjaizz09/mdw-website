@@ -17,6 +17,7 @@ import {
     Popcorn,
     HeartPulse,
     UploadIcon,
+    Fingerprint,
 } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
@@ -56,68 +57,70 @@ import {
 } from "@/features/landing/components"
 import { useCartActions } from "@/features/cart/hooks/use-cart"
 import { toast } from "sonner"
+import { MdBloodtype } from "react-icons/md"
+import { FaTeethOpen } from "react-icons/fa6"
 
 const CATEGORIES = [
-    {
-        icon: <Popcorn className="h-5 w-5" />,
-        label: "Diabetes Care",
-        color: "bg-blue-50",
-    },
-    {
-        icon: <HeartPulse className="h-5 w-5" />,
-        label: "Cardiac Care",
-        color: "bg-red-50",
-    },
-    {
-        icon: <GiStomach className="h-5 w-5" />,
-        label: "Stomach Care",
-        color: "bg-pink-50",
-    },
-    {
-        icon: <GiMedicines className="h-5 w-5" />,
-        label: "Pain Relief",
-        color: "bg-purple-50",
-    },
-    {
-        icon: <GiLiver className="h-5 w-5" />,
-        label: "Liver Care",
-        color: "bg-indigo-50",
-    },
-    {
-        icon: <FaPills className="h-5 w-5" />,
-        label: "Drugs",
-        color: "bg-yellow-50",
-    },
-    {
-        icon: <PiNuclearPlantFill className="h-5 w-5" />,
-        label: "Nutraceuticals",
-        color: "bg-teal-50",
-    },
-    {
-        icon: <TbReplace className="h-5 w-5" />,
-        label: "Substitute",
-        color: "bg-green-50",
-    },
-    {
-        icon: <GiLoveInjection className="h-5 w-5" />,
-        label: "Injections",
-        color: "bg-green-50",
-    },
-    {
-        icon: <GiFrontTeeth className="h-5 w-5" />,
-        label: "Oral Care",
-        color: "bg-green-50",
-    },
-    {
-        icon: <GiLungs className="h-5 w-5" />,
-        label: "Respiratory Care",
-        color: "bg-green-50",
-    },
-    {
-        icon: <GiSpiderMask className="h-5 w-5" />,
-        label: "Derma Care",
-        color: "bg-green-50",
-    },
+  {
+    icon: <MdBloodtype className="h-5 w-5" />,
+    label: "Diabetes Care",
+    color: "bg-blue-50",
+  },
+  {
+    icon: <HeartPulse className="h-5 w-5" />,
+    label: "Cardiac Care",
+    color: "bg-red-50",
+  },
+  {
+    icon: <GiStomach className="h-5 w-5" />,
+    label: "Stomach Care",
+    color: "bg-pink-50",
+  },
+  {
+    icon: <GiMedicines className="h-5 w-5" />,
+    label: "Pain Relief",
+    color: "bg-purple-50",
+  },
+  {
+    icon: <GiLiver className="h-5 w-5" />,
+    label: "Liver Care",
+    color: "bg-indigo-50",
+  },
+  {
+    icon: <FaPills className="h-5 w-5" />,
+    label: "Drugs",
+    color: "bg-yellow-50",
+  },
+  {
+    icon: <PiNuclearPlantFill className="h-5 w-5" />,
+    label: "Nutraceuticals",
+    color: "bg-teal-50",
+  },
+  {
+    icon: <TbReplace className="h-5 w-5" />,
+    label: "Substitute",
+    color: "bg-green-50",
+  },
+  {
+    icon: <GiLoveInjection className="h-5 w-5" />,
+    label: "Injections",
+    color: "bg-green-50",
+  },
+  {
+    icon: <FaTeethOpen className="h-5 w-5" />,
+    label: "Oral Care",
+    color: "bg-green-50",
+  },
+  {
+    icon: <GiLungs className="h-5 w-5" />,
+    label: "Respiratory Care",
+    color: "bg-green-50",
+  },
+  {
+    icon: <Fingerprint className="h-5 w-5" />,
+    label: "Derma Care",
+    color: "bg-green-50",
+  },
 ]
 
 const WHY_CHOOSE = [
@@ -162,8 +165,11 @@ function toMedicine(product: ProductData): Medicine {
     } as Medicine
 }
 
+import { useMedicineSearchStore } from "@/stores/use-medicine-search"
+
 export default function IndividualPage({ category }: { category?: string }) {
     const router = useRouter()
+    const { setQuery } = useMedicineSearchStore()
     const { addToCart } = useCartActions()
     const [loading, setLoading] = useState(false)
     const [featuredProducts, setFeaturedProducts] =
@@ -250,7 +256,8 @@ export default function IndividualPage({ category }: { category?: string }) {
                                     (s) => (
                                         <button
                                             key={s}
-                                            className="rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-700 transition-colors hover:bg-green-100 hover:text-green-700"
+                                            onClick={() => setQuery(s)}
+                                            className="rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-700 transition-colors hover:bg-pink-100 hover:text-pink-700"
                                         >
                                             {s}
                                         </button>
@@ -278,7 +285,7 @@ export default function IndividualPage({ category }: { category?: string }) {
                                 className={`bg-[#F4568B] flex flex-row items-center justify-start gap-3 rounded-lg border border-gray-200 p-3 text-black transition-all hover:scale-105 hover:border-gray-100 hover:shadow-sm hover:bg-gray-500`}
                                 onClick={() => router.push(`/medicines/${cat.label}`)}
                             >
-                                <span className="">{cat.icon}</span>
+                                <span className="text-white">{cat.icon}</span>
                                 <span className="text-center text-xs leading-tight font-medium whitespace-pre-line text-white">
                                     {cat.label}
                                 </span>
