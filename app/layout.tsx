@@ -28,6 +28,9 @@ export default function RootLayout({
       suppressHydrationWarning
       className={cn("antialiased h-full", fontMono.variable, "font-sans", ibmPlexSans.variable, "bg-background text-foreground")}
     >
+      <head>
+        <link rel="icon" href="/mdw-favicon.svg" type="image/svg+xml" />
+      </head>
       <body className="min-h-screen flex flex-col">
        <div className="flex-1 flex flex-col">
          <TooltipProvider>
