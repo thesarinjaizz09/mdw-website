@@ -7,6 +7,7 @@ import axios from "axios";
 
 import { useDebounce } from "./use-debounce";
 import { useMedicineSearchStore } from "@/stores/use-medicine-search";
+import { normalizeSearchTerm } from "@/lib/search-normalize";
 
 export function useMedicineSearch() {
     const {
@@ -21,9 +22,14 @@ export function useMedicineSearch() {
         useDebounce(query, 350);
 
     useEffect(() => {
+        // Preserve the visible query; only validate/harden internally.
+        const trimmed = (debouncedQuery || "").trim();
+
+        // Skip pure-punctuation / too-short queries: nothing meaningful to
+        // search for (the backend would only return an empty list anyway).
         if (
-            !debouncedQuery ||
-            debouncedQuery.length < 2
+            trimmed.length < 2 ||
+            !normalizeSearchTerm(trimmed)
         ) {
             setResults([]);
             return;
