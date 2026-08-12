@@ -39,48 +39,51 @@ export default function ProfilePage() {
     <div className="min-h-screen bg-gray-50 flex flex-col justify-between flex-1">
       <MDWHeader />
 
-      <main className="px-4 py-6 w-full max-w-7xl mx-auto flex-1">
-        <h1 className="text-xl font-bold text-gray-900 mb-6">My Profile</h1>
+      <main className="px-4 py-4 sm:py-6 w-full max-w-7xl mx-auto flex-1">
+        <h1 className="text-lg sm:text-xl font-bold text-gray-900 mb-4 sm:mb-6">My Profile</h1>
 
-        <div className="flex gap-5 md:flex-row flex-col">
+        <div className="flex gap-4 sm:gap-5 md:flex-row flex-col">
           {/* Sidebar nav */}
           <UserSidebar />
 
           {/* Main content */}
-          <div className=" space-y-4 w-full md:w-[70%]">
+          <div className="space-y-4 w-full md:w-[70%]">
             {/* Profile card */}
-            <div className="bg-white rounded-lg border border-gray-100 shadow-sm p-5">
-              <div className="flex items-start justify-between mb-5">
-                <div className="flex items-center gap-4">
+            <div className="bg-white rounded-lg border border-gray-100 shadow-sm p-4 sm:p-5">
+              <div className="flex items-start justify-between mb-4 sm:mb-5">
+                <div className="flex items-center gap-3 sm:gap-4">
                   {/* Avatar */}
-                  <div className="w-16 h-16 rounded-full bg-[#F4568B]/40  flex items-center justify-center text-2xl border-2 border-[#ff6f9f] overflow-hidden">
-                    <UserIcon className="text-black"/>
+                  <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-[#F4568B]/40 flex items-center justify-center border-2 border-[#ff6f9f] overflow-hidden flex-shrink-0">
+                    <UserIcon className="w-5 h-5 sm:w-6 sm:h-6 text-black"/>
                   </div>
-                  <div>
-                    <h2 className="text-lg font-bold text-gray-900">{`${user?.userfName} ${user?.userlName}`}</h2>
-                    <p className="text-sm text-gray-500">{user?.userEmail}</p>
-                    <p className="text-sm text-gray-500">{user?.userPhone}</p>
+                  <div className="min-w-0">
+                    <h2 className="text-base sm:text-lg font-bold text-gray-900 truncate">{`${user?.userfName || ''} ${user?.userlName || ''}`}</h2>
+                    <p className="text-xs sm:text-sm text-gray-500 truncate">{user?.userEmail}</p>
+                    <p className="text-xs sm:text-sm text-gray-500">{user?.userPhone}</p>
                   </div>
                 </div>
-                <button onClick={() => setEditDialogOpen(true)} className="flex items-center gap-1.5 text-[#F4568B] text-sm font-medium hover:text-[#F4568B]/90 transition-colors">
-                  <Pencil className="w-3.5 h-3.5" />
-                  Edit Profile
+                <button
+                  onClick={() => setEditDialogOpen(true)}
+                  className="flex items-center gap-1 sm:gap-1.5 text-[#F4568B] text-xs sm:text-sm font-medium hover:text-[#F4568B]/90 transition-colors p-1.5 sm:p-0 rounded-md hover:bg-[#F4568B]/10 sm:hover:bg-transparent flex-shrink-0"
+                  title="Edit Profile"
+                >
+                  <Pencil className="w-4 h-4 sm:w-3.5 sm:h-3.5" />
+                  <span className="hidden sm:inline">Edit Profile</span>
                 </button>
               </div>
 
               {/* Account Details */}
               <div>
-                <h3 className="font-semibold text-gray-900 mb-3 text-sm">Account Details</h3>
+                <h3 className="font-semibold text-gray-900 mb-2 sm:mb-3 text-xs sm:text-sm">Account Details</h3>
                 <div className="divide-y divide-gray-50">
                   {[
-                    { label: "Name", value: `${user?.userfName} ${user?.userlName}` },
+                    { label: "Name", value: `${user?.userfName || ''} ${user?.userlName || ''}` },
                     { label: "Email", value: user?.userEmail },
                     { label: "Mobile Number", value: user?.userPhone },
-                    // { label: "Date of Birth", value: user?.dob },
                   ].map((row) => (
-                    <div key={row.label} className="flex items-center py-2.5 max-[400px]:flex-col max-[400px]:items-start max-[400px]:gap-1">
-                      <span className="w-36 text-sm text-gray-500 flex-shrink-0 max-[400px]:w-full max-[400px]:font-medium">{row.label}</span>
-                      <span className="text-sm font-medium text-gray-900 max-[400px]:w-full">{row.value}</span>
+                    <div key={row.label} className="flex items-center py-2 sm:py-2.5 max-[400px]:flex-col max-[400px]:items-start max-[400px]:gap-1">
+                      <span className="w-28 sm:w-36 text-xs sm:text-sm text-gray-500 flex-shrink-0 max-[400px]:w-full max-[400px]:font-medium">{row.label}</span>
+                      <span className="text-xs sm:text-sm font-medium text-gray-900 max-[400px]:w-full break-all">{row.value}</span>
                     </div>
                   ))}
                 </div>

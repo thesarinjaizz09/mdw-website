@@ -38,8 +38,6 @@ export default function CheckoutPage() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedPayment, setSelectedPayment] = useState("cod");
   const [orderType, setOrderType] = useState<"QUICK" | "SCHEDULE">("QUICK");
-  const [scheduledDate, setScheduledDate] = useState<string>("");
-  const [scheduledSlot, setScheduledSlot] = useState<string>("Morning");
   const router = useRouter();
   const queryClient = useQueryClient();
   const { data: appliedCoupon } = useAppliedCoupon();
@@ -70,30 +68,19 @@ export default function CheckoutPage() {
       const modeOfPayment = selectedPayment === 'cod' ? 'COD' : 'PAY_NOW';
       setLoading(true);
 
-      // Map datetime to a simple slot
+      // Schedule delivery details (Next day Evening slot)
       let scheduleDeliveryDate = undefined;
       let scheduleDeliveryTime = undefined;
 
       if (orderType === 'SCHEDULE') {
-        // front-end validation
-        if (!scheduledDate) {
-          toast.error('Please select a delivery date');
-          return;
-        }
-        // enforce allowed slot for tomorrow
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        const sel = new Date(scheduledDate);
-        sel.setHours(0, 0, 0, 0);
-        const tomorrow = new Date(today);
-        tomorrow.setDate(tomorrow.getDate() + 1);
-        if (sel.getTime() === tomorrow.getTime() && scheduledSlot !== '24H') {
-          alert('For next-day delivery only "Any Time (24H)" slot is available');
-          return;
-        }
+        const nextDay = new Date();
+        nextDay.setDate(nextDay.getDate() + 1);
+        const yyyy = nextDay.getFullYear();
+        const mm = String(nextDay.getMonth() + 1).padStart(2, '0');
+        const dd = String(nextDay.getDate()).padStart(2, '0');
 
-        scheduleDeliveryDate = scheduledDate;
-        scheduleDeliveryTime = scheduledSlot || '24H';
+        scheduleDeliveryDate = `${yyyy}-${mm}-${dd}`;
+        scheduleDeliveryTime = 'Evening';
       }
 
       const payload: any = {
@@ -250,73 +237,16 @@ export default function CheckoutPage() {
                     <div className={`w-4 h-4 rounded-full border-2 ${orderType === 'QUICK' ? 'border-[#F4568B] bg-[#F4568B]' : 'border-gray-300'}`} />
                   </label>
 
-                  <label className={`flex items-center justify-between p-3.5 rounded-lg border ${orderType === 'SCHEDULE' ? 'border-[#F4568B] bg-[#F4568B]/10' : 'border-gray-200'}`}>
-                    <div className="flex items-center gap-3">
+                  <label className={`flex items-start justify-between p-3.5 rounded-lg border cursor-pointer transition-all ${orderType === 'SCHEDULE' ? 'border-[#F4568B] bg-[#F4568B]/10' : 'border-gray-200 hover:border-gray-300'}`}>
+                    <div className="flex flex-col gap-0.5">
                       <span className="text-sm font-medium text-gray-700">Schedule Delivery</span>
+                      <span className="text-xs text-gray-500">
+                        Next Day — Evening Slot (19:00 - 21:00)
+                      </span>
                     </div>
                     <input type="radio" name="orderType" value="SCHEDULE" checked={orderType === 'SCHEDULE'} onChange={() => setOrderType('SCHEDULE')} className="sr-only" />
-                    <div className={`w-4 h-4 rounded-full border-2 ${orderType === 'SCHEDULE' ? 'border-[#F4568B] bg-[#F4568B]' : 'border-gray-300'}`} />
+                    <div className={`w-4 h-4 rounded-full border-2 flex-shrink-0 mt-0.5 transition-all ${orderType === 'SCHEDULE' ? 'border-[#F4568B] bg-[#F4568B]' : 'border-gray-300'}`} />
                   </label>
-
-                  {orderType === 'SCHEDULE' && (
-                    <div className="pt-2 space-y-2">
-                      <input
-                        type="date"
-                        value={scheduledDate}
-                        min={new Date().toISOString().split('T')[0]}
-                        max={new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]}
-                        onChange={(e) => {
-                          const date = e.target.value; // YYYY-MM-DD
-                          setScheduledDate(date);
-                          // if selected date is tomorrow, restrict slot to 24H
-                          const today = new Date();
-                          today.setHours(0, 0, 0, 0);
-                          const sel = new Date(date);
-                          sel.setHours(0, 0, 0, 0);
-                          const tomorrow = new Date(today);
-                          tomorrow.setDate(tomorrow.getDate() + 1);
-                          if (sel.getTime() === tomorrow.getTime()) {
-                            setScheduledSlot('24H');
-                          } else {
-                            setScheduledSlot('Morning');
-                          }
-                        }}
-                        className="w-full rounded border border-gray-200 p-2 text-sm text-gray-900 bg-white"
-                      />
-
-                      <select
-                        className="w-full rounded border border-gray-200 p-2 text-sm text-gray-900 bg-white"
-                        onChange={(e) => setScheduledSlot(e.target.value)}
-                        value={scheduledSlot}
-                      >
-                        {(() => {
-                          // compute options based on selected date
-                          const today = new Date();
-                          today.setHours(0, 0, 0, 0);
-                          const sel = scheduledDate ? new Date(scheduledDate) : today;
-                          sel.setHours(0, 0, 0, 0);
-                          const tomorrow = new Date(today);
-                          tomorrow.setDate(tomorrow.getDate() + 1);
-
-                          if (sel.getTime() === tomorrow.getTime()) {
-                            return (
-                              <>
-                                <option value="24H">Any Time (24H)</option>
-                              </>
-                            );
-                          }
-
-                          return (
-                            <>
-                              <option value="Morning">Morning (9-12)</option>
-                              <option value="Evening">Evening (19-21)</option>
-                              <option value="24H">Any Time (24H)</option>
-                            </>
-                          );
-                        })()}
-                      </select>
-                    </div>
-                  )}
                 </div>
               </div>
               <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
@@ -366,7 +296,7 @@ export default function CheckoutPage() {
 
               {/* T&C note */}
               <p className="text-xs text-gray-400 text-center px-4">
-                By placing your order, you agree to MDW's{" "}
+                By placing your order, you agree to MDW&apos;s{" "}
                 <button className="text-[#F4568B] hover:underline">Terms & Conditions</button> and{" "}
                 <button className="text-[#F4568B] hover:underline">Privacy Policy</button>
               </p>

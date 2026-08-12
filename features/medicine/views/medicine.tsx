@@ -163,8 +163,11 @@ function toMedicine(product: ProductData): Medicine {
   } as Medicine
 }
 
+import { useMedicineSearchStore } from "@/stores/use-medicine-search"
+
 export default function MedicinesPage() {
   const router = useRouter()
+  const { setQuery } = useMedicineSearchStore()
   const { addToCart } = useCartActions()
   const [featuredProducts, setFeaturedProducts] =
     useState<Medicine[]>(MEDICINES)
@@ -248,7 +251,8 @@ export default function MedicinesPage() {
                   (s) => (
                     <button
                       key={s}
-                      className="rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-700 transition-colors hover:bg-green-100 hover:text-green-700"
+                      onClick={() => setQuery(s)}
+                      className="rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-700 transition-colors hover:bg-pink-100 hover:text-pink-700"
                     >
                       {s}
                     </button>
