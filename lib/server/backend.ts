@@ -1,99 +1,85 @@
 import { cookies } from "next/headers";
 import { setAccessToken, setRefreshToken } from "@/lib/auth/cookies";
 
-export async function backendFetch( 
-  endpoint: string,
-  options?: RequestInit
-) {
-  const cookieStore =
-    await cookies();
+function buildCookieHeader(accessToken?: string, refreshToken?: string) {
+  const cookiesHeader = [];
 
-  let accessToken =
-    cookieStore.get(
-      "pharmacy_access"
-    )?.value;
+  if (accessToken) cookiesHeader.push(`accessToken=${accessToken}`);
+  if (refreshToken) cookiesHeader.push(`refreshToken=${refreshToken}`);
 
-  // Debug: log access token presence and endpoint
-  // console.log({
-  //   msg: "backendFetch called",
-  //   endpoint,
-  //   accessTokenPresent: !!accessToken,
-  // });
+  return cookiesHeader.join("; ");
+}
 
-  let response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}${endpoint}`,
-    {
-      ...options,
-      headers: {
-        ...options?.headers,
-        Authorization:
-          `Bearer ${accessToken}`,
-      },
-    }
-  );
+export async function backendFetch(endpoint: string, options?: RequestInit) {
+  const cookieStore = await cookies();
+
+  const accessToken =
+    cookieStore.get("accessToken")?.value ??
+    cookieStore.get("pharmacy_access")?.value;
+  const refreshToken =
+    cookieStore.get("refreshToken")?.value ??
+    cookieStore.get("pharmacy_refresh")?.value;
+
+  const headers = new Headers(options?.headers ?? {});
+
+  if (accessToken) {
+    headers.set("Authorization", `Bearer ${accessToken}`);
+  }
+
+  const cookieHeader = buildCookieHeader(accessToken, refreshToken);
+  if (cookieHeader) {
+    headers.set("Cookie", cookieHeader);
+  }
+
+  let response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${endpoint}`, {
+    ...options,
+    headers,
+  });
 
   if (response.status !== 401) {
     return response;
   }
 
-  const refreshToken =
-    cookieStore.get(
-      "pharmacy_refresh"
-    )?.value;
-
   if (!refreshToken) {
     return response;
   }
 
-  const refreshResponse =
-    await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/users/refresh-token`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type":
-            "application/json",
-        },
-        body: JSON.stringify({
-          refreshToken,
-        }),
-      }
-    );
+  const refreshResponse = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/api/users/refresh-token`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ refreshToken }),
+    }
+  );
 
   if (!refreshResponse.ok) {
-    cookieStore.delete(
-      "pharmacy_access"
-    );
-
-    cookieStore.delete(
-      "pharmacy_refresh"
-    );
-
+    cookieStore.delete("accessToken");
+    cookieStore.delete("refreshToken");
+    cookieStore.delete("pharmacy_access");
+    cookieStore.delete("pharmacy_refresh");
     return response;
   }
 
-  const refreshed =
-    await refreshResponse.json();
+  const refreshed = await refreshResponse.json();
 
-  await setAccessToken(
-    refreshed.accessToken
+  await setAccessToken(refreshed.accessToken);
+  await setRefreshToken(refreshed.refreshToken);
+
+  const refreshedAccessToken = refreshed.accessToken ?? accessToken;
+  const refreshedHeaders = new Headers(options?.headers ?? {});
+  refreshedHeaders.set("Authorization", `Bearer ${refreshedAccessToken}`);
+  refreshedHeaders.set(
+    "Cookie",
+    buildCookieHeader(refreshed.accessToken ?? accessToken, refreshed.refreshToken ?? refreshToken)
   );
 
-  await setRefreshToken(
-    refreshed.refreshToken
-  );
-
-  response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}${endpoint}`,
-    {
-      ...options,
-      headers: {
-        ...options?.headers,
-        Authorization:
-          `Bearer ${refreshed.accessToken}`,
-      },
-    }
-  );
+  response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${endpoint}`, {
+    ...options,
+    headers: refreshedHeaders,
+  });
 
   return response;
 }
