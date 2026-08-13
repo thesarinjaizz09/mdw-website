@@ -250,7 +250,7 @@ export default function MedicineDetailPage({
 
                   {/* Badges */}
                   <div className="flex gap-2">
-                    {!inStock && (
+                    {/* {!inStock && (
                       <Badge
                         variant="outline"
                         className={`text-[10px] ${
@@ -261,7 +261,7 @@ export default function MedicineDetailPage({
                       >
                         {availability.label}
                       </Badge>
-                    )}
+                    )} */}
                     <InStockBadge inStock={inStock} expired={availability.isExpired} />
                     <span className="flex items-center gap-1 text-xs font-medium text-[#F4568B]">
                       <Zap className="h-3.5 w-3.5" /> Fast Delivery
