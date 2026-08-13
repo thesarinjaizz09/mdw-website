@@ -12,10 +12,12 @@ export interface Medicine {
   reviews?: number;
   orders?: string;
   highlights?: string[];
-  batches?: any[];
+    batches?: any[];
   _id?: string;
   totalQuantity?: number;
   saltName?: string;
+  productImage?: string[];
+  isExpired?: boolean;
   createdAt?: string;
 }
 
@@ -64,6 +66,8 @@ export interface Address {
   line2: string;
   pincode: string;
   phone: string;
+  latitude?: number;
+  longitude?: number;
 }
 
 export const MEDICINES: Medicine[] = [

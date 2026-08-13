@@ -71,10 +71,12 @@ export function MedicineImagePlaceholder({
   name,
   className = "",
   color = "blue",
+  src,
 }: {
   name: string
   className?: string
   color?: "blue" | "green" | "orange" | "purple" | "teal"
+  src?: string | null
 }) {
   const colors = {
     blue: "from-blue-50 to-blue-100 border-blue-200",
@@ -83,7 +85,38 @@ export function MedicineImagePlaceholder({
     purple: "from-purple-50 to-purple-100 border-purple-200",
     teal: "from-teal-50 to-teal-100 border-teal-200",
   }
-  const abbrev = name.slice(0, 3).toUpperCase()
+  const abbrev = name ? name.slice(0, 3).toUpperCase() : "MDW"
+
+  // If an image src is provided, render the image tag directly so external
+  // URLs (including backend /upload paths) work without Next Image domain config.
+  if (src && typeof src === "string" && src.length > 0) {
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        src={src}
+        alt={name}
+        className={`object-cover rounded-lg border ${className}`}
+        onError={(e) => {
+          // Fallback to placeholder visual when image fails to load
+          const el = e.currentTarget as HTMLImageElement
+          el.onerror = null
+          el.src = "" // clear to avoid infinite loop
+          el.replaceWith(
+            (() => {
+              const placeholder = document.createElement("div")
+              placeholder.className = `bg-gradient-to-br ${colors[color]} flex items-center justify-center rounded-lg border ${className}`
+              const span = document.createElement("span")
+              span.className = "text-xs font-bold text-gray-500 opacity-60"
+              span.textContent = abbrev
+              placeholder.appendChild(span)
+              return placeholder
+            })(),
+          )
+        }}
+      />
+    )
+  }
+
   return (
     <div
       className={`bg-gradient-to-br ${colors[color]} flex items-center justify-center rounded-lg border ${className}`}
@@ -96,15 +129,27 @@ export function MedicineImagePlaceholder({
 }
 
 // ─── In Stock Badge ────────────────────────────────────────────────────────────
-export function InStockBadge({ inStock }: { inStock: boolean }) {
+export function InStockBadge({
+  inStock,
+  expired,
+  label,
+}: {
+  inStock: boolean;
+  expired?: boolean;
+  label?: string;
+}) {
+  const text = label ?? (expired ? "Expired" : inStock ? "In Stock" : "Out of Stock");
+  const dotClass = expired ? "bg-red-600" : inStock ? "bg-[#F4568B]" : "bg-red-500";
+  const textClass = expired ? "text-red-600" : inStock ? "text-[#F4568B]" : "text-red-500";
+
   return (
     <span
-      className={`flex items-center gap-1 text-xs font-medium ${inStock ? "text-[#F4568B]" : "text-red-500"}`}
+      className={`flex items-center gap-1 text-xs font-medium ${textClass}`}
     >
       <span
-        className={`h-1.5 w-1.5 rounded-full ${inStock ? "bg-[#F4568B]" : "bg-red-500"}`}
+        className={`h-1.5 w-1.5 rounded-full ${dotClass}`}
       />
-      {inStock ? "In Stock" : "Out of Stock"}
+      {text}
     </span>
   )
 }
@@ -313,6 +358,7 @@ export function MDWHeader() {
                       <div className="flex items-start gap-3">
                         <MedicineImagePlaceholder
                           name={item.productName || item.productId}
+                          src={item.productDetails?.productImage?.[0] || (item.productDetails as any)?.image}
                           className="h-14 w-14 flex-shrink-0"
                           color="green"
                         />

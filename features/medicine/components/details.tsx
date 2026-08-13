@@ -16,6 +16,7 @@ import type { Medicine } from "@/types"
 import { MEDICINES } from "@/types"
 import { useRouter } from "next/navigation"
 import { Spinner } from "@/components/ui/spinner"
+import { getProductAvailability } from "@/lib/product-availability"
 import SubstituteMedicinesCard from "./substitutes-card"
 import ProductInfoDetails from "./product-info-details"
 import InlineSubstitutes from "./inline-substitutes"
@@ -157,7 +158,8 @@ export default function MedicineDetailPage({
 
   // Pick the first (primary) batch for pricing/stock-derived info
   const primaryBatch: ProductBatch | undefined = med.batches?.[0]
-  const inStock = med.status !== "Not Available" && med.totalQuantity > 0
+  const availability = getProductAvailability(med as unknown as Medicine)
+  const inStock = availability.inStock
   const mrp = primaryBatch?.mrp ?? 0
   const discountedAmount = (primaryBatch?.discountedAmount && primaryBatch.discountedAmount > 0) ? primaryBatch.discountedAmount : undefined
   const price = discountedAmount || mrp
@@ -201,13 +203,17 @@ export default function MedicineDetailPage({
                   <div className="relative">
                     <MedicineImagePlaceholder
                       name={med.name}
+                      src={med.productImage && med.productImage.length > 0 ? med.productImage[selectedImage] : undefined}
                       className="h-54 w-54"
                       color={CARD_COLORS[selectedImage % 4]}
                     />
                   </div>
                   {/* Thumbnails */}
                   <div className="flex gap-2">
-                    {thumbColors.map((color, i) => (
+                    {(med.productImage && med.productImage.length > 0
+                      ? med.productImage
+                      : [undefined, undefined, undefined, undefined]
+                    ).map((img: any, i: number) => (
                       <button
                         key={i}
                         onClick={() => setSelectedImage(i)}
@@ -219,8 +225,9 @@ export default function MedicineDetailPage({
                       >
                         <MedicineImagePlaceholder
                           name={med.name}
+                          src={img}
                           className="h-full w-full"
-                          color={color}
+                          color={thumbColors[i % thumbColors.length]}
                         />
                       </button>
                     ))}
@@ -243,7 +250,19 @@ export default function MedicineDetailPage({
 
                   {/* Badges */}
                   <div className="flex gap-2">
-                    <InStockBadge inStock={inStock} />
+                    {!inStock && (
+                      <Badge
+                        variant="outline"
+                        className={`text-[10px] ${
+                          availability.isExpired
+                            ? "border-red-300 bg-red-50 text-red-600"
+                            : "border-red-300 bg-red-50 text-red-600"
+                        }`}
+                      >
+                        {availability.label}
+                      </Badge>
+                    )}
+                    <InStockBadge inStock={inStock} expired={availability.isExpired} />
                     <span className="flex items-center gap-1 text-xs font-medium text-[#F4568B]">
                       <Zap className="h-3.5 w-3.5" /> Fast Delivery
                     </span>

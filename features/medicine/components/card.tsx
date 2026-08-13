@@ -3,6 +3,7 @@
 import { ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { InStockBadge, MedicineImagePlaceholder, PriceDisplay } from "@/components/shared";
+import { getProductAvailability } from "@/lib/product-availability";
 import type { CartItemData, Medicine } from "@/types";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -20,6 +21,8 @@ interface MedicineCardProps {
 export function MedicineCard({ medicine, index = 0, onAddToCart, variant = "default" }: MedicineCardProps) {
   const color = CARD_COLORS[index % CARD_COLORS.length];
   const router = useRouter();
+
+  const availability = getProductAvailability(medicine);
 
   const { cart, guestItems, isGuest } = useCart();
   const { removeFromCart } = useCartActions();
@@ -44,7 +47,21 @@ export function MedicineCard({ medicine, index = 0, onAddToCart, variant = "defa
     <div className="bg-white rounded-xl border border-gray-100 p-3.5 hover:shadow-md hover:border-green-100 transition-all group flex flex-col" onClick={handleNavigation}>
       {/* Image area */}
       <div className="relative mb-3">
-        <MedicineImagePlaceholder name={medicine.name} className="w-full h-28" color={color} />
+        <MedicineImagePlaceholder
+          name={medicine.name}
+          src={(medicine as any).productImage?.[0] || (medicine as any).image}
+          className="w-full h-28"
+          color={color}
+        />
+        {!availability.inStock && (
+          <span
+            className={`absolute top-1.5 left-1.5 z-10 rounded-full px-2 py-0.5 text-[9px] font-bold tracking-wide text-white ${
+              availability.isExpired ? "bg-red-600" : "bg-red-500"
+            }`}
+          >
+            {availability.label.toUpperCase()}
+          </span>
+        )}
         {/* {medicine.discount && medicine.discount > 0 && (
           <span className="absolute top-1.5 right-1.5 bg-green-600 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full">
             {medicine.discount}% OFF
@@ -62,20 +79,25 @@ export function MedicineCard({ medicine, index = 0, onAddToCart, variant = "defa
         <h3 className="font-semibold text-gray-900 text-sm leading-tight line-clamp-2">{medicine.name}</h3>
         <p className="text-xs text-gray-500">{medicine.saltName && `${medicine.saltName?.substring(0, 50)}${medicine.saltName.length > 50 ? "..." : ""}`}</p>
         <PriceDisplay price={medicine.batches && medicine.batches[0] ? (medicine.batches[0].discountedAmount && medicine.batches[0].discountedAmount > 0 ? medicine.batches[0].discountedAmount : medicine.batches[0].mrp) : (medicine.mrp || 0)} mrp={medicine.batches && medicine.batches[0] ? medicine.batches[0].mrp : (medicine.mrp || 0)} discountedAmount={medicine.batches && medicine.batches[0] ? medicine.batches[0].discountedAmount : undefined} discount={medicine.batches && medicine.batches[0] ? medicine.batches[0].discount : medicine.discount} size="sm" />
-        <InStockBadge inStock={medicine.totalQuantity ? medicine.totalQuantity > 0 : medicine.inStock} />
+        <InStockBadge inStock={availability.inStock} expired={availability.isExpired} />
       </div>
 
       {/* Add to Cart */}
       {!isAddedToCart ? <Button
         size="sm"
+        disabled={!availability.inStock}
         onClick={(e) => {
           e.stopPropagation();
           onAddToCart?.(medicine);
         }}
-        className="cursor-pointer mt-3 w-full bg-white border border-[#F4568B] text-[#F4568B] hover:bg-gray-500 hover:text-white transition-colors h-8 text-xs font-medium rounded-md border border-gray-200 gap-1.5"
+        className={`cursor-pointer mt-3 w-full bg-white border border-[#F4568B] text-[#F4568B] hover:bg-gray-500 hover:text-white transition-colors h-8 text-xs font-medium rounded-md border border-gray-200 gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white disabled:hover:text-[#F4568B]`}
       >
         <ShoppingCart className="w-3.5 h-3.5" />
-        Add to Cart
+        {availability.inStock
+          ? "Add to Cart"
+          : availability.isExpired
+            ? "Expired"
+            : "Out of Stock"}
       </Button> : <Button
         size="sm"
         onClick={(e) => {

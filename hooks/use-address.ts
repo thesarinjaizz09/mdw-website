@@ -5,10 +5,14 @@
 import { Address, ADDRESSES } from "@/types";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/providers/auth-provider";
+import { useSelectedAddressStore } from "@/stores/use-selected-address-store";
 
 export function useAddress() {
     const { user } = useAuth();
-    const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
+    // The selected address lives in a shared, persisted store so the product
+    // details delivery message, header location picker and checkout selector
+    // all stay in sync and react to address changes immediately.
+    const { selectedAddress, setSelectedAddress } = useSelectedAddressStore();
     const [addresses, setAddresses] = useState<Address[]>(ADDRESSES);
     const [loadingLocation, setLoadingLocation] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -38,13 +42,15 @@ export function useAddress() {
             const addressesPayload = data?.addresses || data?.data?.addresses;
             if (addressesPayload && Array.isArray(addressesPayload)) {
                 // map backend shape to frontend Address
-                const mapped: Address[] = addressesPayload.map((a: any) => ({
+                                const mapped: Address[] = addressesPayload.map((a: any) => ({
                     id: a._id,
                     label: a.label || "Saved Address",
                     line1: a.address || "",
                     line2: `${a.city || ''} ${a.state || ''}`.trim(),
                     pincode: a.zipCode || a.pincode || "",
                     phone: a.phone || "",
+                    latitude: a.coordinates?.latitude,
+                    longitude: a.coordinates?.longitude,
                 }));
                 setAddresses(mapped);
             }
@@ -171,6 +177,8 @@ export function useAddress() {
                         line2: `${created.city || ''} ${created.state || ''}`.trim(),
                         pincode: created.zipCode || "",
                         phone: created.phone || "",
+                        latitude: created.coordinates?.latitude,
+                        longitude: created.coordinates?.longitude,
                     };
 
                     saveAddressLocal(mapped);

@@ -16,8 +16,17 @@ export async function POST(req: Request) {
     }
   );
 
+  const data = await response.json();
+
+  if (!response.ok) {
+    return NextResponse.json(
+      { message: data.message || "Failed to save address" },
+      { status: response.status }
+    );
+  }
+
   return NextResponse.json({
     success: true,
-    data: response,
+    address: data.address,
   });
 }

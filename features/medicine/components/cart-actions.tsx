@@ -3,6 +3,7 @@
 import { Shield, ShoppingCart, Truck, Minus, Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useCart, useCartActions } from "@/features/cart/hooks/use-cart"
+import { useAddress } from "@/hooks/use-address"
 import { useState } from "react"
 
 interface CartActionsProduct {
@@ -43,6 +44,57 @@ export default function CartActions({
 
   const cartItems = isGuest ? guestItems : (cart?.items ?? [])
   const isAddedToCart = cartItems.some((item) => item.productId === product._id)
+
+  const { selectedAddress } = useAddress()
+
+  // Newtown detection: prefer coordinates, fallback to pincode/address text.
+  const getDeliveryLabel = () => {
+    if (!selectedAddress) return "Select delivery address to see delivery time"
+
+    const lat = (selectedAddress as any).latitude
+    const lng = (selectedAddress as any).longitude
+
+    // center point (backend fallback uses 22.5726, 88.4639 for New Town)
+    const centerLat = 22.5726
+    const centerLng = 88.4639
+
+    const toRad = (v: number) => (v * Math.PI) / 180
+    if (typeof lat === "number" && typeof lng === "number") {
+      const R = 6371000 // meters
+      const dLat = toRad(lat - centerLat)
+      const dLon = toRad(lng - centerLng)
+      const a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(toRad(centerLat)) *
+          Math.cos(toRad(lat)) *
+          Math.sin(dLon / 2) *
+          Math.sin(dLon / 2)
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+      const distance = R * c
+
+      // Assume Newtown service area ~ 15000m radius from center
+      if (distance <= 15000) return "Easy 20 Min Delivery"
+      return "Will be delivered within 7 to 9 PM"
+    }
+
+    // Fallback: check pincode or address text. This mirrors the backend's
+    // existing geocodingService "known Kolkata areas" list — the same
+    // localities the backend geocoder maps to the Newtown warehouse point
+    // (22.5726, 88.4639, pincode 700156) for delivery estimation.
+    const pincode = selectedAddress.pincode || ""
+    const text = `${selectedAddress.label} ${selectedAddress.line1} ${selectedAddress.line2} ${pincode}`.toLowerCase()
+    const approvedLocalities = ["newtown", "new town", "salt lake", "saltlake", "rajarhat"]
+    const matchesNewtownArea =
+      approvedLocalities.some((locality) => text.includes(locality)) ||
+      pincode.includes("700156")
+    if (matchesNewtownArea) {
+      return "Easy 20 Min Delivery"
+    }
+
+    return "Will be delivered within 7 to 9 PM"
+  }
+
+  const deliveryLabel = getDeliveryLabel()
 
   return (
     <div className="space-y-4 rounded-xl border border-gray-100 bg-white p-4 shadow-sm">
@@ -103,15 +155,18 @@ export default function CartActions({
 
       {/* Trust badges */}
       <div className="space-y-2 border-t border-gray-100 pt-3">
-        {TRUST_BADGES.map((item) => (
-          <div
-            key={item.label}
-            className="flex items-center gap-2 text-xs text-gray-600"
-          >
-            {item.icon}
-            {item.label}
-          </div>
-        ))}
+        <div className="flex items-center gap-2 text-xs text-gray-600">
+          <Shield className="h-4 w-4 text-[#F4568B]" />
+          100% Genuine Medicines
+        </div>
+        <div className="flex items-center gap-2 text-xs text-gray-600">
+          <Shield className="h-4 w-4 text-[#F4568B]" />
+          Secure Payments
+        </div>
+        <div className="flex items-center gap-2 text-xs text-gray-600">
+          <Truck className="h-4 w-4 text-[#F4568B]" />
+          {deliveryLabel}
+        </div>
       </div>
     </div>
   )

@@ -212,8 +212,9 @@ export default function CartPage() {
                       key={item.productId}
                       className="bg-white rounded-xl border border-gray-100 shadow-sm p-4 flex gap-4"
                     >
-                      <MedicineImagePlaceholder
+                                            <MedicineImagePlaceholder
                         name={item.productName || item.productId}
+                        src={item.productDetails?.productImage?.[0] || (item.productDetails as any)?.image}
                         className="w-16 h-16 flex-shrink-0"
                         color={medicineColorMap[item.productId] || "blue"}
                       />
