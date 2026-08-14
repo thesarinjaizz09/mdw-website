@@ -46,14 +46,11 @@ import {
   GiSpiderMask,
 } from "react-icons/gi"
 import { PiNuclearPlantFill } from "react-icons/pi"
-import { MdBloodtype } from "react-icons/md";
-import { FaTeethOpen } from "react-icons/fa6";
+import { MdBloodtype } from "react-icons/md"
+import { FaTeethOpen } from "react-icons/fa6"
 import { useEffect, useState } from "react"
 import axios from "axios"
-import {
-  HowItWorksSection,
-  BrandCarousel,
-} from "@/features/landing/components"
+import { HowItWorksSection, BrandCarousel } from "@/features/landing/components"
 import { useCartActions } from "@/features/cart/hooks/use-cart"
 import PrescriptionUpload from "@/components/prescription-upload"
 import { toast } from "sonner"
@@ -197,7 +194,6 @@ export default function MedicinesPage() {
     fetchCategoryProducts()
   }, [])
 
-
   const addToCartFunction = (medicine: Medicine) => {
     if (!medicine._id) {
       toast.error("Invalid medicine ID. Cannot add to cart.")
@@ -219,7 +215,7 @@ export default function MedicinesPage() {
 
       <main className="mx-auto max-w-7xl space-y-8 px-4 py-6">
         {/* Hero Banner */}
-        <section className="to-teal-50s relative flex min-h-[220px] flex-row justify-between rounded-lg bg-gradient-to-r from-[#F4568B]-200 via-[#F4568B]-500 to-[#F4568B] px-4 py-5 max-[700px]:flex-col min-[700px]:items-center bg-[#F4568B]">
+        <section className="to-teal-50s from-[#F4568B]-200 via-[#F4568B]-500 relative flex min-h-[220px] flex-row justify-between rounded-lg bg-[#F4568B] bg-gradient-to-r to-[#F4568B] px-4 py-5 max-[700px]:flex-col min-[700px]:items-center">
           {/* Content */}
           <div className="relative z-10 max-w-xl px-2 py-7">
             <h1 className="mb-2 text-4xl font-bold text-white">Medicines</h1>
@@ -263,7 +259,7 @@ export default function MedicinesPage() {
           </div>
         </section>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+        <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
           <HowItWorksSection theme={1} />
           <PrescriptionUpload />
         </div>
@@ -282,7 +278,7 @@ export default function MedicinesPage() {
             {CATEGORIES.map((cat) => (
               <button
                 key={cat.label}
-                className={`bg-[#F4568B] cursor-pointer flex flex-row items-center justify-start gap-3 rounded-lg border border-gray-200 p-3 text-black transition-all hover:scale-105 hover:border-gray-100 hover:shadow-sm hover:bg-gray-500`}
+                className={`flex cursor-pointer flex-row items-center justify-start gap-3 rounded-lg border border-gray-200 bg-[#F4568B] p-3 text-black transition-all hover:scale-105 hover:border-gray-100 hover:bg-gray-500 hover:shadow-sm`}
                 onClick={() => {
                   router.push(`/medicines/${cat.label}`)
                 }}
@@ -335,14 +331,17 @@ export default function MedicinesPage() {
             <h2 className="text-md ml-2 font-bold text-gray-900 min-[500px]:text-xl">
               Popular Medicines
             </h2>
-            <button className="cursor-pointer flex items-center gap-0.5 text-xs font-medium text-[#F4568B] hover:text-[#F4568B]/80 min-[500px]:text-sm" onClick={() => router.push("/medicines")}>
+            <button
+              className="flex cursor-pointer items-center gap-0.5 text-xs font-medium text-[#F4568B] hover:text-[#F4568B]/80 min-[500px]:text-sm"
+              onClick={() => router.push("/medicines")}
+            >
               View All Medicines <ChevronRight className="h-4 w-4" />
             </button>
           </div>
-          <div className="mx-auto grid max-w-[15rem] gap-2 min-[380px]:max-w-none min-[380px]:grid-cols-2 min-[400px]:gap-4 sm:grid-cols-3 lg:grid-cols-5 cursor-pointer">
+          <div className="mx-auto grid max-w-[15rem] cursor-pointer gap-2 min-[380px]:max-w-none min-[380px]:grid-cols-2 min-[400px]:gap-4 sm:grid-cols-3 lg:grid-cols-5">
             {featuredProducts.map((med, i) => (
               <MedicineCard
-                key={i}
+                key={med.id ?? med._id ?? String(i)}
                 medicine={med}
                 index={i}
                 onAddToCart={addToCartFunction}
@@ -361,11 +360,14 @@ export default function MedicinesPage() {
                 <h2 className="text-md ml-2 font-bold text-gray-900 min-[500px]:text-xl">
                   {group.category}
                 </h2>
-                <button className="cursor-pointer flex items-center gap-0.5 text-xs font-medium text-[#F4568B] hover:text-[#F4568B]/80 min-[500px]:text-sm" onClick={() => router.push(`/medicines/${group.category}`)}>
+                <button
+                  className="flex cursor-pointer items-center gap-0.5 text-xs font-medium text-[#F4568B] hover:text-[#F4568B]/80 min-[500px]:text-sm"
+                  onClick={() => router.push(`/medicines/${group.category}`)}
+                >
                   View All <ChevronRight className="h-4 w-4" />
                 </button>
               </div>
-              <div className="cursor-pointer mx-auto grid max-w-[15rem] gap-2 min-[380px]:max-w-none min-[380px]:grid-cols-2 min-[400px]:gap-4 sm:grid-cols-3 lg:grid-cols-5">
+              <div className="mx-auto grid max-w-[15rem] cursor-pointer gap-2 min-[380px]:max-w-none min-[380px]:grid-cols-2 min-[400px]:gap-4 sm:grid-cols-3 lg:grid-cols-5">
                 {group.medicines.slice(0, 5).map((product, i) => (
                   <MedicineCard
                     key={product._id ?? i}
@@ -422,13 +424,18 @@ export default function MedicinesPage() {
               <div className="flex flex-wrap gap-3 sm:flex-nowrap">
                 <Button
                   size="sm"
-                  className="w-fulls h-12 gap-1.5 rounded-md bg-[#F4568B] px-5 text-xs text-white hover:bg-gray-500 sm:w-fit border border-white/20"
-                  onClick={() => window.open("https://wa.me/919230189091", "_blank")}
+                  className="w-fulls h-12 gap-1.5 rounded-md border border-white/20 bg-[#F4568B] px-5 text-xs text-white hover:bg-gray-500 sm:w-fit"
+                  onClick={() =>
+                    window.open("https://wa.me/919230189091", "_blank")
+                  }
                 >
                   <FaWhatsapp className="h-3.5 w-3.5" />
                   Chat on WhatsApp
                 </Button>
-                <Button className="cursor-pointer h-12 w-[10.2rem] gap-1.5 rounded-md border border-[#F4568B] bg-white px-5 text-xs text-[#F4568B] hover:bg-[#F4568B]/10 min-[468px]:w-fit hover:text-white" onClick={() => window.open("tel:+919230189091", "_blank")}>
+                <Button
+                  className="h-12 w-[10.2rem] cursor-pointer gap-1.5 rounded-md border border-[#F4568B] bg-white px-5 text-xs text-[#F4568B] hover:bg-[#F4568B]/10 hover:text-white min-[468px]:w-fit"
+                  onClick={() => window.open("tel:+919230189091", "_blank")}
+                >
                   <Phone className="h-3.5 w-3.5" />
                   Call Us Now
                 </Button>
@@ -457,7 +464,7 @@ export default function MedicinesPage() {
                   className="flex flex-col items-center gap-2 rounded-md border border-gray-200 p-2.5 text-center"
                 >
                   {item.icon}
-                  <span className="text-[10px] leading-tight whitespace-pre-line text-gray-100 text-left">
+                  <span className="text-left text-[10px] leading-tight whitespace-pre-line text-gray-100">
                     {item.label}
                   </span>
                 </div>

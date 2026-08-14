@@ -1,59 +1,59 @@
 "use client"
 
 import {
-    Search,
-    Upload,
-    ChevronRight,
-    RefreshCw,
-    ShoppingCart,
-    MessageCircle,
-    Phone,
-    Shield,
-    Truck,
-    UserCheck,
-    CheckCircle,
-    Bell,
-    PackageCheck,
-    Popcorn,
-    HeartPulse,
-    UploadIcon,
-    Fingerprint,
+  Search,
+  Upload,
+  ChevronRight,
+  RefreshCw,
+  ShoppingCart,
+  MessageCircle,
+  Phone,
+  Shield,
+  Truck,
+  UserCheck,
+  CheckCircle,
+  Bell,
+  PackageCheck,
+  Popcorn,
+  HeartPulse,
+  UploadIcon,
+  Fingerprint,
 } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Spinner } from "@/components/ui/spinner"
 import {
-    MDWHeader,
-    MDWFooterBar,
-    MedicineImagePlaceholder,
-    MedicineSearchInput,
+  MDWHeader,
+  MDWFooterBar,
+  MedicineImagePlaceholder,
+  MedicineSearchInput,
 } from "@/components/shared"
 import { MedicineCard } from "../components/card"
 import {
-    Medicine,
-    MEDICINES,
-    CategoryMedicineEntry,
-    CategoriesMedicinesResponse,
-    ProductData,
-    CategoryGroup,
+  Medicine,
+  MEDICINES,
+  CategoryMedicineEntry,
+  CategoriesMedicinesResponse,
+  ProductData,
+  CategoryGroup,
 } from "@/types"
 import { FaPills, FaWhatsapp } from "react-icons/fa"
 import { TbReplace } from "react-icons/tb"
 import {
-    GiStomach,
-    GiMedicines,
-    GiLiver,
-    GiLoveInjection,
-    GiFrontTeeth,
-    GiLungs,
-    GiSpiderMask,
+  GiStomach,
+  GiMedicines,
+  GiLiver,
+  GiLoveInjection,
+  GiFrontTeeth,
+  GiLungs,
+  GiSpiderMask,
 } from "react-icons/gi"
 import { PiNuclearPlantFill } from "react-icons/pi"
 import { useEffect, useState } from "react"
 import axios from "axios"
 import {
-    HowItWorksSection,
-    WellnessBannerSection,
+  HowItWorksSection,
+  WellnessBannerSection,
 } from "@/features/landing/components"
 import { useCartActions } from "@/features/cart/hooks/use-cart"
 import { toast } from "sonner"
@@ -124,206 +124,202 @@ const CATEGORIES = [
 ]
 
 const WHY_CHOOSE = [
-    {
-        icon: <UserCheck className="h-5 w-5 text-[#F4568B]" />,
-        title: "Licensed Pharmacy",
-        sub: "Drug License Approved",
-    },
-    {
-        icon: <Shield className="h-5 w-5 text-[#F4568B]" />,
-        title: "Registered Pharmacist",
-        sub: "Always Available",
-    },
-    {
-        icon: <CheckCircle className="h-5 w-5 text-[#F4568B]" />,
-        title: "100% Genuine",
-        sub: "Medicines",
-    },
-    {
-        icon: <Truck className="h-5 w-5 text-[#F4568B]" />,
-        title: "20 Min Delivery*",
-        sub: "In Selected Areas",
-    },
-    {
-        icon: <Shield className="h-5 w-5 text-[#F4568B]" />,
-        title: "Secure Payments",
-        sub: "100% Safe",
-    },
+  {
+    icon: <UserCheck className="h-5 w-5 text-[#F4568B]" />,
+    title: "Licensed Pharmacy",
+    sub: "Drug License Approved",
+  },
+  {
+    icon: <Shield className="h-5 w-5 text-[#F4568B]" />,
+    title: "Registered Pharmacist",
+    sub: "Always Available",
+  },
+  {
+    icon: <CheckCircle className="h-5 w-5 text-[#F4568B]" />,
+    title: "100% Genuine",
+    sub: "Medicines",
+  },
+  {
+    icon: <Truck className="h-5 w-5 text-[#F4568B]" />,
+    title: "20 Min Delivery*",
+    sub: "In Selected Areas",
+  },
+  {
+    icon: <Shield className="h-5 w-5 text-[#F4568B]" />,
+    title: "Secure Payments",
+    sub: "100% Safe",
+  },
 ]
 
 function toMedicine(product: ProductData): Medicine {
-    const primaryBatch = product.batches?.[0]
-    return {
-        _id: product._id,
-        name: product.name,
-        saltName: product.saltName,
-        totalQuantity: product.totalQuantity,
-        price: primaryBatch?.amount ?? 0,
-        mrp: primaryBatch?.mrp ?? 0,
-        discount: primaryBatch?.discount ?? 0,
-        inStock: product.status !== "Not Available" && product.totalQuantity > 0,
-    } as Medicine
+  const primaryBatch = product.batches?.[0]
+  return {
+    _id: product._id,
+    name: product.name,
+    saltName: product.saltName,
+    totalQuantity: product.totalQuantity,
+    price: primaryBatch?.amount ?? 0,
+    mrp: primaryBatch?.mrp ?? 0,
+    discount: primaryBatch?.discount ?? 0,
+    inStock: product.status !== "Not Available" && product.totalQuantity > 0,
+  } as Medicine
 }
 
 import { useMedicineSearchStore } from "@/stores/use-medicine-search"
 
 export default function IndividualPage({ category }: { category?: string }) {
-    const router = useRouter()
-    const { setQuery } = useMedicineSearchStore()
-    const { addToCart } = useCartActions()
-    const [loading, setLoading] = useState(false)
-    const [featuredProducts, setFeaturedProducts] =
-        useState<Medicine[]>([])
+  const router = useRouter()
+  const { setQuery } = useMedicineSearchStore()
+  const { addToCart } = useCartActions()
+  const [loading, setLoading] = useState(false)
+  const [featuredProducts, setFeaturedProducts] = useState<Medicine[]>([])
 
-    useEffect(() => {
-        async function fetchProductsForCategory() {
-            setLoading(true)
-            const response = await axios.get(
-                `${process.env.NEXT_PUBLIC_API_URL}/product/category/${category}`
-            )
+  useEffect(() => {
+    async function fetchProductsForCategory() {
+      setLoading(true)
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/product/category/${category}`
+      )
 
-            setFeaturedProducts(response.data.data)
-            setLoading(false)
-        }
-        async function fetchProducts() {
-            setLoading(true)
-            const response = await axios.get(
-                `${process.env.NEXT_PUBLIC_API_URL}/product/getproducts`
-            )
+      setFeaturedProducts(response.data.data)
+      setLoading(false)
+    }
+    async function fetchProducts() {
+      setLoading(true)
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/product/getproducts`
+      )
 
-            setFeaturedProducts(response.data.data)
-            setLoading(false)
-        }
-
-        if (!category) {
-            fetchProducts()
-            return
-        }
-
-        fetchProductsForCategory()
-    }, [])
-
-
-    const addToCartFunction = (medicine: Medicine) => {
-        if (!medicine._id) {
-            toast.error("Invalid medicine ID. Cannot add to cart.")
-            return
-        }
-
-        addToCart.mutate({
-            productId: medicine._id,
-            quantity: 1,
-            productName: medicine.name,
-            amount: medicine.price,
-            unitPrice: medicine.price,
-        })
+      setFeaturedProducts(response.data.data)
+      setLoading(false)
     }
 
-    return (
-        <div className="min-h-screen bg-gray-50 flex flex-col justify-between">
-            <MDWHeader />
+    if (!category) {
+      fetchProducts()
+      return
+    }
 
-            <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-6">
-                {/* Hero Banner */}
-                <section className="to-teal-50s relative flex min-h-[220px] flex-row justify-between rounded-lg bg-gradient-to-r from-[#F4568B]-200 via-[#F4568B]-500 to-[#F4568B] px-4 py-5 max-[700px]:flex-col min-[700px]:items-center bg-[#F4568B]">
-                    {/* Content */}
-                    <div className="relative z-10 max-w-xl px-2 py-7">
-                        <h1 className="mb-2 text-4xl font-bold text-white">
-                            {category ? category : "Medicines"}
-                        </h1>
+    fetchProductsForCategory()
+  }, [])
 
-                        <p className="flex flex-wrap items-center gap-2 text-base text-gray-100">
-                            {category
-                                ? `Browse all medicines in ${category}`
-                                : "Genuine Medicines • Fast Delivery • Trusted Care"}
-                        </p>
-                    </div>
-                    <div className="grid grid-cols-1 gap-2">
-                        {/* <HowItWorksSection theme={1} /> */}
-                        <div className="rounded-md border border-gray-100 bg-white p-5 shadow-sm">
-                            <h2 className="mb-0.5 text-base font-bold text-gray-900">
-                                Search Medicine
-                            </h2>
-                            <p className="mb-3 text-xs text-gray-500">
-                                Find your medicines quickly
-                            </p>
-                            <div className="relative">
-                                <MedicineSearchInput />
-                            </div>
-                            <div className="mt-2.5 flex flex-wrap items-center gap-2">
-                                <span className="text-xs text-gray-500">Popular Searches:</span>
-                                {["Telma 40", "Ecosprin 75", "Thyronorm 50", "Crocin 650"].map(
-                                    (s) => (
-                                        <button
-                                            key={s}
-                                            onClick={() => setQuery(s)}
-                                            className="rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-700 transition-colors hover:bg-pink-100 hover:text-pink-700"
-                                        >
-                                            {s}
-                                        </button>
-                                    )
-                                )}
-                            </div>
-                        </div>
-                    </div>
-                </section>
+  const addToCartFunction = (medicine: Medicine) => {
+    if (!medicine._id) {
+      toast.error("Invalid medicine ID. Cannot add to cart.")
+      return
+    }
 
-                {/* Health Categories */}
-                <section className="z-1">
-                    <div className="my-4 flex items-center justify-between">
-                        <h2 className="text-md ml-2 font-bold text-gray-900 min-[500px]:text-xl">
-                            More Categories
-                        </h2>
-                        {/* <button className="flex items-center gap-0.5 text-xs font-medium text-[#F4568B] hover:text-[#F4568B]/80 min-[500px]:text-sm">
+    addToCart.mutate({
+      productId: medicine._id,
+      quantity: 1,
+      productName: medicine.name,
+      amount: medicine.price,
+      unitPrice: medicine.price,
+    })
+  }
+
+  return (
+    <div className="flex min-h-screen flex-col justify-between bg-gray-50">
+      <MDWHeader />
+
+      <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-6">
+        {/* Hero Banner */}
+        <section className="to-teal-50s from-[#F4568B]-200 via-[#F4568B]-500 relative flex min-h-[220px] flex-row justify-between rounded-lg bg-[#F4568B] bg-gradient-to-r to-[#F4568B] px-4 py-5 max-[700px]:flex-col min-[700px]:items-center">
+          {/* Content */}
+          <div className="relative z-10 max-w-xl px-2 py-7">
+            <h1 className="mb-2 text-4xl font-bold text-white">
+              {category ? category : "Medicines"}
+            </h1>
+
+            <p className="flex flex-wrap items-center gap-2 text-base text-gray-100">
+              {category
+                ? `Browse all medicines in ${category}`
+                : "Genuine Medicines • Fast Delivery • Trusted Care"}
+            </p>
+          </div>
+          <div className="grid grid-cols-1 gap-2">
+            {/* <HowItWorksSection theme={1} /> */}
+            <div className="rounded-md border border-gray-100 bg-white p-5 shadow-sm">
+              <h2 className="mb-0.5 text-base font-bold text-gray-900">
+                Search Medicine
+              </h2>
+              <p className="mb-3 text-xs text-gray-500">
+                Find your medicines quickly
+              </p>
+              <div className="relative">
+                <MedicineSearchInput />
+              </div>
+              <div className="mt-2.5 flex flex-wrap items-center gap-2">
+                <span className="text-xs text-gray-500">Popular Searches:</span>
+                {["Telma 40", "Ecosprin 75", "Thyronorm 50", "Crocin 650"].map(
+                  (s) => (
+                    <button
+                      key={s}
+                      onClick={() => setQuery(s)}
+                      className="rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-700 transition-colors hover:bg-pink-100 hover:text-pink-700"
+                    >
+                      {s}
+                    </button>
+                  )
+                )}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Health Categories */}
+        <section className="z-1">
+          <div className="my-4 flex items-center justify-between">
+            <h2 className="text-md ml-2 font-bold text-gray-900 min-[500px]:text-xl">
+              More Categories
+            </h2>
+            {/* <button className="flex items-center gap-0.5 text-xs font-medium text-[#F4568B] hover:text-[#F4568B]/80 min-[500px]:text-sm">
               View All Categories <ChevronRight className="h-4 w-4" />
             </button> */}
-                    </div>
-                    <div className="grid grid-cols-2 gap-3 min-[450px]:grid-cols-3 min-[650px]:grid-cols-4 min-[800px]:grid-cols-6">
-                        {CATEGORIES.map((cat) => (
-                            <button
-                                key={cat.label}
-                                className={`bg-[#F4568B] flex flex-row items-center justify-start gap-3 rounded-lg border border-gray-200 p-3 text-black transition-all hover:scale-105 hover:border-gray-100 hover:shadow-sm hover:bg-gray-500`}
-                                onClick={() => router.push(`/medicines/${cat.label}`)}
-                            >
-                                <span className="text-white">{cat.icon}</span>
-                                <span className="text-center text-xs leading-tight font-medium whitespace-pre-line text-white">
-                                    {cat.label}
-                                </span>
-                            </button>
-                        ))}
-                    </div>
-                </section>
+          </div>
+          <div className="grid grid-cols-2 gap-3 min-[450px]:grid-cols-3 min-[650px]:grid-cols-4 min-[800px]:grid-cols-6">
+            {CATEGORIES.map((cat) => (
+              <button
+                key={cat.label}
+                className={`flex flex-row items-center justify-start gap-3 rounded-lg border border-gray-200 bg-[#F4568B] p-3 text-black transition-all hover:scale-105 hover:border-gray-100 hover:bg-gray-500 hover:shadow-sm`}
+                onClick={() => router.push(`/medicines/${cat.label}`)}
+              >
+                <span className="text-white">{cat.icon}</span>
+                <span className="text-center text-xs leading-tight font-medium whitespace-pre-line text-white">
+                  {cat.label}
+                </span>
+              </button>
+            ))}
+          </div>
+        </section>
 
-                {/* Medicines */}
-                <section>
-                    <div className="my-4 flex items-center justify-between">
-                        <h2 className="text-md ml-2 font-bold text-gray-900 min-[500px]:text-xl">
-                            Medicines
-                        </h2>
-                    </div>
-                    {
-                        loading ? (
-                            <div className="rounded-md border border-slate-200 bg-slate-50 p-6 text-sm text-slate-500 flex items-center gap-2">
-                                <Spinner className="h-4 w-4" />
-                                Loading medicines…
-                            </div>
-                        ) :
-                            <div className="mx-auto grid max-w-[15rem] gap-2 min-[380px]:max-w-none min-[380px]:grid-cols-2 min-[400px]:gap-4 sm:grid-cols-3 lg:grid-cols-5">
-                                {featuredProducts.map((med, i) => (
-                                    <MedicineCard
-                                        key={i}
-                                        medicine={med}
-                                        index={i}
-                                        onAddToCart={addToCartFunction}
-                                    />
-                                ))}
-                            </div>
-                    }
+        {/* Medicines */}
+        <section>
+          <div className="my-4 flex items-center justify-between">
+            <h2 className="text-md ml-2 font-bold text-gray-900 min-[500px]:text-xl">
+              Medicines
+            </h2>
+          </div>
+          {loading ? (
+            <div className="flex items-center gap-2 rounded-md border border-slate-200 bg-slate-50 p-6 text-sm text-slate-500">
+              <Spinner className="h-4 w-4" />
+              Loading medicines…
+            </div>
+          ) : (
+            <div className="mx-auto grid max-w-[15rem] gap-2 min-[380px]:max-w-none min-[380px]:grid-cols-2 min-[400px]:gap-4 sm:grid-cols-3 lg:grid-cols-5">
+              {featuredProducts.map((med, i) => (
+                <MedicineCard
+                  key={med.id ?? med._id ?? String(i)}
+                  medicine={med}
+                  index={i}
+                  onAddToCart={addToCartFunction}
+                />
+              ))}
+            </div>
+          )}
+        </section>
+      </main>
 
-                </section>
-            </main>
-
-            <MDWFooterBar />
-        </div>
-    )
+      <MDWFooterBar />
+    </div>
+  )
 }

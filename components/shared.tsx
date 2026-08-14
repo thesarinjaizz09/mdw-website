@@ -1,5 +1,6 @@
 "use client"
 
+import { useState } from "react"
 import {
   MapPin,
   ShoppingCart,
@@ -41,7 +42,7 @@ import {
 } from "@/components/ui/sheet"
 
 import { useAddress } from "@/hooks/use-address"
-import { useState, useRef, useEffect } from "react"
+import { useRef, useEffect } from "react"
 import { useMedicineSearchStore } from "@/stores/use-medicine-search"
 import { useMedicineSearch } from "@/hooks/use-medicine-search"
 import { Spinner } from "./ui/spinner"
@@ -87,32 +88,19 @@ export function MedicineImagePlaceholder({
   }
   const abbrev = name ? name.slice(0, 3).toUpperCase() : "MDW"
 
-  // If an image src is provided, render the image tag directly so external
-  // URLs (including backend /upload paths) work without Next Image domain config.
-  if (src && typeof src === "string" && src.length > 0) {
+  const [imgError, setImgError] = useState(false)
+
+  // If an image src is provided and no error has occurred, render the image tag
+  // directly so external URLs (including backend /upload paths) work without
+  // Next Image domain config.
+  if (src && typeof src === "string" && src.length > 0 && !imgError) {
     return (
       // eslint-disable-next-line @next/next/no-img-element
       <img
         src={src}
         alt={name}
-        className={`object-cover rounded-lg border ${className}`}
-        onError={(e) => {
-          // Fallback to placeholder visual when image fails to load
-          const el = e.currentTarget as HTMLImageElement
-          el.onerror = null
-          el.src = "" // clear to avoid infinite loop
-          el.replaceWith(
-            (() => {
-              const placeholder = document.createElement("div")
-              placeholder.className = `bg-gradient-to-br ${colors[color]} flex items-center justify-center rounded-lg border ${className}`
-              const span = document.createElement("span")
-              span.className = "text-xs font-bold text-gray-500 opacity-60"
-              span.textContent = abbrev
-              placeholder.appendChild(span)
-              return placeholder
-            })(),
-          )
-        }}
+        className={`rounded-lg border object-cover ${className}`}
+        onError={() => setImgError(true)}
       />
     )
   }
@@ -134,21 +122,28 @@ export function InStockBadge({
   expired,
   label,
 }: {
-  inStock: boolean;
-  expired?: boolean;
-  label?: string;
+  inStock: boolean
+  expired?: boolean
+  label?: string
 }) {
-  const text = label ?? (expired ? "Expired" : inStock ? "In Stock" : "Out of Stock");
-  const dotClass = expired ? "bg-red-600" : inStock ? "bg-[#F4568B]" : "bg-red-500";
-  const textClass = expired ? "text-red-600" : inStock ? "text-[#F4568B]" : "text-red-500";
+  const text =
+    label ?? (expired ? "Expired" : inStock ? "In Stock" : "Out of Stock")
+  const dotClass = expired
+    ? "bg-red-600"
+    : inStock
+      ? "bg-[#F4568B]"
+      : "bg-red-500"
+  const textClass = expired
+    ? "text-red-600"
+    : inStock
+      ? "text-[#F4568B]"
+      : "text-red-500"
 
   return (
     <span
       className={`flex items-center gap-1 text-xs font-medium ${textClass}`}
     >
-      <span
-        className={`h-1.5 w-1.5 rounded-full ${dotClass}`}
-      />
+      <span className={`h-1.5 w-1.5 rounded-full ${dotClass}`} />
       {text}
     </span>
   )
@@ -358,7 +353,10 @@ export function MDWHeader() {
                       <div className="flex items-start gap-3">
                         <MedicineImagePlaceholder
                           name={item.productName || item.productId}
-                          src={item.productDetails?.productImage?.[0] || (item.productDetails as any)?.image}
+                          src={
+                            item.productDetails?.productImage?.[0] ||
+                            (item.productDetails as any)?.image
+                          }
                           className="h-14 w-14 flex-shrink-0"
                           color="green"
                         />
@@ -383,10 +381,26 @@ export function MDWHeader() {
                           </div>
 
                           {(() => {
-                            const itemMRP = item.mrp || item.productDetails?.batches?.[0]?.mrp || (item.unitPrice ?? item.amount / Math.max(1, item.quantity));
-                            const itemDiscountedAmount = item.discountedAmount || item.productDetails?.batches?.[0]?.discountedAmount;
-                            const itemUnitPrice = item.unitPrice ?? (itemDiscountedAmount && itemDiscountedAmount > 0 ? itemDiscountedAmount : (item.quantity > 0 ? item.amount / item.quantity : item.amount));
-                            const hasDiscount = itemDiscountedAmount && itemDiscountedAmount > 0 && itemMRP > itemDiscountedAmount;
+                            const itemMRP =
+                              item.mrp ||
+                              item.productDetails?.batches?.[0]?.mrp ||
+                              (item.unitPrice ??
+                                item.amount / Math.max(1, item.quantity))
+                            const itemDiscountedAmount =
+                              item.discountedAmount ||
+                              item.productDetails?.batches?.[0]
+                                ?.discountedAmount
+                            const itemUnitPrice =
+                              item.unitPrice ??
+                              (itemDiscountedAmount && itemDiscountedAmount > 0
+                                ? itemDiscountedAmount
+                                : item.quantity > 0
+                                  ? item.amount / item.quantity
+                                  : item.amount)
+                            const hasDiscount =
+                              itemDiscountedAmount &&
+                              itemDiscountedAmount > 0 &&
+                              itemMRP > itemDiscountedAmount
 
                             return (
                               <>
@@ -411,7 +425,9 @@ export function MDWHeader() {
                                       {item.quantity}
                                     </span>
                                     <button
-                                      onClick={() => updateQty(item.productId, 1)}
+                                      onClick={() =>
+                                        updateQty(item.productId, 1)
+                                      }
                                       className="px-2 py-1.5 text-gray-500 transition-colors hover:bg-gray-50 hover:text-[#F4568B]"
                                     >
                                       <Plus className="h-3.5 w-3.5" />
@@ -429,7 +445,7 @@ export function MDWHeader() {
                                   </div>
                                 </div>
                               </>
-                            );
+                            )
                           })()}
                         </div>
                       </div>
@@ -486,17 +502,15 @@ export function MDWHeader() {
           </div>
 
           {/* Mobile Profile & Cart actions */}
-          <div className="flex items-center gap-3 sm:hidden">
-            {userActions}
-          </div>
+          <div className="flex items-center gap-3 sm:hidden">{userActions}</div>
         </div>
 
         {/* Mobile Row: Location + Search Bar (beside location icon on small screens) */}
-        <div className="flex w-full items-center justify-between gap-2 min-w-0 sm:hidden">
+        <div className="flex w-full min-w-0 items-center justify-between gap-2 sm:hidden">
           <AddressSelector />
 
           {!isHeroSearchVisible && (
-            <div className="flex-1 min-w-0 max-w-[20rem]">
+            <div className="max-w-[20rem] min-w-0 flex-1">
               <MedicineSearchInput
                 placeholder="Search medicines..."
                 inputClassName="px-2.5 py-1.5 text-[11px]"
@@ -563,7 +577,9 @@ export function AddressSelector() {
           <MapPin className="h-4 w-4 flex-shrink-0 text-[#F4568B]" />
 
           <div className="min-w-0 text-left">
-            <div className="text-[10px] leading-tight text-gray-400">Deliver to</div>
+            <div className="text-[10px] leading-tight text-gray-400">
+              Deliver to
+            </div>
 
             <div className="flex max-w-[75px] items-center gap-0.5 text-[11px] font-medium text-gray-800 min-[360px]:max-w-[110px] sm:max-w-none">
               <span className="truncate">
@@ -674,7 +690,7 @@ export function MedicineSearchInput({
             setIsOpen(true)
           }}
           placeholder={placeholder}
-          className={`flex-1 min-w-0 text-xs text-black outline-none ${inputClassName}`}
+          className={`min-w-0 flex-1 text-xs text-black outline-none ${inputClassName}`}
         />
 
         <button className="flex flex-shrink-0 items-center justify-center self-stretch bg-[#F4568B] px-2 text-white transition-colors hover:bg-gray-700 sm:px-4">
@@ -739,7 +755,7 @@ export function UserSidebar() {
               <Link
                 key={item.id}
                 href={item.href}
-                className={`flex w-full items-center gap-2.5 sm:gap-3 px-3.5 py-2.5 sm:px-4 sm:py-3 text-left text-xs sm:text-sm transition-all ${
+                className={`flex w-full items-center gap-2.5 px-3.5 py-2.5 text-left text-xs transition-all sm:gap-3 sm:px-4 sm:py-3 sm:text-sm ${
                   activeSection === item.id
                     ? "border border-[#F4568B]/20 bg-[#F4568B]/10 font-semibold text-[#F4568B]"
                     : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
@@ -759,7 +775,7 @@ export function UserSidebar() {
             ) : (
               <button
                 key={item.id}
-                className={`flex w-full items-center gap-2.5 sm:gap-3 px-3.5 py-2.5 sm:px-4 sm:py-3 text-left text-xs sm:text-sm transition-all ${
+                className={`flex w-full items-center gap-2.5 px-3.5 py-2.5 text-left text-xs transition-all sm:gap-3 sm:px-4 sm:py-3 sm:text-sm ${
                   activeSection === item.id
                     ? "border border-[#F4568B]/20 bg-[#F4568B]/10 font-semibold text-[#F4568B]"
                     : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
@@ -781,7 +797,7 @@ export function UserSidebar() {
 
           {/* Logout */}
           <button
-            className="flex w-full items-center gap-2.5 sm:gap-3 px-3.5 py-2.5 sm:px-4 sm:py-3 text-left text-xs sm:text-sm text-red-500 transition-colors hover:bg-red-50"
+            className="flex w-full items-center gap-2.5 px-3.5 py-2.5 text-left text-xs text-red-500 transition-colors hover:bg-red-50 sm:gap-3 sm:px-4 sm:py-3 sm:text-sm"
             onClick={() => router.push("/logout")}
           >
             <LogOut className="h-4 w-4 flex-shrink-0" />
